@@ -1,46 +1,12 @@
-/* src/App.css */
-
-body, html, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.App {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
-  text-align: center;
-}
-
-main {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  width: 100%;
-}
+/* src/components/indicadores/Indicadores.css */
 
 .indicadores-container {
-  width: 100%;
-  max-width: 800px;
   padding: 20px;
 }
 
 .indicadores-title {
   font-size: 24px;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 .indicadores-list {
