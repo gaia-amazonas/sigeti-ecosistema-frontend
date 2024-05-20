@@ -2,8 +2,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
-import Indicadores from './components/indicadores/Indicadores';
-import SexoyEdad from './components/indicadores/territoriales/piramides/SexoyEdad';
+import SeleccionadorTerritorial from './components/indicadores/territoriales/SeleccionadorTerritorial';
+import SeleccionadorComunal from './components/indicadores/comunales/SeleccionadorComunal';
+import PiramideSexoyEdadTerritorial from './components/indicadores/territoriales/piramides/SexoyEdad';
+import InfraestructuraComunal from './components/indicadores/comunales/con_logos/InfraestructuraComunal';
+import LenguasBurbujas from './components/indicadores/lenguas/'
 
 const App: React.FC = () => {
   return (
@@ -15,8 +18,11 @@ const App: React.FC = () => {
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/indicadores" element={<Indicadores />} />
-            <Route path="/indicadores/piramide_poblacional/:id" element={<SexoyEdad />} />
+            {/* <Route path="/indicadores" element={<IndicadoresTerritoriales />} /> */}
+            <Route path="/indicadores/territoriales" element={<SeleccionadorTerritorial />} />
+            <Route path="/indicadores/territoriales/piramide_poblacional/:id" element={<PiramideSexoyEdadTerritorial />} />
+            <Route path="/indicadores/comunales" element={<SeleccionadorComunal />} />
+            <Route path="/indicadores/comunales/infraestructura/:id" element={<InfraestructuraComunal />} />
           </Routes>
         </main>
       </div>
@@ -28,7 +34,8 @@ const Home: React.FC = () => (
   <div className="indicadores-container">
     <h2>Grupo SIGETI ~ Gaia Amazonas</h2>
     <p>Alguna información básica sobre el grupo SIGETI de Gaia Amazonas</p>
-    <Link to="/indicadores" className="indicadores-link">¡Ir a Indicadores!</Link>
+    <Link to="/indicadores/territoriales" className="indicadores-link">¡Ir a Indicadores territoriales!</Link>
+    <Link to="/indicadores/comunales" className="indicadores-link">¡Ir a Indicadores comunales!</Link>
   </div>
 );
 
