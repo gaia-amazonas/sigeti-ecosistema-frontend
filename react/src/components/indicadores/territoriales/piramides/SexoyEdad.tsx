@@ -1,4 +1,3 @@
-// src/components/indicadores/territoriales/piramides/SexoyEdad.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -19,7 +18,7 @@ const SexoyEdadGraph: React.FC = () => {
   useEffect(() => {
     const fetchSexoYEdades = async () => {
       try {
-        const response = await axios.get<SexoyEdad[]>(`http://127.0.0.1:8000/indicadores/piramide_poblacional/${id}/`);
+        const response = await axios.get<SexoyEdad[]>(`http://127.0.0.1:8000/indicadores/piramide_poblacional/territorio/${id}/`);
         setSexoYEdades(response.data);
       } catch (err) {
         setError('Error fetching data');
@@ -64,7 +63,7 @@ const SexoyEdadGraph: React.FC = () => {
       return ageRangeB[0] - ageRangeA[0]; // Sort in descending order
     });
 
-  const scaleFactor = windowWidth / 100; // Adjust the denominator to control scaling sensitivity
+  const scaleFactor = windowWidth / 150; // Adjust the denominator to control scaling sensitivity
 
   if (error) {
     return <div>{error}</div>;
