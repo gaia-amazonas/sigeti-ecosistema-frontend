@@ -1,0 +1,3 @@
+npx create-next-app@latest sigeti-ecosistema-frontend --typescript
+npm install @google-cloud/bigquery
+npm install oxlint --save-dev
