@@ -9,7 +9,7 @@ export const ContenedorGrafico = styled.div`
   width: 100vw;
   height: auto;
   box-sizing: border-box;
-
+  margin-bottom: 5rem;
   @media (max-width: 48rem) {
     flex-direction: row;
     height: auto;

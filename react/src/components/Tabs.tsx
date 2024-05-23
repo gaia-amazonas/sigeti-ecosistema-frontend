@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, TabList, TabStyle, TabPanel, Title } from 'components/estilos/Tabs';
-import { Sexo } from 'components/graficos/general/Sexo';
+import { SexoEdad } from 'components/graficos/general/SexoEdad';
 import generalesQueries from 'components/consultas/generalesQueries';
 
 interface TabImp {
@@ -25,10 +25,11 @@ const Tab: React.FC<TabImp> = ({ data }) => {
     const traerDatosGenerales = async () => {
       const sexo = await consultarDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
       const familias = await consultarDatos(generalesQueries.familias(data.comunidad_id));
+      const edad = await consultarDatos(generalesQueries.sexo_edad(data.comunidad_id, data.territorio_id));
 
       setDatos((prevDatos) => ({
         ...prevDatos,
-        general: [sexo, familias],
+        general: [sexo, familias, edad],
       }));
     };
 
@@ -44,7 +45,7 @@ const Tab: React.FC<TabImp> = ({ data }) => {
         <TabStyle active={activo === 'educacion_tab'} onClick={() => setActivo('educacion_tab')}>Educación</TabStyle>
       </TabList>
       <TabPanel>
-        {activo === 'general_tab' && <Sexo data={datos.general} />}
+        {activo === 'general_tab' && <SexoEdad data={datos.general} />}
         {activo === 'cultural_tab' && <div>{JSON.stringify(datos.cultural, null, 2)}</div>}
         {activo === 'educacion_tab' && <div>{JSON.stringify(datos.educacion, null, 2)}</div>}
       </TabPanel>

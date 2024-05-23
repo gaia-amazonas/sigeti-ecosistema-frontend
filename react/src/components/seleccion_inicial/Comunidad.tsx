@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/Filtros';
+import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
 
 interface ComunidadIndigenaImp {
     data: any;
