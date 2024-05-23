@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "oxlint -c ./.eslintrc.json --tsconfig ./tsconfig.json --jsx-a11y-plugin --nextjs-plugin --react-perf-plugin --deny-warnings .",
+    "lint": "oxlint -c ./.eslintrc --tsconfig ./tsconfig.json --jsx-a11y-plugin --nextjs-plugin --react-perf-plugin --deny-warnings .",
     "lint:fix": "oxlint --fix -c ./.eslintrc.json --tsconfig ./tsconfig.json --jsx-a11y-plugin --nextjs-plugin --react-perf-plugin --deny-warnings ."
   },
   "dependencies": {
