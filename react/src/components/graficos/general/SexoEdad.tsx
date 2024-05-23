@@ -29,8 +29,8 @@ export const SexoEdad: React.FC<GraphComponentProps> = ({ data }) => {
     [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1), // Invert count for 'Hombre' for the left side of the pyramid
   }));
 
-  const mujeresPorEdadMaximo = Math.max(...pyramidData.filter(item => item.Mujer).map(item => item.Mujer));
-  const hombresPorEdadMaximo = Math.abs(Math.min(...pyramidData.filter(item => item.Hombre).map(item => item.Hombre)));
+  const mujeresPorEdadMaximo = Math.max(...pyramidData.filter((item: { Mujer: any; }) => item.Mujer).map((item: { Mujer: any; }) => item.Mujer));
+  const hombresPorEdadMaximo = Math.abs(Math.min(...pyramidData.filter((item: { Hombre: any; }) => item.Hombre).map((item: { Hombre: any}) => item.Hombre)));
 
   return (
     <div>
