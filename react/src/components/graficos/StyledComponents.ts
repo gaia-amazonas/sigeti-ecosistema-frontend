@@ -6,20 +6,19 @@ export const ContenedorGrafico = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 100%; /* Full width of the container */
+  width: 100vw;
   height: auto;
-  padding: 2rem;
   box-sizing: border-box;
 
   @media (max-width: 48rem) {
-    flex-direction: column;
+    flex-direction: row;
     height: auto;
   }
 `;
 
 export const ContenedorImagen = styled.div`
   position: relative;
-  width: 20%;
+  width: 30vw;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -39,7 +38,7 @@ export const RectanguloAmarillo = styled.div`
   background-color: #F3D090;
   font-size: 1rem;
   font-weight: bold;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   text-align: center;
   display: flex;
@@ -51,13 +50,12 @@ export const RectanguloAmarillo = styled.div`
 
 export const ContenedorTotal = styled.div`
   position: relative;
-  width: 20%;
+  width: 30vw;
   height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
 `;
 
 export const CajaTitulo = styled.div`
@@ -67,20 +65,19 @@ export const CajaTitulo = styled.div`
   text-align: center;
   background-color: transparent;
   color: black;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
   z-index: 2;
 `;
 
 export const CajaReductor = styled.div`
-  width: 80%;
   background-color: #BE4D60;
   color: white;
   font-size: 1rem;
   font-weight: bold;
-  padding: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   display: flex;
-  border-radius: 2rem;
   align-items: center;
   justify-content: center;
   text-align: center;
