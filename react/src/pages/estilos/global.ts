@@ -1,6 +1,7 @@
+import exp from 'constants';
 import { createGlobalStyle } from 'styled-components';
 
-export const EstiloGlobal = createGlobalStyle`
+const EstiloGlobal = createGlobalStyle`
   body, html, #root {
     margin: 0;
     padding: 0;
@@ -9,3 +10,5 @@ export const EstiloGlobal = createGlobalStyle`
     overflow: hidden;
   }
 `;
+
+export default EstiloGlobal;
