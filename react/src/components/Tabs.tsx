@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Container, TabList, TabStyle, TabPanel, Title } from 'src/components/estilos/Tabs';
-import { Sexo } from 'src/components/graficos/general/Sexo';
+import { Container, TabList, TabStyle, TabPanel, Title } from 'components/estilos/Tabs';
+import { Sexo } from 'components/graficos/general/Sexo';
+import generalesQueries from 'components/consultas/generalesQueries';
 
 interface TabImp {
   data: any;
@@ -21,25 +22,15 @@ const Tab: React.FC<TabImp> = ({ data }) => {
   });
 
   useEffect(() => {
-    async function traerDatosGenerales() {
-      const query = {
-        sexo: `SELECT SEXO, ID_CNIDA, ID_TI, COUNT(*) FROM \`sigeti-admin-364713.censo_632.BD_personas\` WHERE ID_CNIDA = '${data.comunidad_id}' AND ID_TI = '${data.territorio_id}' GROUP BY ID_CNIDA, SEXO, ID_TI`,
-        familias: `SELECT COUNT(*) as familias FROM \`sigeti-admin-364713.censo_632.BD_familias\` WHERE id_cnida = '${data.comunidad_id}';`,
-      };
-
-      const consultarDatos = async (query: string) => {
-        const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-        return await response.json();
-      };
-
-      const sexo = await consultarDatos(query.sexo);
-      const familias = await consultarDatos(query.familias);
+    const traerDatosGenerales = async () => {
+      const sexo = await consultarDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
+      const familias = await consultarDatos(generalesQueries.familias(data.comunidad_id));
 
       setDatos((prevDatos) => ({
         ...prevDatos,
         general: [sexo, familias],
       }));
-    }
+    };
 
     traerDatosGenerales();
   }, [data.comunidad_id, data.territorio_id]);
@@ -59,6 +50,11 @@ const Tab: React.FC<TabImp> = ({ data }) => {
       </TabPanel>
     </Container>
   );
+};
+
+const consultarDatos = async (query: string) => {
+  const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
+  return await response.json();
 };
 
 export default Tab;

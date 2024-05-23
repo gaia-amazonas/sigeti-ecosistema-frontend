@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Seleccion from 'src/components/seleccion_inicial/Seleccion';
-import Tabs from 'src/components/Tabs';
+import Seleccion from 'components/seleccion_inicial/Seleccion';
+import Tabs from 'components/Tabs';
 import EstiloGlobal from './estilos/global';
 
 const Home: React.FC = () => {
