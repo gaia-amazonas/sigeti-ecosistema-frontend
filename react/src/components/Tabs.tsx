@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, TabList, TabStyle, TabPanel, Title } from 'src/components/estilos/Tabs';
-import { Sexo } from 'src/components/graficos/Sexo'; // Import the new GraphComponent
+import { Sexo } from 'src/components/graficos/general/Sexo';
 
 interface TabImp {
   data: any;

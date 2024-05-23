@@ -1,8 +1,8 @@
 import React from 'react';
-import MujerComponent from './MujerComponent';
-import HombreComponent from './HombreComponent';
-import TotalComponent from './TotalComponent';
-import { ContenedorGrafico } from './StyledComponents';
+import Mujer from './Mujer';
+import Hombre from './Hombre';
+import TotalYFamilias from './TotalYFamilias';
+import { ContenedorGrafico } from '../estilos';
 
 interface GraphComponentProps {
   data: any[];
@@ -22,9 +22,9 @@ export const Sexo: React.FC<GraphComponentProps> = ({ data }) => {
 
   return (
     <ContenedorGrafico>
-      <MujerComponent count={mujerCount} />
-      <TotalComponent totalCount={totalCount} familiasCount={familiasData} />
-      <HombreComponent count={hombreCount} />
+      <Mujer count={mujerCount} />
+      <TotalYFamilias totalCount={totalCount} familiasCount={familiasData} />
+      <Hombre count={hombreCount} />
     </ContenedorGrafico>
   );
 };

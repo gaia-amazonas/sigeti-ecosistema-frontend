@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContenedorImagen, Imagen, CajaReductor } from './StyledComponents';
+import { ContenedorImagen, Imagen, CajaReductor } from '../estilos';
 
 interface HombreComponentProps {
   count: number;

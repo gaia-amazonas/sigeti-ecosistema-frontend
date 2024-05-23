@@ -45,7 +45,6 @@ const ComunidadIndigena: React.FC<ComunidadIndigenaImp> = ({ data, setData, next
 
     return (
         <Container>
-            <Title>Seleccione comunidad</Title>
             <FilterInput
                 type="text"
                 placeholder="Filtre escribiendo..."
