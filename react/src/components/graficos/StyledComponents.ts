@@ -2,16 +2,25 @@ import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`
   display: flex;
+  flex-wrap: wrap; /* Allow items to wrap */
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 250px;
+  width: 100%; /* Full width of the container */
+  height: auto;
+  padding: 2rem;
+  box-sizing: border-box;
+
+  @media (max-width: 48rem) {
+    flex-direction: column;
+    height: auto;
+  }
 `;
 
 export const ContenedorImagen = styled.div`
   position: relative;
-  width: 15rem;
-  height: 20rem;
+  width: 20%;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,14 +32,15 @@ export const Imagen = styled.img`
   width: 100%;
   height: 100%; /* Adjust height to maintain aspect ratio */
   object-fit: contain;
+  margin-bottom: 1rem;
 `;
 
 export const RectanguloAmarillo = styled.div`
   background-color: #F3D090;
-  font-size: 24px;
+  font-size: 1rem;
   font-weight: bold;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 1rem;
+  border-radius: 0.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -40,31 +50,35 @@ export const RectanguloAmarillo = styled.div`
 `;
 
 export const ContenedorTotal = styled.div`
+  position: relative;
+  width: 20%;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  margin: 0 20px;
 `;
 
 export const CajaTitulo = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   background-color: transparent;
   color: black;
-  font-size: 24px;
+  font-size: 1rem;
   font-weight: bold;
   z-index: 2;
 `;
 
 export const CajaReductor = styled.div`
-  width: 90%;
+  width: 80%;
   background-color: #BE4D60;
   color: white;
-  font-size: 24px;
+  font-size: 1rem;
   font-weight: bold;
-  padding: 10px;
+  padding: 1rem;
   display: flex;
   border-radius: 2rem;
   align-items: center;
