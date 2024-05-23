@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/ResguardoIndigena.styles';
+import React, { useState, useEffect } from 'react';
+import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/Filtros';
 
-interface Props {
+interface ResguardoIndigenaImp {
   data: any;
   setData: (data: any) => void;
   nextStep: () => void;
 }
 
-const ResguardoIndigena: React.FC<Props> = ({ data, setData, nextStep }) => {
+const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, nextStep }) => {
   const [options, setOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [filter, setFilter] = useState('');
@@ -54,10 +54,9 @@ const ResguardoIndigena: React.FC<Props> = ({ data, setData, nextStep }) => {
 
   return (
     <Container>
-      <Title>Select Resguardo Indigena</Title>
       <FilterInput
         type="text"
-        placeholder="Filter options..."
+        placeholder="Filtre escribiendo..."
         value={filter}
         onChange={handleFilterChange}
       />

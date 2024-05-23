@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/AATI.styles';
+import React, { useState, useEffect } from 'react';
+import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/Filtros';
 
-interface Props {
+interface AATIImp {
   data: any;
   setData: (data: any) => void;
   nextStep: () => void;
 }
 
-const AATI: React.FC<Props> = ({ data, setData, nextStep }) => {
+const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
   const [options, setOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [filter, setFilter] = useState('');
@@ -47,10 +47,9 @@ const AATI: React.FC<Props> = ({ data, setData, nextStep }) => {
 
   return (
     <Container>
-      <Title>Select Cabildo Indigena</Title>
       <FilterInput
         type="text"
-        placeholder="Filter options..."
+        placeholder="Filtre escribiendo..."
         value={filter}
         onChange={handleFilterChange}
       />

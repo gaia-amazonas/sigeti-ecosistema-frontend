@@ -1,13 +1,29 @@
-import SelectionProcess from 'src/components/seleccion_inicial/Seleccion';
-import { GlobalStyle } from '../pages/estilos/estilosGlobales.styles'; // Adjust the path according to your project structure
+import React, { useState } from 'react';
+import Seleccion from 'src/components/seleccion_inicial/Seleccion';
+import Tabs from 'src/components/Tabs';
+import { EstiloGlobal } from './estilos/global';
 
 const Home: React.FC = () => {
+  const [showTabs, setShowTabs] = useState(false);
+  const [data, setData] = useState({});
+
+  const direccionaSeleccionFinalizadaATabs = (selectionData: any) => {
+    setData(selectionData);
+    setShowTabs(true);
+  };
+
   return (
     <>
-      <GlobalStyle />
+      <EstiloGlobal />
       <div>
-        <h1>Selection Process</h1>
-        <SelectionProcess />
+        {showTabs ? (
+          <Tabs data={data} />
+        ) : (
+          <>
+            <h1>Seleccionando...</h1>
+            <Seleccion onFinish={direccionaSeleccionFinalizadaATabs} />
+          </>
+        )}
       </div>
     </>
   );

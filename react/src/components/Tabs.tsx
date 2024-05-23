@@ -1,50 +1,64 @@
 import { useState, useEffect } from 'react';
-import { Container, TabList, Tab, TabPanel, Title } from 'src/components/estilos/Tabs.styles';
+import { Container, TabList, TabStyle, TabPanel, Title } from 'src/components/estilos/Tabs';
+import { Sexo } from 'src/components/graficos/Sexo'; // Import the new GraphComponent
 
-interface Props {
+interface TabImp {
   data: any;
 }
 
-const TabComponent: React.FC<Props> = ({ data }) => {
-  const [activeTab, setActiveTab] = useState('tab1');
-  const [tab1Data, setTab1Data] = useState([]);
-  const [tab2Data, setTab2Data] = useState([]);
-  const [tab3Data, setTab3Data] = useState([]);
+interface DatosImp {
+  general: any[];
+  cultural: any[];
+  educacion: any[];
+}
+
+const Tab: React.FC<TabImp> = ({ data }) => {
+  const [activo, setActivo] = useState('general_tab');
+  const [datos, setDatos] = useState<DatosImp>({
+    general: [],
+    cultural: [],
+    educacion: []
+  });
 
   useEffect(() => {
-    async function fetchData() {
-      const queries = {
-        tab1: `SELECT * FROM table1 WHERE territorio_id = '${data.territorio_id}'`,
-        tab2: `SELECT * FROM table2 WHERE territorio_id = '${data.territorio_id}'`,
-        tab3: `SELECT * FROM table3 WHERE territorio_id = '${data.territorio_id}'`,
+    async function traerDatosGenerales() {
+      const query = {
+        sexo: `SELECT SEXO, ID_CNIDA, ID_TI, COUNT(*) FROM \`sigeti-admin-364713.censo_632.BD_personas\` WHERE ID_CNIDA = '${data.comunidad_id}' AND ID_TI = '${data.territorio_id}' GROUP BY ID_CNIDA, SEXO, ID_TI`,
+        familias: `SELECT COUNT(*) as familias FROM \`sigeti-admin-364713.censo_632.BD_familias\` WHERE id_cnida = '${data.comunidad_id}';`,
       };
-      const fetchDataForTab = async (query: string) => {
+
+      const consultarDatos = async (query: string) => {
         const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
         return await response.json();
       };
-      setTab1Data(await fetchDataForTab(queries.tab1));
-      setTab2Data(await fetchDataForTab(queries.tab2));
-      setTab3Data(await fetchDataForTab(queries.tab3));
+
+      const sexo = await consultarDatos(query.sexo);
+      const familias = await consultarDatos(query.familias);
+
+      setDatos((prevDatos) => ({
+        ...prevDatos,
+        general: [sexo, familias],
+      }));
     }
 
-    fetchData();
-  }, [data]);
+    traerDatosGenerales();
+  }, [data.comunidad_id, data.territorio_id]);
 
   return (
     <Container>
-      <Title>Query Results</Title>
+      <Title>Temáticas</Title>
       <TabList>
-        <Tab active={activeTab === 'tab1'} onClick={() => setActiveTab('tab1')}>Tab 1</Tab>
-        <Tab active={activeTab === 'tab2'} onClick={() => setActiveTab('tab2')}>Tab 2</Tab>
-        <Tab active={activeTab === 'tab3'} onClick={() => setActiveTab('tab3')}>Tab 3</Tab>
+        <TabStyle active={activo === 'general_tab'} onClick={() => setActivo('general_tab')}>General</TabStyle>
+        <TabStyle active={activo === 'cultural_tab'} onClick={() => setActivo('cultural_tab')}>Cultural</TabStyle>
+        <TabStyle active={activo === 'educacion_tab'} onClick={() => setActivo('educacion_tab')}>Educación</TabStyle>
       </TabList>
       <TabPanel>
-        {activeTab === 'tab1' && <div>{JSON.stringify(tab1Data, null, 2)}</div>}
-        {activeTab === 'tab2' && <div>{JSON.stringify(tab2Data, null, 2)}</div>}
-        {activeTab === 'tab3' && <div>{JSON.stringify(tab3Data, null, 2)}</div>}
+        {activo === 'general_tab' && <Sexo data={datos.general} />}
+        {activo === 'cultural_tab' && <div>{JSON.stringify(datos.cultural, null, 2)}</div>}
+        {activo === 'educacion_tab' && <div>{JSON.stringify(datos.educacion, null, 2)}</div>}
       </TabPanel>
     </Container>
   );
 };
 
-export default TabComponent;
+export default Tab;

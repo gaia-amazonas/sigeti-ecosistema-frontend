@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/ComunidadIndigena.styles';
+import React, { useState, useEffect } from 'react';
+import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/Filtros';
 
-interface Props {
+interface ComunidadIndigenaImp {
     data: any;
     setData: (data: any) => void;
     nextStep: () => void;
 }
 
-const ComunidadIndigena: React.FC<Props> = ({ data, setData, nextStep }) => {
+const ComunidadIndigena: React.FC<ComunidadIndigenaImp> = ({ data, setData, nextStep }) => {
     const [options, setOptions] = useState([]);
     const [filteredOptions, setFilteredOptions] = useState([]);
     const [filter, setFilter] = useState('');
@@ -54,7 +54,7 @@ const ComunidadIndigena: React.FC<Props> = ({ data, setData, nextStep }) => {
             />
             {filteredOptions.map((option: any) =>(
                 <OptionButton key={option.id_cnida} onClick={() => handleSelect(option.id_cnida)}>
-                    {option.comunidad}
+                    {option.id_cnida}
                 </OptionButton>
             ))}
         </Container>

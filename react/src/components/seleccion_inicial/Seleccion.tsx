@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
-import TerritorioIndigena from 'src/components/seleccion_inicial/TerritorioIndigena';
-import ResguardoIndigena from 'src/components/seleccion_inicial/ResguardoIndigena';
-import AATI from 'src/components/seleccion_inicial/AATI';
-import ComunidadIndigena from 'src/components/seleccion_inicial/ComunidadIndigena';
-import TabComponent from 'src/components/Tabs';
-import { Container, StepContainer, Title, Button } from 'src/components/seleccion_inicial/estilos/Seleccion.styles';
+// src/components/seleccion_inicial/Seleccion.tsx
+import React, { useEffect, useState } from 'react';
+import Territorio from 'src/components/seleccion_inicial/Territorio';
+// import ResguardoIndigena from 'src/components/seleccion_inicial/ResguardoIndigena';
+// import AATI from 'src/components/seleccion_inicial/AATI';
+import Comunidad from 'src/components/seleccion_inicial/Comunidad';
+import { Container, StepContainer, Title, Button } from 'src/components/seleccion_inicial/estilos/Seleccion';
 
-const SelectionProcess: React.FC = () => {
+interface SeleccionImp {
+  onFinish: (data: any) => void;
+}
+
+const SelectionProcess: React.FC<SeleccionImp> = ({ onFinish }) => {
   const [step, setStep] = useState(1);
   const [data, setData] = useState({});
 
@@ -16,35 +20,41 @@ const SelectionProcess: React.FC = () => {
     console.log(data);
   }, [data]);
 
+  useEffect(() => {
+    if (step > 2) {
+      onFinish(data);
+    }
+  }, [step, data, onFinish]);
+
   return (
     <Container>
       <StepContainer>
         {step === 1 && (
-          <TerritorioIndigena data={data} setData={setData} nextStep={nextStep} />
-        )}
-        {step === 2 && (
           <>
-            <Title>Select Resguardo Indigena</Title>
-            <ResguardoIndigena data={data} setData={setData} nextStep={nextStep}/>
+            <Title>Territorio</Title>
+            <Territorio data={data} setData={setData} nextStep={nextStep} />
+          </>
+        )}
+        {/* {step === 2 && (
+          <>
+            <Title>Resguardo Indigena</Title>
+            <Resguardo data={data} setData={setData} nextStep={nextStep} />
           </>
         )}
         {step === 3 && (
           <>
-            <Title>Select AATI</Title>
-            <AATI data={data} setData={setData} nextStep={nextStep}/>
+            <Title>AATI</Title>
+            <AATI data={data} setData={setData} nextStep={nextStep} />
           </>
-        )}
-        {step === 4 && (
+        )} */}
+        {step === 2 && (
           <>
-            <Title>Select Comunidad Indigena</Title>
-            <ComunidadIndigena data={data} setData={setData} nextStep={nextStep}/>
+            <Title>Seleccione la Comunidad Indigena</Title>
+            <Comunidad data={data} setData={setData} nextStep={nextStep} />
           </>
-        )}
-        {step > 4 && (
-          <TabComponent data={data} />
         )}
       </StepContainer>
-      {step <= 4 && <Button onClick={nextStep}>Next</Button>}
+      {step <= 2 && <Button onClick={nextStep}>Next</Button>}
     </Container>
   );
 };
