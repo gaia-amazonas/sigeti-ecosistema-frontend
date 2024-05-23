@@ -18,7 +18,7 @@ export const ContenedorGrafico = styled.div`
 
 export const ContenedorImagen = styled.div`
   position: relative;
-  width: 30vw;
+  width: 29vw;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@ export const ContenedorImagen = styled.div`
 
 export const Imagen = styled.img`
   width: 100%;
-  height: 100%; /* Adjust height to maintain aspect ratio */
+  height: auto; /* Adjust height to maintain aspect ratio */
   object-fit: contain;
   margin-bottom: 1rem;
 `;
@@ -50,7 +50,7 @@ export const RectanguloAmarillo = styled.div`
 
 export const ContenedorTotal = styled.div`
   position: relative;
-  width: 30vw;
+  width: 29vw;
   height: auto;
   display: flex;
   flex-direction: column;
