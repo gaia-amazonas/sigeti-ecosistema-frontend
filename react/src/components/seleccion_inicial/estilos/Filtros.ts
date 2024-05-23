@@ -1,3 +1,4 @@
+// src/components/seleccion_inicial/estilos/Filtros.ts
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -10,6 +11,8 @@ export const Container = styled.div`
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 400px; /* Set a maximum height for the container */
+  overflow-y: auto; /* Enable vertical scrolling */
 `;
 
 export const OptionButton = styled.button`

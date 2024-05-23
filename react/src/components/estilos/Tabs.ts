@@ -11,7 +11,7 @@ export const Container = styled.div`
 
 export const Title = styled.h1`
   font-family: 'Lora', serif;
-  color: #2F4F4F;
+  color: #2F4F4F; /* Forest Green */
   text-align: center;
   margin: 20px 0;
 `;
@@ -23,8 +23,8 @@ export const TabList = styled.div`
   background-color: #fff;
 `;
 
-export const Tab = styled.button<{ active: boolean }>`
-  background-color: ${({ active }) => (active ? '#4682B4' : '#FFD700')};
+export const TabStyle = styled.button<{ active: boolean }>`
+  background-color: ${({ active }) => (active ? '#228B22' : '#8B4513')}; /* Amazonian Green or Earth Brown */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -34,7 +34,7 @@ export const Tab = styled.button<{ active: boolean }>`
   flex: 1;
   text-align: center;
   &:hover {
-    background-color: #ffa07a;
+    background-color: #4682B4; /* Sky Blue */
   }
 `;
 
