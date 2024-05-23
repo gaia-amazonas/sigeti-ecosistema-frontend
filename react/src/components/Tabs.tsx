@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Container, TabList, TabStyle, TabPanel, Title } from 'src/components/estilos/Tabs';
-import { Sexo } from 'src/components/graficos/Sexo'; // Import the new GraphComponent
+import { Container, TabList, TabStyle, TabPanel, Title } from 'components/estilos/Tabs';
+import { SexoEdad } from 'components/graficos/general/SexoEdad';
+import generalesQueries from 'components/consultas/generalesQueries';
 
 interface TabImp {
   data: any;
@@ -21,25 +22,16 @@ const Tab: React.FC<TabImp> = ({ data }) => {
   });
 
   useEffect(() => {
-    async function traerDatosGenerales() {
-      const query = {
-        sexo: `SELECT SEXO, ID_CNIDA, ID_TI, COUNT(*) FROM \`sigeti-admin-364713.censo_632.BD_personas\` WHERE ID_CNIDA = '${data.comunidad_id}' AND ID_TI = '${data.territorio_id}' GROUP BY ID_CNIDA, SEXO, ID_TI`,
-        familias: `SELECT COUNT(*) as familias FROM \`sigeti-admin-364713.censo_632.BD_familias\` WHERE id_cnida = '${data.comunidad_id}';`,
-      };
-
-      const consultarDatos = async (query: string) => {
-        const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-        return await response.json();
-      };
-
-      const sexo = await consultarDatos(query.sexo);
-      const familias = await consultarDatos(query.familias);
+    const traerDatosGenerales = async () => {
+      const sexo = await consultarDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
+      const familias = await consultarDatos(generalesQueries.familias(data.comunidad_id));
+      const edad = await consultarDatos(generalesQueries.sexo_edad(data.comunidad_id, data.territorio_id));
 
       setDatos((prevDatos) => ({
         ...prevDatos,
-        general: [sexo, familias],
+        general: [sexo, familias, edad],
       }));
-    }
+    };
 
     traerDatosGenerales();
   }, [data.comunidad_id, data.territorio_id]);
@@ -53,12 +45,17 @@ const Tab: React.FC<TabImp> = ({ data }) => {
         <TabStyle active={activo === 'educacion_tab'} onClick={() => setActivo('educacion_tab')}>Educación</TabStyle>
       </TabList>
       <TabPanel>
-        {activo === 'general_tab' && <Sexo data={datos.general} />}
+        {activo === 'general_tab' && <SexoEdad data={datos.general} />}
         {activo === 'cultural_tab' && <div>{JSON.stringify(datos.cultural, null, 2)}</div>}
         {activo === 'educacion_tab' && <div>{JSON.stringify(datos.educacion, null, 2)}</div>}
       </TabPanel>
     </Container>
   );
+};
+
+const consultarDatos = async (query: string) => {
+  const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
+  return await response.json();
 };
 
 export default Tab;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContenedorTotal, CajaReductor, CajaTitulo, RectanguloAmarillo } from './StyledComponents';
+import { ContenedorTotal, CajaReductor, CajaTitulo, RectanguloAmarillo } from '../estilos';
 import { color } from 'chart.js/helpers';
 
 interface TotalComponentProps {

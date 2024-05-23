@@ -1,10 +1,10 @@
-// src/components/seleccion_inicial/Seleccion.tsx
+// components/seleccion_inicial/Seleccion.tsx
 import React, { useEffect, useState } from 'react';
-import Territorio from 'src/components/seleccion_inicial/Territorio';
-// import ResguardoIndigena from 'src/components/seleccion_inicial/ResguardoIndigena';
-// import AATI from 'src/components/seleccion_inicial/AATI';
-import Comunidad from 'src/components/seleccion_inicial/Comunidad';
-import { Container, StepContainer, Title, Button } from 'src/components/seleccion_inicial/estilos/Seleccion';
+import Territorio from 'components/seleccion_inicial/Territorio';
+// import ResguardoIndigena from 'components/seleccion_inicial/ResguardoIndigena';
+// import AATI from 'components/seleccion_inicial/AATI';
+import Comunidad from 'components/seleccion_inicial/Comunidad';
+import { Container, StepContainer, Title, Button } from 'components/seleccion_inicial/estilos/Seleccion';
 
 interface SeleccionImp {
   onFinish: (data: any) => void;

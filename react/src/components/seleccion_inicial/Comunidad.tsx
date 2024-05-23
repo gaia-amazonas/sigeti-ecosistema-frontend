@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'src/components/seleccion_inicial/estilos/Filtros';
+import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
 
 interface ComunidadIndigenaImp {
     data: any;
@@ -45,7 +45,6 @@ const ComunidadIndigena: React.FC<ComunidadIndigenaImp> = ({ data, setData, next
 
     return (
         <Container>
-            <Title>Seleccione comunidad</Title>
             <FilterInput
                 type="text"
                 placeholder="Filtre escribiendo..."
