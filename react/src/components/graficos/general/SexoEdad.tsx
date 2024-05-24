@@ -33,7 +33,7 @@ export const SexoEdad: React.FC<GraphComponentProps> = ({ data }) => {
   const hombresPorEdadMaximo = Math.abs(Math.min(...pyramidData.filter((item: { Hombre: any; }) => item.Hombre).map((item: { Hombre: any}) => item.Hombre)));
 
   return (
-    <div style={{ width: '100%', overflow: 'auto' }}> {/* Make this div scrollable */}
+    <div> {/* Make this div scrollable */}
       <ContenedorGrafico>
         <Mujer count={mujerContador} />
         <TotalYFamilias totalCount={totalContador} familiasCount={familiasDatos} />

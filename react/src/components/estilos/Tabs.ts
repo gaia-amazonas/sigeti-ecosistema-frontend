@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   font-family: 'Roboto', sans-serif;
-  overflow-y: auto;  // Only TabPanel scrolls
   display: grid;
   height: 100vh;
   width: 100vw;
@@ -11,13 +10,11 @@ export const Container = styled.div`
 
 export const Title = styled.h1`
   font-family: 'Lora', serif;
-  color: #2F4F4F; /* Forest Green */
+  color: #2F4F4F;
   text-align: center;
-  margin-bottom: 1rem;
 `;
 
 export const TabList = styled.div`
-  max-height: 5rem;
   display: flex;
   justify-content: center;
   background-color: #fff;
@@ -29,8 +26,7 @@ export const TabStyle = styled.button<{ active: boolean }>`
   color: white;
   padding: 1rem;
   border: none;
-  cursor: pointer;F
-  margin: 0 0.5rem;
+  cursor: pointer;
   flex: 1;
   text-align: center;
   &:hover {
@@ -43,5 +39,5 @@ export const TabPanel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding-top: 2rem;
 `;

@@ -20,7 +20,7 @@
   },
   "rules": {
     "oxlint/no-console": "warn",
-    "oxlint/no-unused-vars": "warn",
+    "oxlint/no-unused-vars": "warn"
     // Add other rules as per your requirement
   }
 }
