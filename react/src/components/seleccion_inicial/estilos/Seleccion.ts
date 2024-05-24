@@ -2,17 +2,16 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   align-items: center;
-  padding: 20px;
-  max-width: 800px;
   margin: 0 auto;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 100vh; /* Ensure it takes full height */
-  overflow-y: auto; /* Enable vertical scrolling */
 `;
 
 export const StepContainer = styled.div`
@@ -21,7 +20,7 @@ export const StepContainer = styled.div`
   align-items: center;
   width: 100%;
   padding: 20px;
-  overflow-y: auto; /* Ensure it can scroll */
+  overflow-y: auto;
 `;
 
 export const Title = styled.h2`

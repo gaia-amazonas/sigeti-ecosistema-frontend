@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TabList, TabStyle, TabPanel, Title } from 'components/estilos/Tabs';
 import { SexoEdad } from 'components/graficos/general/SexoEdad';
 import generalesQueries from 'components/consultas/generalesQueries';
@@ -22,20 +22,19 @@ const Tab: React.FC<TabImp> = ({ data }) => {
   });
 
   useEffect(() => {
-    const traerDatosGenerales = async () => {
-      const sexo = await consultarDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
-      const familias = await consultarDatos(generalesQueries.familias(data.comunidad_id));
-      const edad = await consultarDatos(generalesQueries.sexo_edad(data.comunidad_id, data.territorio_id));
+    async function fetchData() {
+      const sexo = await fetchDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
+      const familias = await fetchDatos(generalesQueries.familias(data.comunidad_id));
+      const edad = await fetchDatos(generalesQueries.sexo_edad(data.comunidad_id, data.territorio_id));
 
-      setDatos((prevDatos) => ({
+      setDatos(prevDatos => ({
         ...prevDatos,
         general: [sexo, familias, edad],
       }));
     };
 
-    traerDatosGenerales();
+    fetchData();
   }, [data.comunidad_id, data.territorio_id]);
-
   return (
     <Container>
       <Title>Temáticas</Title>
@@ -53,7 +52,7 @@ const Tab: React.FC<TabImp> = ({ data }) => {
   );
 };
 
-const consultarDatos = async (query: string) => {
+const fetchDatos = async (query: string) => {
   const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
   return await response.json();
 };

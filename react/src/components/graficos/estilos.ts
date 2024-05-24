@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`
+  font-family: 'Roboto', sans-serif;
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap */
   align-items: center;
