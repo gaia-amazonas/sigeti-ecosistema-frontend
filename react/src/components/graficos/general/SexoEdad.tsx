@@ -2,7 +2,7 @@ import React from 'react';
 import Mujer from './Mujer';
 import Hombre from './Hombre';
 import TotalYFamilias from './TotalYFamilias';
-import { ContenedorGrafico } from '../estilos';
+import { ContenedorGrafico, CajaTitulo } from '../estilos';
 import { Title } from 'components/seleccion_inicial/estilos/Seleccion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
@@ -40,13 +40,13 @@ export const SexoEdad: React.FC<GraphComponentProps> = ({ data }) => {
         <Hombre count={hombreContador} />
       </ContenedorGrafico>
       <div style={{ textAlign: 'center' }}> {/* This div wraps the title and centers it */}
-        <Title>Población por Sexo y Edad</Title>
+        <CajaTitulo>POBLACIÓN POR SEXO Y EDAD</CajaTitulo>
       </div>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={pyramidData}
           layout="vertical"
-          margin={{ top: 10, right: 70, left: 70, bottom: 20 }}
+          margin={{ top: 10, right: 30, left: 70, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
