@@ -4,8 +4,8 @@ import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
 import TotalYFamilias from './TotalYFamilias';
+import MapComponent from './MapComponent';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
-import MapComponent from './MapComponent';  // Ensure correct import path
 
 interface GraphComponentProps {
   data: any[];
