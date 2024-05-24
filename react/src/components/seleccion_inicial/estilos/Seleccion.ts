@@ -40,7 +40,6 @@ export const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.3s;
   font-family: 'Open Sans', sans-serif;
-
   &:hover {
     background-color: #0056b3; /* Darker Blue */
   }

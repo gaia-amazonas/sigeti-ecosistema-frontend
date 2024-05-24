@@ -13,12 +13,7 @@ interface SeleccionImp {
 const SelectionProcess: React.FC<SeleccionImp> = ({ onFinish }) => {
   const [step, setStep] = useState(1);
   const [data, setData] = useState({});
-
   const nextStep = () => setStep(step + 1);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   useEffect(() => {
     if (step > 2) {

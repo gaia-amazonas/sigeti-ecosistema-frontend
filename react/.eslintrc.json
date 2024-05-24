@@ -19,8 +19,7 @@
     "node": true
   },
   "rules": {
-    "oxlint/no-console": "warn",
-    "oxlint/no-unused-vars": "warn"
-    // Add other rules as per your requirement
+    "no-console": "warn",
+    "no-unused-vars": "warn"
   }
 }
