@@ -49,7 +49,7 @@ const SelectionProcess: React.FC<SeleccionImp> = ({ onFinish }) => {
         )} */}
         {step === 2 && (
           <>
-            <Title>Seleccione la Comunidad Indigena</Title>
+            <Title>Comunidad Indigena</Title>
             <Comunidad data={data} setData={setData} nextStep={nextStep} />
           </>
         )}
