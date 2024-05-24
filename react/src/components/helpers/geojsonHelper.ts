@@ -1,5 +1,4 @@
 // src/components/helpers/geojsonHelper.ts
-
 export const convertToGeoJSON = (geometryObject: any): any => {
   let geoJSONGeometry;
   try {
@@ -38,8 +37,7 @@ export const convertToGeoJSON = (geometryObject: any): any => {
       geoJSONGeometry = geometryObject;
     }
   } catch (error) {
-    // Return an error object with details
-    return { error: 'Invalid JSON format', details: error };
+    return { error: 'Invalid JSON format', details: error};
   }
 
   return {
@@ -49,33 +47,28 @@ export const convertToGeoJSON = (geometryObject: any): any => {
   };
 };
 
-export const getPolygonCentroid = (coordinates: number[][]): [number, number] | { error: string, details: string } => {
+export const getPolygonCentroid = (coordinates: number[][]): [number, number] => {
   let lngSum = 0;
   let latSum = 0;
 
-  try {
-    // Flatten the nested array structure and calculate the sum of coordinates
-    coordinates[0].forEach(coords => {
-      if (Array.isArray(coords) && coords.length === 2) {
-        const [lat, lng] = coords;
-        if (!isNaN(lat) && !isNaN(lng)) {
-          latSum += lat;
-          lngSum += lng;
-        } else {
-          throw new Error(`Invalid coordinate values: ${coords}`);
-        }
+  // Flatten the nested array structure and calculate the sum of coordinates
+  coordinates[0].forEach(coords => {
+    if (Array.isArray(coords) && coords.length === 2) {
+      const [lat, lng] = coords;
+      if (!isNaN(lat) && !isNaN(lng)) {
+        latSum += lat;
+        lngSum += lng;
       } else {
-        throw new Error(`Invalid coordinate pair: ${coords}`);
+        throw new Error(`Invalid coordinate values ${coords}`);
       }
-    });
+    } else {
+      throw new Error(`Par coordenado inválido ${coords}`);
+    }
+  });
 
-    // Calculate the mean latitude and longitude
-    const meanLng = lngSum / coordinates[0].length;
-    const meanLat = latSum / coordinates[0].length;
+  // Calculate the mean latitude and longitude
+  const meanLng = lngSum / coordinates[0].length;
+  const meanLat = latSum / coordinates[0].length;
 
-    return [meanLng, meanLat];
-  } catch (error) {
-    // Return an error object with details
-    return { error: 'Error calculating centroid', details: error };
-  }
+  return [meanLng, meanLat];
 };
