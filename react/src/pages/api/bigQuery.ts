@@ -14,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({ rows });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error running query' });
+      // Log the error using a logging service or handle it appropriately
+      res.status(500).json({ error: 'Error running query', details: error });
     }
   } else {
     res.status(405).json({ error: 'Method not allowed' });
