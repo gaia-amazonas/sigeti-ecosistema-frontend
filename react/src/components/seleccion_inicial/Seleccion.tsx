@@ -54,7 +54,7 @@ const SelectionProcess: React.FC<SeleccionImp> = ({ onFinish }) => {
           </>
         )}
       </StepContainer>
-      {step <= 2 && <Button onClick={nextStep}>Next</Button>}
+      {/* {step <= 2 && <Button onClick={nextStep}>Next</Button>} */}
     </Container>
   );
 };
