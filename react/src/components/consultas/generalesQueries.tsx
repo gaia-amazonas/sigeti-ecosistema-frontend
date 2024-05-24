@@ -69,6 +69,8 @@ const generalesQueries = {
             END AS age_group_order
         FROM 
             \`sigeti-admin-364713.censo_632.BD_personas\`
+        WHERE
+            ID_CNIDA = '${comunidadId}'
         GROUP BY 
             age_group, 
             sexo, 
@@ -76,6 +78,26 @@ const generalesQueries = {
         ORDER BY 
             age_group_order, 
             sexo;`,
+    territorio: (territorioId: string) => `
+        SELECT
+            geometry,
+            NOMBRE_TI
+        FROM
+            \`sigeti-admin-364713.analysis_units.Territorios_Indigenas_V8conTraslapes_220506\`
+        WHERE
+            ID_TI = '${territorioId}';`,
+    comunidades_en_territorio: (territorioId: string) => `
+        SELECT
+            c.geometry,
+            c.NOMB_CNIDA
+        FROM
+            \`sigeti-admin-364713.analysis_units.comunidades_censo632\` AS c
+        JOIN
+            \`sigeti-admin-364713.analysis_units.Territorios_Indigenas_V8conTraslapes_220506\` AS t
+        ON
+            ST_CONTAINS(t.geometry, c.geometry)
+        WHERE
+            t.ID_TI = '${territorioId}';`
     };
 
 export default generalesQueries;
