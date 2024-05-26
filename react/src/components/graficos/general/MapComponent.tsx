@@ -56,7 +56,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ territorioGeometry, comunid
     const centroMapa = [-1.86, -71.62];
 
     return (
-        <MapContainer center={centroMapa} zoom={8} style={{ height: '30rem', width: '100%' }}>
+        <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={8} style={{ height: '30rem', width: '100%' }}>
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, Titulo, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
 interface ResguardoIndigenaImp {
   data: any;
@@ -53,19 +53,19 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, next
   };
 
   return (
-    <Container>
-      <FilterInput
+    <Contenedor>
+      <FiltraEntrada
         type="text"
         placeholder="Filtre escribiendo..."
         value={filter}
         onChange={handleFilterChange}
       />
       {filteredOptions.map((option: any) => (
-        <OptionButton key={option.ID_RI} onClick={() => handleSelect(option.ID_RI)}>
+        <OpcionComoBoton key={option.ID_RI} onClick={() => handleSelect(option.ID_RI)}>
           {option.NOMBRE_RI}
-        </OptionButton>
+        </OpcionComoBoton>
       ))}
-    </Container>
+    </Contenedor>
   );
 };
 

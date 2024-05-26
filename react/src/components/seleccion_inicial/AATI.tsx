@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, FiltraEntrada, OpcionComoBoton } from 'components/seleccion_inicial/estilos/Filtros';
 
 interface AATIImp {
   data: any;
@@ -46,19 +46,19 @@ const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
   };
 
   return (
-    <Container>
-      <FilterInput
+    <Contenedor>
+      <FiltraEntrada
         type="text"
         placeholder="Filtre escribiendo..."
         value={filter}
         onChange={handleFilterChange}
       />
       {filteredOptions.map((option: any) => (
-        <OptionButton key={option.ID_AATI} onClick={() => handleSelect(option.ID_AATI)}>
+        <OpcionComoBoton key={option.ID_AATI} onClick={() => handleSelect(option.ID_AATI)}>
           {option.NOMBRE_AAT}
-        </OptionButton>
+        </OpcionComoBoton>
       ))}
-    </Container>
+    </Contenedor>
   );
 };
 
