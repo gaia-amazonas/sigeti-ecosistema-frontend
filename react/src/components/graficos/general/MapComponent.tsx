@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { stringPostGISAGeoJSON } from 'components/transformadores/stringPostGISAGeoJson';
 import { Feature, FeatureCollection, Point } from 'geojson';
-import L from 'leaflet';
 
 // Import marker icons statically
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
@@ -29,10 +28,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ territorioGeometry, comunid
         setIsClient(true);
 
         // Configure Leaflet default icon paths on client side
-        L.Icon.Default.mergeOptions({
-            iconUrl: markerIconPng.src,
-            shadowUrl: markerShadowPng.src,
-        });
+        (async () => {
+            const Leaflet = await import('leaflet');
+            Leaflet.Icon.Default.mergeOptions({
+                iconUrl: markerIconPng.src,
+                shadowUrl: markerShadowPng.src,
+            });
+        })();
     }, []);
 
     if (!isClient) {
