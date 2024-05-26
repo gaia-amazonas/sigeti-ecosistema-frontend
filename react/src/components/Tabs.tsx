@@ -1,64 +1,76 @@
+// src/components/Tabs.tsx
 import React, { useState, useEffect } from 'react';
-import { Container, TabList, TabStyle, TabPanel, Title } from 'components/estilos/Tabs';
+
 import { General } from 'components/graficos/general/General';
 import generalesQueries from 'components/consultas/generalesQueries';
 
-interface TabImp {
-  data: any;
+import { Contenedor, ListaTabs, EstiloTab, PanelTabs, Titulo } from 'components/estilos/Tabs';
+
+
+interface TabsImp {
+  datos: any;
 }
 
-interface DatosImp {
+interface DatosPorTabImp {
   general: any[];
   cultural: any[];
   educacion: any[];
 }
 
-const Tab: React.FC<TabImp> = ({ data }) => {
-  const [activo, setActivo] = useState('general_tab');
-  const [datos, setDatos] = useState<DatosImp>({
+const Tabs: React.FC<TabsImp> = ({ datos }) => {
+
+  const [activo, establecerActivo] = useState('general_tab');
+  const [datosPorTab, establecerDatosPorTab] = useState<DatosPorTabImp>({
     general: [],
     cultural: [],
     educacion: []
   });
 
   useEffect(() => {
-    async function fetchData() {
 
-      const sexo = await fetchDatos(generalesQueries.sexo(data.comunidad_id, data.territorio_id));
-      const familias = await fetchDatos(generalesQueries.familias(data.comunidad_id));
-      const edad = await fetchDatos(generalesQueries.sexo_edad(data.comunidad_id, data.territorio_id));
-      const territorio = await fetchDatos(generalesQueries.territorio(data.territorio_id));
-      const comunidades_en_territorio = await fetchDatos(generalesQueries.comunidades_en_territorio(data.territorio_id));
+    async function buscarDatosPorCategoria() {
 
-      setDatos(prevDatos => ({
-        ...prevDatos,
+      const sexo = await buscarDatos(generalesQueries.sexo(datos.comunidad_id, datos.territorio_id));
+      const familias = await buscarDatos(generalesQueries.familias(datos.comunidad_id));
+      const edad = await buscarDatos(generalesQueries.sexo_edad(datos.comunidad_id, datos.territorio_id));
+      const territorio = await buscarDatos(generalesQueries.territorio(datos.territorio_id));
+      const comunidades_en_territorio = await buscarDatos(generalesQueries.comunidades_en_territorio(datos.territorio_id));
+
+      establecerDatosPorTab(datosPrevios => ({
+        ...datosPrevios,
         general: [sexo, familias, edad, territorio, comunidades_en_territorio],
       }));
 
     };
 
-    fetchData();
-  }, [data.comunidad_id, data.territorio_id]);
+    buscarDatosPorCategoria();
+
+  }, [datos.comunidad_id, datos.territorio_id]);
+
   return (
-    <Container>
-      <Title>Temáticas</Title>
-      <TabList>
-        <TabStyle active={activo === 'general_tab'} onClick={() => setActivo('general_tab')}>General</TabStyle>
-        <TabStyle active={activo === 'cultural_tab'} onClick={() => setActivo('cultural_tab')}>Cultural</TabStyle>
-        <TabStyle active={activo === 'educacion_tab'} onClick={() => setActivo('educacion_tab')}>Educación</TabStyle>
-      </TabList>
-      <TabPanel>
-        {activo === 'general_tab' && <General data={datos.general} />}
-        {activo === 'cultural_tab' && <div>{JSON.stringify(datos.cultural, null, 2)}</div>}
-        {activo === 'educacion_tab' && <div>{JSON.stringify(datos.educacion, null, 2)}</div>}
-      </TabPanel>
-    </Container>
+    <Contenedor>
+
+      <Titulo>Temáticas</Titulo>
+
+      <ListaTabs>
+        <EstiloTab active={activo === 'general_tab'} onClick={() => establecerActivo('general_tab')}>General</EstiloTab>
+        <EstiloTab active={activo === 'cultural_tab'} onClick={() => establecerActivo('cultural_tab')}>Cultural</EstiloTab>
+        <EstiloTab active={activo === 'educacion_tab'} onClick={() => establecerActivo('educacion_tab')}>Educación</EstiloTab>
+      </ListaTabs>
+
+      <PanelTabs>
+        {activo === 'general_tab' && <General data={datosPorTab.general} />}
+        {activo === 'cultural_tab' && <div>{JSON.stringify(datosPorTab.cultural, null, 2)}</div>}
+        {activo === 'educacion_tab' && <div>{JSON.stringify(datosPorTab.educacion, null, 2)}</div>}
+      </PanelTabs>
+
+    </Contenedor>
   );
 };
 
-const fetchDatos = async (query: string) => {
-  const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-  return await response.json();
+const buscarDatos = async (consulta: string) => {
+  const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+  return await respuesta.json();
 };
 
-export default Tab;
+export default Tabs;

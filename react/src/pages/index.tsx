@@ -1,27 +1,32 @@
+// src/pages/index.tsx
 import React, { useState } from 'react';
-import Seleccion from 'components/seleccion_inicial/Seleccion';
+
 import Tabs from 'components/Tabs';
+import Seleccion from 'components/seleccion_inicial/Seleccion';
+
 import EstiloGlobal from './estilos/global';
 
+
 const Home: React.FC = () => {
-  const [showTabs, setShowTabs] = useState(false);
-  const [data, setData] = useState({});
+
+  const [mostrarTabs, setMostrarTabs] = useState(false);
+  const [datos, setDatos] = useState({});
 
   const direccionaSeleccionFinalizadaATabs = (selectionData: any) => {
-    setData(selectionData);
-    setShowTabs(true);
+    setDatos(selectionData);
+    setMostrarTabs(true);
   };
 
   return (
     <>
       <EstiloGlobal />
       <div>
-        {showTabs ? (
-          <Tabs data={data} />
+        {mostrarTabs ? (
+          <Tabs datos={datos} />
         ) : (
           <>
             <h1>Seleccionando...</h1>
-            <Seleccion onFinish={direccionaSeleccionFinalizadaATabs} />
+            <Seleccion alFinalizar={direccionaSeleccionFinalizadaATabs} />
           </>
         )}
       </div>

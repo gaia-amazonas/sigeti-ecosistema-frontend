@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Contenedor = styled.div`
   font-family: 'Roboto', sans-serif;
   display: grid;
   height: 100vh;
@@ -8,20 +8,20 @@ export const Container = styled.div`
   background-color: #f5f5f5;
 `;
 
-export const Title = styled.h1`
+export const Titulo = styled.h1`
   font-family: 'Lora', serif;
   color: #2F4F4F;
   text-align: center;
 `;
 
-export const TabList = styled.div`
+export const ListaTabs = styled.div`
   display: flex;
   justify-content: center;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);  // Shadow for a better visual separation
 `;
 
-export const TabStyle = styled.button<{ active: boolean }>`
+export const EstiloTab = styled.button<{ active: boolean }>`
   background-color: ${({ active }) => (active ? '#228B22' : '#8B4513')}; /* Amazonian Green or Earth Brown */
   color: white;
   padding: 1rem;
@@ -34,7 +34,7 @@ export const TabStyle = styled.button<{ active: boolean }>`
   }
 `;
 
-export const TabPanel = styled.div`
+export const PanelTabs = styled.div`
   background-color: white;
   display: flex;
   justify-content: center;

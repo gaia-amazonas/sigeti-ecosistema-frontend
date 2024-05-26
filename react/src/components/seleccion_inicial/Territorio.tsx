@@ -1,63 +1,75 @@
 // src/components/seleccion_inicial/Territorio.tsx
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
-interface TerritorioImp {
-  data: any;
-  setData: (data: any) => void;
-  nextStep: () => void;
+
+interface Datos {
+  territorio_id: string
+  comunidad_id: string;
 }
 
-const Territorio: React.FC<TerritorioImp> = ({ data, setData, nextStep }) => {
-  const [options, setOptions] = useState([]);
-  const [filteredOptions, setFilteredOptions] = useState([]);
-  const [filter, setFilter] = useState('');
+interface TerritorioImp {
+  datos: Datos;
+  establecerDatos: (datos: Datos) => void;
+  siguientePaso: () => void;
+}
+
+const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
+
+  const [opciones, establecerOpciones] = useState([]);
+  const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
+  const [filtro, establecerFiltro] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
-      const query = `
-        SELECT id_ti, Nombre_territorio
-        FROM \`sigeti-admin-364713.Gestion_Documental.Territorio\`;`;
-      const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-      const result = await response.json();
-      setOptions(result.rows);
-      setFilteredOptions(result.rows);
+
+    async function buscarDatos() {
+      const consulta = `
+        SELECT
+          id_ti, Nombre_territorio
+        FROM
+          \`sigeti-admin-364713.Gestion_Documental.Territorio\`;
+        `;
+      const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+      const resultado = await respuesta.json();
+      establecerOpciones(resultado.rows);
+      establecerOpcionesFiltradas(resultado.rows);
     }
 
-    fetchData();
+    buscarDatos();
+    
   }, []);
 
   useEffect(() => {
-    setFilteredOptions(
-      options.filter((option: any) =>
-        option.id_ti.includes(filter)
+    establecerOpcionesFiltradas(
+      opciones.filter((opcion: any) =>
+        opcion.id_ti.includes(filtro)
       )
     );
-  }, [filter, options]);
+  }, [filtro, opciones]);
 
-  const handleSelect = (id_ti: string) => {
-    setData({ ...data, territorio_id: id_ti });
-    nextStep();
+  const manejarSeleccion = (id_ti: string) => {
+    establecerDatos({ ...datos, territorio_id: id_ti });
+    siguientePaso();
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(event.target.value);
+  const manejarCambioDeFiltro = (event: React.ChangeEvent<HTMLInputElement>) => {
+    establecerFiltro(event.target.value);
   };
 
   return (
-    <Container>
-      <FilterInput
+    <Contenedor>
+      <FiltraEntrada
         type="text"
         placeholder="Filtre escribiendo..."
-        value={filter}
-        onChange={handleFilterChange}
+        value={filtro}
+        onChange={manejarCambioDeFiltro}
       />
-      {filteredOptions.map((option: any) => (
-        <OptionButton key={option.id_ti} onClick={() => handleSelect(option.id_ti)}>
-          {option.id_ti}
-        </OptionButton>
+      {opcionesFiltradas.map((opcion: any) => (
+        <OpcionComoBoton key={opcion.id_ti} onClick={() => manejarSeleccion(opcion.id_ti)}>
+          {opcion.id_ti}
+        </OpcionComoBoton>
       ))}
-    </Container>
+    </Contenedor>
   );
 };
 

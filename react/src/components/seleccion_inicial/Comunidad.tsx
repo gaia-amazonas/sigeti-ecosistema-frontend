@@ -1,62 +1,75 @@
+// src/components/seleccion_inicial/Comunidad.tsx
 import React, { useState, useEffect } from 'react';
-import { Container, OptionButton, Title, FilterInput } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
-interface ComunidadIndigenaImp {
-    data: any;
-    setData: (data: any) => void;
-    nextStep: () => void;
+
+interface Datos {
+  territorio_id: string
+  comunidad_id: string;
 }
 
-const ComunidadIndigena: React.FC<ComunidadIndigenaImp> = ({ data, setData, nextStep }) => {
-    const [options, setOptions] = useState([]);
-    const [filteredOptions, setFilteredOptions] = useState([]);
-    const [filter, setFilter] = useState('');
+interface ComunidadImp {
+    datos: Datos;
+    establecerDatos: (datos: Datos) => void;
+    siguientePaso: () => void;
+}
+
+const ComunidadIndigena: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
+
+    const [opciones, establecerOpciones] = useState([]);
+    const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
+    const [filtro, establecerFiltro] = useState('');
 
     useEffect(() => {
-        async function fetchData() {            
-            const query = `
-                SELECT id_cnida, loc_nmbespanol as comunidad
-                FROM \`sigeti-admin-364713.censo_632.comunidad\``;
-            const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-            const result = await response.json();
-            setOptions(result.rows);
-            setFilteredOptions(result.rows);
-        }
 
-        fetchData();
+        async function buscarDatos() {            
+            const consulta = `
+                SELECT
+                    id_cnida, loc_nmbespanol as comunidad
+                FROM
+                    \`sigeti-admin-364713.censo_632.comunidad\`
+                `;
+            const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+            const resultado = await respuesta.json();
+            establecerOpciones(resultado.rows);
+            establecerOpcionesFiltradas(resultado.rows);
+        }
+        
+        buscarDatos();
+
     }, []);
 
     useEffect(() => {
-        setFilteredOptions(
-            options.filter((option: any) =>
-                option.id_cnida.includes(filter)
+        establecerOpcionesFiltradas(
+            opciones.filter((option: any) =>
+                option.id_cnida.includes(filtro)
             )
         );
-    }, [filter, options]);
+    }, [filtro, opciones]);
 
-    const handleSelect = (id_cnida: string) => {
-        setData({ ...data, comunidad_id: id_cnida });
-        nextStep();
+    const manejarSeleccion = (id_cnida: string) => {
+        establecerDatos({ ...datos, comunidad_id: id_cnida });
+        siguientePaso();
     };
 
-    const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFilter(event.target.value);
+    const manejarCambioDeFiltro = (event: React.ChangeEvent<HTMLInputElement>) => {
+        establecerFiltro(event.target.value);
     };
 
     return (
-        <Container>
-            <FilterInput
+        <Contenedor>
+            <FiltraEntrada
                 type="text"
                 placeholder="Filtre escribiendo..."
-                value={filter}
-                onChange={handleFilterChange}
+                value={filtro}
+                onChange={manejarCambioDeFiltro}
             />
-            {filteredOptions.map((option: any) =>(
-                <OptionButton key={option.id_cnida} onClick={() => handleSelect(option.id_cnida)}>
+            {opcionesFiltradas.map((option: any) =>(
+                <OpcionComoBoton key={option.id_cnida} onClick={() => manejarSeleccion(option.id_cnida)}>
                     {option.id_cnida}
-                </OptionButton>
+                </OpcionComoBoton>
             ))}
-        </Container>
+        </Contenedor>
     );
 };
 
