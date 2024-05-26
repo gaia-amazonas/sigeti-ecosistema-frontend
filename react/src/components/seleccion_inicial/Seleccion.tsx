@@ -1,57 +1,54 @@
-// components/seleccion_inicial/Seleccion.tsx
+// src/components/seleccion_inicial/Seleccion.tsx
 import React, { useEffect, useState } from 'react';
-import Territorio from 'components/seleccion_inicial/Territorio';
-// import ResguardoIndigena from 'components/seleccion_inicial/ResguardoIndigena';
-// import AATI from 'components/seleccion_inicial/AATI';
-import Comunidad from 'components/seleccion_inicial/Comunidad';
-import { Container, StepContainer, Title, Button } from 'components/seleccion_inicial/estilos/Seleccion';
 
-interface SeleccionImp {
-  onFinish: (data: any) => void;
+import Territorio from 'components/seleccion_inicial/Territorio';
+import Comunidad from 'components/seleccion_inicial/Comunidad';
+
+import { Contenedor, ContenedorPaso, Titulo } from 'components/seleccion_inicial/estilos/Seleccion';
+
+
+interface Datos {
+  territorio_id: string
+  comunidad_id: string;
 }
 
-const SelectionProcess: React.FC<SeleccionImp> = ({ onFinish }) => {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState({});
-  const nextStep = () => setStep(step + 1);
+interface SeleccionImp {
+  alFinalizar: (datos: Datos) => void;
+}
+
+const ProcesoSeleccion: React.FC<SeleccionImp> = ({ alFinalizar }) => {
+
+  const siguientePaso = () => establecerPaso(paso + 1);
+  const [paso, establecerPaso] = useState(1);
+  const [datos, establecerDatos] = useState<Datos>({
+    territorio_id: '',
+    comunidad_id: '',
+  });
 
   useEffect(() => {
-    if (step > 2) {
-      onFinish(data);
+    if (paso > 2) {
+      alFinalizar(datos);
     }
-  }, [step, data, onFinish]);
+  }, [paso, datos, alFinalizar]);
 
   return (
-    <Container>
-      <StepContainer>
-        {step === 1 && (
+    <Contenedor>
+      <ContenedorPaso>
+        {paso === 1 && (
           <>
-            <Title>Territorio</Title>
-            <Territorio data={data} setData={setData} nextStep={nextStep} />
+            <Titulo>Territorio</Titulo>
+            <Territorio datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} />
           </>
         )}
-        {/* {step === 2 && (
+        {paso === 2 && (
           <>
-            <Title>Resguardo Indigena</Title>
-            <Resguardo data={data} setData={setData} nextStep={nextStep} />
+            <Titulo>Comunidad Indígena</Titulo>
+            <Comunidad datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} />
           </>
         )}
-        {step === 3 && (
-          <>
-            <Title>AATI</Title>
-            <AATI data={data} setData={setData} nextStep={nextStep} />
-          </>
-        )} */}
-        {step === 2 && (
-          <>
-            <Title>Comunidad Indigena</Title>
-            <Comunidad data={data} setData={setData} nextStep={nextStep} />
-          </>
-        )}
-      </StepContainer>
-      {/* {step <= 2 && <Button onClick={nextStep}>Next</Button>} */}
-    </Container>
+      </ContenedorPaso>
+    </Contenedor>
   );
 };
 
-export default SelectionProcess;
+export default ProcesoSeleccion;

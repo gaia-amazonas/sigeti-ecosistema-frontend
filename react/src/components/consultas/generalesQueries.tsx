@@ -1,3 +1,4 @@
+// src/components/consultas/generalesQueries.tsx
 const generalesQueries = {
     sexo: (comunidadId: string, territorioId: string) => `
         SELECT
