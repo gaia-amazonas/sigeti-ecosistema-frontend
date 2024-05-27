@@ -1,22 +1,36 @@
-// src/components/consultas/generalesQueries.tsx
-const generalesQueries = {
-    sexo: (comunidadId: string, territorioId: string) => `
+import Territorio from "components/seleccion_inicial/Territorio";
+
+const todasGeoComunidadesPorTerritorio = {
+
+    territorio: (territorioId: string) => `
+        SELECT
+            geometry,
+            id_ti,
+            territorio
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`
+        WHERE
+            id_ti = '${territorioId}';`
+    ,
+    sexo: (territorioId: string) => `
         SELECT
             SEXO, COUNT(*) 
         FROM
-            \`sigeti-admin-364713.censo_632.BD_personas\`
+            \`sigeti.censo_632.BD_personas\`
         WHERE
-            ID_CNIDA = '${comunidadId}' AND ID_TI = '${territorioId}'
+            id_ti = '${territorioId}'
         GROUP BY
-            ID_CNIDA, SEXO, ID_TI`,
-    familias: (comunidadId: string) => `
+            id_cnida, sexo, id_ti;`
+    ,
+    familias: (territorioId: string) => `
         SELECT
             COUNT(*) as familias
         FROM
-            \`sigeti-admin-364713.censo_632.BD_familias\`
+            \`sigeti.censo_632.BD_familias\`
         WHERE
-            id_cnida = '${comunidadId}';`,
-    sexo_edad: (comunidadId: string, territorioId: string) => `
+            id_ti = '${territorioId}';`
+    ,
+    sexo_edad: (territorioId: string) => `
         SELECT 
             CASE 
                 WHEN edad BETWEEN 0 AND 5 THEN '0-5'
@@ -69,36 +83,30 @@ const generalesQueries = {
                 ELSE 0
             END AS age_group_order
         FROM 
-            \`sigeti-admin-364713.censo_632.BD_personas\`
+            \`sigeti.censo_632.BD_personas\`
         WHERE
-            ID_CNIDA = '${comunidadId}'
+            id_ti = '${territorioId}'
         GROUP BY 
             age_group, 
             sexo, 
             age_group_order
         ORDER BY 
             age_group_order, 
-            sexo;`,
-    territorio: (territorioId: string) => `
-        SELECT
-            geometry,
-            NOMBRE_TI
-        FROM
-            \`sigeti-admin-364713.analysis_units.Territorios_Indigenas_V8conTraslapes_220506\`
-        WHERE
-            ID_TI = '${territorioId}';`,
+            sexo;`
+    ,
     comunidades_en_territorio: (territorioId: string) => `
         SELECT
-            c.geometry,
-            c.NOMB_CNIDA
+            g.geometry,
+            g.nomb_cnida
         FROM
-            \`sigeti-admin-364713.analysis_units.comunidades_censo632\` AS c
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` g
         JOIN
-            \`sigeti-admin-364713.analysis_units.Territorios_Indigenas_V8conTraslapes_220506\` AS t
+            \`sigeti.censo_632.comunidades_por_territorio\` a
         ON
-            ST_CONTAINS(t.geometry, c.geometry)
+            a.id_cnida = g.id_cnida
         WHERE
-            t.ID_TI = '${territorioId}';`
-    };
+            a.id_ti = '${territorioId}';`
+};
 
-export default generalesQueries;
+
+export default todasGeoComunidadesPorTerritorio;

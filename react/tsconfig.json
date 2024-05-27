@@ -19,7 +19,9 @@
     ],
     "paths": {
       "components/*": ["./src/components/*"],
-      "logos/*": ["./public/logos*"]
+      "logos/*": ["./public/logos/*"],
+      "transformadores/*": ["./transformadores/*"],
+      "consultas/*": ["./src/components/consultas/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

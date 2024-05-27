@@ -4,7 +4,7 @@ import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
 import TotalYFamilias from './TotalYFamilias';
-import MapComponent from './MapComponent';
+import MapComponent from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GraphComponentProps {
@@ -13,26 +13,26 @@ interface GraphComponentProps {
 
 export const General: React.FC<GraphComponentProps> = ({ data }) => {
   if (!data || data.length < 5 || !data[0].rows || !data[1].rows || !data[2].rows || !data[3].rows || !data[4].rows) {
-    return <div>Loading...</div>;
+    return <div>Cargando...</div>;
   }
 
   const sexoDatos = data[0].rows;
   const familiasDatos = data[1].rows[0].familias;
   const sexoEdadDatos = data[2].rows;
-  const territorioGeometry = data[3].rows[0].geometry;
+  const territoriosGeometry = data[3].rows;
   const comunidadesGeometries = data[4].rows.map((row: any) => row.geometry);
 
   const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0;
   const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0;
   const totalContador = mujerContador + hombreContador;
 
-  const pyramidData = sexoEdadDatos.map((item: any) => ({
+  const datosPiramidales = sexoEdadDatos.map((item: any) => ({
     ageGroup: item.age_group,
     [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
   }));
 
-  const mujeresPorEdadMaximo = Math.max(...pyramidData.filter((item: { Mujer: any }) => item.Mujer).map((item: { Mujer: any }) => item.Mujer));
-  const hombresPorEdadMaximo = Math.abs(Math.min(...pyramidData.filter((item: { Hombre: any }) => item.Hombre).map((item: { Hombre: any }) => item.Hombre)));
+  const mujeresPorEdadMaximo = Math.max(...datosPiramidales.filter((item: { Mujer: any }) => item.Mujer).map((item: { Mujer: any }) => item.Mujer));
+  const hombresPorEdadMaximo = Math.abs(Math.min(...datosPiramidales.filter((item: { Hombre: any }) => item.Hombre).map((item: { Hombre: any }) => item.Hombre)));
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
@@ -43,13 +43,13 @@ export const General: React.FC<GraphComponentProps> = ({ data }) => {
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
       <SexoEdad
-        pyramidData={pyramidData}
+        datosPiramidales={datosPiramidales}
         mujeresPorEdadMaximo={mujeresPorEdadMaximo}
         hombresPorEdadMaximo={hombresPorEdadMaximo}
       />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapComponent
-        territorioGeometry={territorioGeometry}
+        territoriosGeometry={territoriosGeometry}
         comunidadesGeometries={comunidadesGeometries}
       />
     </div>

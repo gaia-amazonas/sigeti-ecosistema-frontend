@@ -1,10 +1,10 @@
 // src/components/seleccion_inicial/Seleccion.tsx
 import React, { useEffect, useState } from 'react';
 
-import Territorio from 'components/seleccion_inicial/Territorio';
-import Comunidad from 'components/seleccion_inicial/Comunidad';
+import Territorio from './Territorio';
+import Comunidad from './Comunidad';
 
-import { Contenedor, ContenedorPaso, Titulo } from 'components/seleccion_inicial/estilos/Seleccion';
+import { Contenedor, ContenedorPaso, Titulo } from './estilos/Seleccion';
 
 
 interface Datos {

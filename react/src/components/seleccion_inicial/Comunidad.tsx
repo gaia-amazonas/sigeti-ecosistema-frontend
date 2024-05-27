@@ -8,13 +8,37 @@ interface Datos {
   comunidad_id: string;
 }
 
+interface Opcion {
+  id_cnida: string;
+}
+
 interface ComunidadImp {
     datos: Datos;
     establecerDatos: (datos: Datos) => void;
     siguientePaso: () => void;
 }
 
-const ComunidadIndigena: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
+const consultas = {
+    segregado: (territorio_id: string) => `
+        SELECT
+            id_cnida, comunidad
+        FROM
+            \`sigeti.censo_632.comunidades_por_territorio\`
+        WHERE
+            id_ti = '${territorio_id}'
+        ORDER BY
+            id_cnida;
+        `,
+    total: `
+        SELECT
+            id_cnida, comunidad
+        FROM
+            \`sigeti.censo_632.comunidades_por_territorio\`
+        ORDER BY
+            id_cnida;`
+}
+
+const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
 
     const [opciones, establecerOpciones] = useState([]);
     const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
@@ -22,27 +46,28 @@ const ComunidadIndigena: React.FC<ComunidadImp> = ({ datos, establecerDatos, sig
 
     useEffect(() => {
 
-        async function buscarDatos() {            
-            const consulta = `
-                SELECT
-                    id_cnida, loc_nmbespanol as comunidad
-                FROM
-                    \`sigeti-admin-364713.censo_632.comunidad\`
-                `;
+        async function buscarDatos(territorio_id: string) {
+            let consulta: string;
+            if (territorio_id === 'Todos') {
+                consulta = consultas.total;
+            } else {
+                consulta = consultas.segregado(territorio_id)
+            }
             const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
             const resultado = await respuesta.json();
-            establecerOpciones(resultado.rows);
-            establecerOpcionesFiltradas(resultado.rows);
+            const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas' }, ...resultado.rows];
+            establecerOpciones(opcionesConTodas);
+            establecerOpcionesFiltradas(opcionesConTodas);
         }
         
-        buscarDatos();
+        buscarDatos(datos.territorio_id);
 
     }, []);
 
     useEffect(() => {
         establecerOpcionesFiltradas(
-            opciones.filter((option: any) =>
-                option.id_cnida.includes(filtro)
+            opciones.filter((opcion: any) =>
+                opcion.id_cnida.includes(filtro)
             )
         );
     }, [filtro, opciones]);
@@ -64,13 +89,13 @@ const ComunidadIndigena: React.FC<ComunidadImp> = ({ datos, establecerDatos, sig
                 value={filtro}
                 onChange={manejarCambioDeFiltro}
             />
-            {opcionesFiltradas.map((option: any) =>(
-                <OpcionComoBoton key={option.id_cnida} onClick={() => manejarSeleccion(option.id_cnida)}>
-                    {option.id_cnida}
+            {opcionesFiltradas.map((opcion: any) =>(
+                <OpcionComoBoton key={opcion.id_cnida} onClick={() => manejarSeleccion(opcion.id_cnida)}>
+                    {opcion.id_cnida}
                 </OpcionComoBoton>
             ))}
         </Contenedor>
     );
 };
 
-export default ComunidadIndigena;
+export default Comunidad;

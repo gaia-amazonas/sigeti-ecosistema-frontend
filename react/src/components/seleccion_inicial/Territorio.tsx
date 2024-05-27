@@ -1,11 +1,13 @@
-// src/components/seleccion_inicial/Territorio.tsx
 import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
-
 interface Datos {
-  territorio_id: string
+  territorio_id: string;
   comunidad_id: string;
+}
+
+interface Opcion {
+  id_ti: string;
 }
 
 interface TerritorioImp {
@@ -15,33 +17,33 @@ interface TerritorioImp {
 }
 
 const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
-
-  const [opciones, establecerOpciones] = useState([]);
-  const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
+  const [opciones, establecerOpciones] = useState<Opcion[]>([]);
+  const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
 
   useEffect(() => {
-
     async function buscarDatos() {
       const consulta = `
         SELECT
-          id_ti, Nombre_territorio
+          *
         FROM
-          \`sigeti-admin-364713.Gestion_Documental.Territorio\`;
-        `;
+          \`sigeti.censo_632.territorios\`
+        ORDER BY
+          id_ti;
+      `;
       const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
-      establecerOpciones(resultado.rows);
-      establecerOpcionesFiltradas(resultado.rows);
+      const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos' }, ...resultado.rows];
+      establecerOpciones(opcionesConTodos);
+      establecerOpcionesFiltradas(opcionesConTodos);
     }
 
     buscarDatos();
-    
   }, []);
 
   useEffect(() => {
     establecerOpcionesFiltradas(
-      opciones.filter((opcion: any) =>
+      opciones.filter((opcion) =>
         opcion.id_ti.includes(filtro)
       )
     );
@@ -64,7 +66,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
-      {opcionesFiltradas.map((opcion: any) => (
+      {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton key={opcion.id_ti} onClick={() => manejarSeleccion(opcion.id_ti)}>
           {opcion.id_ti}
         </OpcionComoBoton>

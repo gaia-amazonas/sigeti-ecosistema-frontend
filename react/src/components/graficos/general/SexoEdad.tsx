@@ -2,16 +2,16 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
 interface SexoEdadProps {
-  pyramidData: any[];
+  datosPiramidales: any[];
   mujeresPorEdadMaximo: number;
   hombresPorEdadMaximo: number;
 }
 
-const SexoEdad: React.FC<SexoEdadProps> = ({ pyramidData, mujeresPorEdadMaximo, hombresPorEdadMaximo }) => {
+const SexoEdad: React.FC<SexoEdadProps> = ({ datosPiramidales, mujeresPorEdadMaximo, hombresPorEdadMaximo }) => {
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
-        data={pyramidData}
+        data={datosPiramidales}
         layout="vertical"
         margin={{ top: 10, right: 30, left: 70, bottom: 20 }}
       >
