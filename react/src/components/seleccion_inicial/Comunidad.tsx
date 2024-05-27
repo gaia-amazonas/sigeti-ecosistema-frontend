@@ -18,7 +18,9 @@ interface ComunidadImp {
     siguientePaso: () => void;
 }
 
-
+<<<<<<<<< Temporary merge branch 1
+const ComunidadIndigena: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
+=========
 const consultas = {
     segregado: (territorio_id: string) => `
         SELECT
@@ -69,7 +71,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
         establecerOpcionesFiltradas(
             opciones.filter((opcion: any) =>
                 opcion.id_cnida.includes(filtro)
-
+>>>>>>>>> Temporary merge branch 2
             )
         );
     }, [filtro, opciones]);
@@ -94,7 +96,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
             {opcionesFiltradas.map((opcion: any) =>(
                 <OpcionComoBoton key={opcion.id_cnida} onClick={() => manejarSeleccion(opcion.id_cnida)}>
                     {opcion.id_cnida}
-
+>>>>>>>>> Temporary merge branch 2
                 </OpcionComoBoton>
             ))}
         </Contenedor>

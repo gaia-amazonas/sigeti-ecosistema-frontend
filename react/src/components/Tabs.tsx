@@ -7,7 +7,7 @@ import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoT
 import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/generales/todasGeoComunidadesPorTerritorio';
 
 import { Contenedor, ListaTabs, EstiloTab, PanelTabs, Titulo } from 'components/estilos/Tabs';
-
+>>>>>>>>> Temporary merge branch 2
 
 interface TabsImp {
   datos: any;
@@ -20,7 +20,10 @@ interface DatosPorTabImp {
 }
 
 const Tabs: React.FC<TabsImp> = ({ datos }) => {
+<<<<<<<<< Temporary merge branch 1
 
+=========
+>>>>>>>>> Temporary merge branch 2
   const [activo, establecerActivo] = useState('general_tab');
   const [datosPorTab, establecerDatosPorTab] = useState<DatosPorTabImp>({
     general: [],
