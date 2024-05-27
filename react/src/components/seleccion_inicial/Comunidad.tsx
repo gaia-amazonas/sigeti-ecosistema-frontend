@@ -18,6 +18,7 @@ interface ComunidadImp {
     siguientePaso: () => void;
 }
 
+
 const consultas = {
     segregado: (territorio_id: string) => `
         SELECT
@@ -68,6 +69,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
         establecerOpcionesFiltradas(
             opciones.filter((opcion: any) =>
                 opcion.id_cnida.includes(filtro)
+
             )
         );
     }, [filtro, opciones]);
@@ -92,6 +94,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
             {opcionesFiltradas.map((opcion: any) =>(
                 <OpcionComoBoton key={opcion.id_cnida} onClick={() => manejarSeleccion(opcion.id_cnida)}>
                     {opcion.id_cnida}
+
                 </OpcionComoBoton>
             ))}
         </Contenedor>

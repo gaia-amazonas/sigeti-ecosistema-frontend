@@ -8,6 +8,7 @@ import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/genera
 
 import { Contenedor, ListaTabs, EstiloTab, PanelTabs, Titulo } from 'components/estilos/Tabs';
 
+
 interface TabsImp {
   datos: any;
 }
@@ -19,6 +20,7 @@ interface DatosPorTabImp {
 }
 
 const Tabs: React.FC<TabsImp> = ({ datos }) => {
+
   const [activo, establecerActivo] = useState('general_tab');
   const [datosPorTab, establecerDatosPorTab] = useState<DatosPorTabImp>({
     general: [],

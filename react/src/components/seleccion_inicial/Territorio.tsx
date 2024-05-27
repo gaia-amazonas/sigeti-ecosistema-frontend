@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
+
 interface Datos {
   territorio_id: string;
   comunidad_id: string;
@@ -17,6 +18,7 @@ interface TerritorioImp {
 }
 
 const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
+
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
@@ -39,6 +41,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
     }
 
     buscarDatos();
+
   }, []);
 
   useEffect(() => {

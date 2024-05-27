@@ -5,6 +5,7 @@ import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
 import TotalYFamilias from './TotalYFamilias';
 import MapComponent from './MapaComunidadesPorTerritorio';
+
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GraphComponentProps {
