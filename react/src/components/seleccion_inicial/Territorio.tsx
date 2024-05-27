@@ -9,6 +9,7 @@ interface Datos {
 
 interface Opcion {
   id_ti: string;
+  territorio: string;
 }
 
 interface TerritorioImp {
@@ -28,7 +29,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
     async function buscarDatos() {
       const consulta = `
         SELECT
-          *
+          id_ti, territorio
         FROM
           \`sigeti.censo_632.territorios\`
         ORDER BY
@@ -36,7 +37,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
       `;
       const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
-      const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos' }, ...resultado.rows];
+      const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
       establecerOpciones(opcionesConTodos);
       establecerOpcionesFiltradas(opcionesConTodos);
     }
@@ -72,7 +73,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
       />
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton key={opcion.id_ti} onClick={() => manejarSeleccion(opcion.id_ti)}>
-          {opcion.id_ti}
+          {opcion.territorio}
         </OpcionComoBoton>
       ))}
     </Contenedor>

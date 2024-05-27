@@ -9,7 +9,7 @@ interface Datos {
 
 interface Opcion {
   id_cnida: string;
-  comunidad?: string; // Assuming comunidad is part of the fetched data
+  comunidad: string;
 }
 
 interface ComunidadImp {
@@ -53,7 +53,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
       }
       const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
-      const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas' }, ...resultado.rows];
+      const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas', comunidad: 'Todas' }, ...resultado.rows];
       establecerOpciones(opcionesConTodas);
       establecerOpcionesFiltradas(opcionesConTodas);
     }
@@ -88,7 +88,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
       />
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton key={opcion.id_cnida} onClick={() => manejarSeleccion(opcion.id_cnida)}>
-          {opcion.id_cnida}
+          {opcion.comunidad}
         </OpcionComoBoton>
       ))}
     </Contenedor>
