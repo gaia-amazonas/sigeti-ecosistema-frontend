@@ -5,7 +5,6 @@ import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
 import TotalYFamilias from './TotalYFamilias';
 import MapComponent from './MapaComunidadesPorTerritorio';
->>>>>>>>> Temporary merge branch 2
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GraphComponentProps {

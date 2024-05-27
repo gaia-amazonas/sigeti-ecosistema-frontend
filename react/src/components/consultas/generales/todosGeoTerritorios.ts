@@ -1,20 +1,12 @@
 // src/components/consultas/generales/todosTerritorios.ts
 const todosGeoTerritorios = {
-    territorio: `
-        SELECT
-            geometry,
-            id_ti,
-            territorio
-        FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
-    ,
     sexo: `
         SELECT
             SEXO, COUNT(*) 
         FROM
             \`sigeti.censo_632.BD_personas\`
         GROUP BY
-            id_cnida, sexo, id_ti;`
+            sexo;`
     ,
     familias: `
         SELECT
@@ -83,6 +75,14 @@ const todosGeoTerritorios = {
         ORDER BY 
             age_group_order, 
             sexo;`
+    ,
+    territorio: `
+        SELECT
+            geometry,
+            id_ti,
+            territorio
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
     ,
     comunidades_en_territorio: `
         SELECT

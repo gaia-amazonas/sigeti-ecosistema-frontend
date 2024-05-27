@@ -49,13 +49,13 @@ const Tabs: React.FC<TabsImp> = ({ datos }) => {
 
     const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datos.comunidad_id));
     const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datos.comunidad_id));
-    const edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id));
+    const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id));
     const territorio = await buscarDatos(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id));
     const comunidades_en_territorio = await buscarDatos(consultasGeneralesPorTerritorio.comunidades_en_territorio(datos.comunidad_id));
 
     establecerDatosPorTab(datosPrevios => ({
       ...datosPrevios,
-      general: [sexo, familias, edad, territorio, comunidades_en_territorio],
+      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
 
   };
@@ -64,13 +64,13 @@ const Tabs: React.FC<TabsImp> = ({ datos }) => {
 
     const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo);
     const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias);
-    const edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad);
+    const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad);
     const territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.territorio);
     const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.comunidades_en_territorio);
 
     establecerDatosPorTab(datosPrevios => ({
       ...datosPrevios,
-      general: [sexo, familias, edad, territorio, comunidades_en_territorio],
+      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
 
   };
@@ -79,13 +79,13 @@ const Tabs: React.FC<TabsImp> = ({ datos }) => {
 
     const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datos.territorio_id));
     const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datos.territorio_id));
-    const edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id));
+    const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id));
     const territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id));
     const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datos.territorio_id));
 
     establecerDatosPorTab(datosPrevios => ({
       ...datosPrevios,
-      general: [sexo, familias, edad, territorio, comunidades_en_territorio],
+      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
 
   };

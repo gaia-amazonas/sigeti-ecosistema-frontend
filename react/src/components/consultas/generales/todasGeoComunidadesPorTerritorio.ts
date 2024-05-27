@@ -1,17 +1,6 @@
 import Territorio from "components/seleccion_inicial/Territorio";
 
 const todasGeoComunidadesPorTerritorio = {
-
-    territorio: (territorioId: string) => `
-        SELECT
-            geometry,
-            id_ti,
-            territorio
-        FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
-        WHERE
-            id_ti = '${territorioId}';`
-    ,
     sexo: (territorioId: string) => `
         SELECT
             SEXO, COUNT(*) 
@@ -20,7 +9,7 @@ const todasGeoComunidadesPorTerritorio = {
         WHERE
             id_ti = '${territorioId}'
         GROUP BY
-            id_cnida, sexo, id_ti;`
+            sexo;`
     ,
     familias: (territorioId: string) => `
         SELECT
@@ -93,6 +82,16 @@ const todasGeoComunidadesPorTerritorio = {
         ORDER BY 
             age_group_order, 
             sexo;`
+    ,
+    territorio: (territorioId: string) => `
+        SELECT
+            geometry,
+            id_ti,
+            territorio
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`
+        WHERE
+            id_ti = '${territorioId}';`
     ,
     comunidades_en_territorio: (territorioId: string) => `
         SELECT
