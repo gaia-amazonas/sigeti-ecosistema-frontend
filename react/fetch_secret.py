@@ -1,12 +1,17 @@
 from google.cloud import secretmanager
-import os, sys
+from google.oauth2 import service_account
+import os
 import logging
 
 
-def fetch_secret(project_number, secret_id, version_id, destination_file):
-    logging.info("Initializing Secret Manager client")
-    # Explicitly use application default credentials for the Secret Manager client
-    client = secretmanager.SecretManagerServiceClient()
+def fetch_secret(
+    project_number, secret_id, version_id, destination_file, credentials_file
+):
+    logging.info("Initializing Secret Manager client with provided credentials")
+    credentials = service_account.Credentials.from_service_account_file(
+        credentials_file
+    )
+    client = secretmanager.SecretManagerServiceClient(credentials=credentials)
     name = f"projects/{project_number}/secrets/{secret_id}/versions/{version_id}"
     logging.info(f"Fetching secret from {name}")
     try:
@@ -27,4 +32,7 @@ if __name__ == "__main__":
     destination_file = os.environ.get(
         "DESTINATION_FILE", "/app/sigeti-dee63dd3ec66.json"
     )
-    fetch_secret(project_number, secret_id, version_id, destination_file)
+    credentials_file = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+    fetch_secret(
+        project_number, secret_id, version_id, destination_file, credentials_file
+    )
