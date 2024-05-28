@@ -38,7 +38,7 @@ ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
 RUN python fetch_secret.py
 
 # Set environment variables for the service account key
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/sigeti-dee63dd3ec66.json
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
 
 # Build the Next.js application
 RUN npm run build
