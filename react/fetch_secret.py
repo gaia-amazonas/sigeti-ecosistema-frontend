@@ -1,18 +1,21 @@
 from google.cloud import secretmanager
 from google.oauth2 import service_account
 import os, sys
+import json
 import logging
 
 
-def fetch_secret(
-    project_number, secret_id, version_id, destination_file, credentials_file
-):
+def fetch_secret(project_number, secret_id, version_id, destination_file):
     logging.info("Initializing Secret Manager client with provided credentials")
-    logging.info(f"Credentials file: {credentials_file}")
-    credentials = service_account.Credentials.from_service_account_file(
-        credentials_file
+    secret_content = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+    if not secret_content:
+        logging.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set")
+        sys.exit(1)
+
+    credentials_info = json.loads(secret_content)
+    credentials = service_account.Credentials.from_service_account_info(
+        credentials_info
     )
-    logging.info(f"Credentials : {credentials}")
     client = secretmanager.SecretManagerServiceClient(credentials=credentials)
     name = f"projects/{project_number}/secrets/{secret_id}/versions/{version_id}"
     logging.info(f"Fetching secret from {name}")
@@ -35,12 +38,5 @@ if __name__ == "__main__":
     destination_file = os.environ.get(
         "DESTINATION_FILE", "/app/sigeti-dee63dd3ec66.json"
     )
-    credentials_file = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
-    if not credentials_file:
-        logging.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set")
-        sys.exit(1)
-
-    fetch_secret(
-        project_number, secret_id, version_id, destination_file, credentials_file
-    )
+    fetch_secret(project_number, secret_id, version_id, destination_file)

@@ -34,9 +34,14 @@ ENV SECRET_ID="multiple_sigeti-bq-para-run"
 ENV VERSION_ID="latest"
 ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
 
+# Set environment variables for the service account key (assuming it's a secret)
+# No need to fetch the service account key separately now, it's provided as an environment variable
+
 # Fetch the service account key from Secret Manager and save it to the correct location
-# Ensure the environment variable is set correctly
 RUN python fetch_secret.py
+
+# Set environment variables for the service account key
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
 
 # Build the Next.js application
 RUN npm run build
