@@ -1,8 +1,16 @@
 // src/pages/api/queryBigQuery.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
+import path from 'path';
+import { config } from 'dotenv';
 
-const bigqueryClient = new BigQuery();
+// Load environment variables from .env.local
+config({ path: path.resolve(__dirname, '../../../.env.local') });
+
+// Initialize BigQuery client with credentials
+const bigqueryClient = new BigQuery({
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -14,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({ rows });
     } catch (error) {
-      // Log the error using a logging service or handle it appropriately
+      console.error('Error running query:', error);
       res.status(500).json({ error: 'Error running query', details: error });
     }
   } else {
