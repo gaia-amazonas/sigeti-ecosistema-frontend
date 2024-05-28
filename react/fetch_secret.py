@@ -12,6 +12,7 @@ def fetch_secret(
     credentials = service_account.Credentials.from_service_account_file(
         credentials_file
     )
+    logging.info(f"Credentials : {credentials}")
     client = secretmanager.SecretManagerServiceClient(credentials=credentials)
     name = f"projects/{project_number}/secrets/{secret_id}/versions/{version_id}"
     logging.info(f"Fetching secret from {name}")
