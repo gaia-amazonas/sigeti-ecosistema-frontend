@@ -26,7 +26,7 @@ RUN /app/venv/bin/pip install google-cloud-secret-manager
 ENV PATH="/app/venv/bin:$PATH"
 
 # Fetch the secret from Secret Manager and save it to the correct location
-RUN python -c "\from google.cloud import secretmanager; \
+RUN python -c "from google.cloud import secretmanager; \
 client = secretmanager.SecretManagerServiceClient(); \
 name = 'projects/sigeti/secrets/sigeti-credentials/versions/latest'; \
 response = client.access_secret_version(request={'name': name}); \
