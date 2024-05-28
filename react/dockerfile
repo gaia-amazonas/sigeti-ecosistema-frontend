@@ -35,7 +35,13 @@ ENV VERSION_ID="latest"
 ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
 
 # Fetch the service account key from Secret Manager and save it to the correct location
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
+
+# Fetch the service account key from Secret Manager and save it to the correct location
 RUN python fetch_secret.py
+
+# Set environment variables for the service account key
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account.json"
 
 # Set environment variables for the service account key
 ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
