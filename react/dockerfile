@@ -22,7 +22,7 @@ RUN pip3 install google-cloud-secret-manager
 # Fetch the secret from Secret Manager and save it to the correct location
 RUN python3 -c "from google.cloud import secretmanager; \
     client = secretmanager.SecretManagerServiceClient(); \
-    name = 'projects/YOUR_PROJECT_ID/secrets/sigeti-credentials/versions/latest'; \
+    name = 'projects/sigeti/secrets/sigeti-credentials/versions/latest'; \
     response = client.access_secret_version(request={'name': name}); \
     with open('/app/sigeti-ca02d3a77e56.json', 'wb') as f: \
         f.write(response.payload.data)"
