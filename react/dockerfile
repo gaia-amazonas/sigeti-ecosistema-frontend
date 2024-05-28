@@ -13,6 +13,20 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Install Google Cloud SDK to access Secret Manager
+RUN apk add --no-cache python3 py3-pip && pip3 install google-cloud-secret-manager
+
+# Fetch the secret from Secret Manager and save it to the correct location
+RUN python3 -c "from google.cloud import secretmanager; \
+    client = secretmanager.SecretManagerServiceClient(); \
+    name = f'projects/sigeti/secrets/sigeti-credentials/versions/latest'; \
+    response = client.access_secret_version(request={'name': name}); \
+    with open('/app/sigeti-ca02d3a77e56.json', 'wb') as f: \
+        f.write(response.payload.data)"
+
+# Set environment variables
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/sigeti-ca02d3a77e56.json
+
 # Build the Next.js application
 RUN npm run build
 

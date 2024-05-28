@@ -5,7 +5,10 @@ import path from 'path';
 import { config } from 'dotenv';
 
 // Load environment variables from .env.local
-config({ path: path.resolve(__dirname, '../../../.env.local') });
+const envPath = path.resolve(process.cwd(), '.env.local');
+config({ path: envPath });
+
+console.log('Environment Variables:', process.env);
 
 // Initialize BigQuery client with credentials
 const bigqueryClient = new BigQuery({
