@@ -7,20 +7,26 @@ WORKDIR /app
 # Copy package.json and package-lock.json files
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install Node.js dependencies
 RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
-# Install dependencies needed for Google Cloud SDK and Secret Manager
+# Install Python and necessary dependencies
 RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev
 
-# Install the google-cloud-secret-manager package
-RUN pip3 install google-cloud-secret-manager
+# Create a virtual environment for Python dependencies within the app directory
+RUN python3 -m venv /app/venv
+
+# Activate virtual environment and install the google-cloud-secret-manager package
+RUN /app/venv/bin/pip install google-cloud-secret-manager
+
+# Ensure the virtual environment is activated for subsequent commands
+ENV PATH="/app/venv/bin:$PATH"
 
 # Fetch the secret from Secret Manager and save it to the correct location
-RUN python3 -c "from google.cloud import secretmanager; \
+RUN python -c "from google.cloud import secretmanager; \
     client = secretmanager.SecretManagerServiceClient(); \
     name = 'projects/sigeti/secrets/sigeti-credentials/versions/latest'; \
     response = client.access_secret_version(request={'name': name}); \
