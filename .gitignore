@@ -1,30 +1,31 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .env.local
+cambiar_usuario_git.sh
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+react/node_modules/
+react/.pnp
+react/.pnp.js
+react/.yarn/install-state.gz
 
 # testing
-/coverage
+react/coverage
 
 # next.js
-/.next/
-/out/
+react/.next/
+react/out/
 
 # production
-/build
+react/build
 
 # misc
-.DS_Store
+react/.DS_Store
 *.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+react/npm-debug.log*
+react/yarn-debug.log*
+react/yarn-error.log*
 
 # local env files
 .env*.local
