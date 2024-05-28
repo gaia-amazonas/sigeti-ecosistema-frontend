@@ -1,4 +1,3 @@
-# fetch_secret.py
 from google.cloud import secretmanager
 import os
 

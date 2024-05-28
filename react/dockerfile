@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Copy the fetch_secret.py script
+COPY fetch_secret.py .
+
 # Install Python and necessary dependencies
 RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev
 
@@ -25,13 +28,14 @@ RUN /app/venv/bin/pip install google-cloud-secret-manager
 # Ensure the virtual environment is activated for subsequent commands
 ENV PATH="/app/venv/bin:$PATH"
 
+# Set environment variables for fetching the secret
+ENV PROJECT_ID="sigeti"
+ENV SECRET_ID="sigeti-credentials"
+ENV VERSION_ID="latest"
+ENV DESTINATION_FILE="/app/sigeti-ca02d3a77e56.json"
+
 # Fetch the secret from Secret Manager and save it to the correct location
-RUN python -c "from google.cloud import secretmanager; \
-client = secretmanager.SecretManagerServiceClient(); \
-name = 'projects/sigeti/secrets/sigeti-credentials/versions/latest'; \
-response = client.access_secret_version(request={'name': name}); \
-with open('/app/sigeti-ca02d3a77e56.json', 'wb') as f: \
-    f.write(response.payload.data);"
+RUN python fetch_secret.py
 
 # Set environment variables
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/sigeti-ca02d3a77e56.json
