@@ -1,10 +1,10 @@
 from google.cloud import secretmanager
-import os
+import os, sys
 import logging
 
 
 def fetch_secret(project_number, secret_id, version_id, destination_file):
-    logging.info("Initializing Secret Manager client with provided credentials")
+    logging.info("Initializing Secret Manager client")
     client = secretmanager.SecretManagerServiceClient()
     name = f"projects/{project_number}/secrets/{secret_id}/versions/{version_id}"
     logging.info(f"Fetching secret from {name}")
