@@ -20,18 +20,27 @@ COPY fetch_secret.sh .
 RUN chmod +x fetch_secret.sh
 
 # Install Python and necessary dependencies
-RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev google-cloud-sdk
+RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev curl bash
+
+# Download and install Google Cloud SDK
+RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-433.0.1-linux-x86_64.tar.gz \
+    && tar zxvf google-cloud-sdk-433.0.1-linux-x86_64.tar.gz \
+    && ./google-cloud-sdk/install.sh --quiet \
+    && rm google-cloud-sdk-433.0.1-linux-x86_64.tar.gz
+
+# Initialize Google Cloud SDK
+ENV PATH $PATH:/app/google-cloud-sdk/bin
 
 # Set environment variables for fetching the secret
 ENV PROJECT_NUMBER="580004149041"
 ENV SECRET_ID="multiple_sigeti-bq-para-run"
-ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
+ENV DESTINATION_FILE="/app/service-account.json"
 
 # Fetch the service account key from Secret Manager and save it to the correct location
 RUN ./fetch_secret.sh
 
 # Set environment variables for the service account key
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account.json"
 
 # Build the Next.js application
 RUN npm run build
