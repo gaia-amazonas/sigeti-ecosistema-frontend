@@ -1,13 +1,23 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
-interface SexoEdadProps {
+interface SexoEdadImp {
   datosPiramidales: any[];
-  mujeresPorEdadMaximo: number;
-  hombresPorEdadMaximo: number;
 }
 
-const SexoEdad: React.FC<SexoEdadProps> = ({ datosPiramidales, mujeresPorEdadMaximo, hombresPorEdadMaximo }) => {
+const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidales }) => {
+
+  const mujeresDatosPiramidales = datosPiramidales
+    .filter((item: { Mujer: any }) => item.Mujer)
+    .map((item: { Mujer: any }) => item.Mujer);
+
+  const hombresDatosPiramidales = datosPiramidales
+    .filter((item: {Hombre: any}) => item.Hombre)
+    .map((item: {Hombre: any}) => item.Hombre);
+  
+  const mujeresEdadMaxima = Math.max(...mujeresDatosPiramidales);
+  const hombresEdadMaxima = Math.abs(Math.min(...hombresDatosPiramidales));
+
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
@@ -19,7 +29,7 @@ const SexoEdad: React.FC<SexoEdadProps> = ({ datosPiramidales, mujeresPorEdadMax
         <XAxis 
           type="number" 
           allowDecimals={false} 
-          domain={[-mujeresPorEdadMaximo * 1.5, hombresPorEdadMaximo * 1.5]}
+          domain={[-mujeresEdadMaxima * 1.5, hombresEdadMaxima * 1.5]}
         />
         <YAxis type="category" dataKey="ageGroup" width={1} />
         <Tooltip />
