@@ -22,7 +22,7 @@ docker run -p 3000:3000 -e AMBIENTE=produccion gcr.io/sigeti/sigeti-ecosistema-f
 
 ### Paso 3: 
 
-Empuja la imagen Docker a GCR
+Empujar la imagen Docker a GCR
 
 ```sh
 docker push gcr.io/sigeti/sigeti-ecosistema-frontend:produccion
