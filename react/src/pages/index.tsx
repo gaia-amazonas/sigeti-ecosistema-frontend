@@ -1,7 +1,7 @@
 // src/pages/index.tsx
 import React, { useState } from 'react';
 
-import Tabs from 'components/Tabs';
+import Pestanhas from 'components/Pestanhas';
 import Seleccion from 'components/seleccion_inicial/Seleccion';
 
 import EstiloGlobal from './estilos/global';
@@ -9,24 +9,24 @@ import EstiloGlobal from './estilos/global';
 
 const Home: React.FC = () => {
 
-  const [mostrarTabs, setMostrarTabs] = useState(false);
+  const [mostrarPestanhas, setMostrarPestanhas] = useState(false);
   const [datos, setDatos] = useState({});
 
-  const direccionaSeleccionFinalizadaATabs = (selectionData: any) => {
-    setDatos(selectionData);
-    setMostrarTabs(true);
+  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
+    setDatos(seleccionaDatos);
+    setMostrarPestanhas(true);
   };
 
   return (
     <>
       <EstiloGlobal />
       <div>
-        {mostrarTabs ? (
-          <Tabs datos={datos} />
+        {mostrarPestanhas ? (
+          <Pestanhas datos={datos} />
         ) : (
           <>
             <h1>Seleccionando...</h1>
-            <Seleccion alFinalizar={direccionaSeleccionFinalizadaATabs} />
+            <Seleccion alFinalizar={direccionaSeleccionFinalizadaAPestanhas} />
           </>
         )}
       </div>

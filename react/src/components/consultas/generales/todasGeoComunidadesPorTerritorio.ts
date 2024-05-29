@@ -1,4 +1,4 @@
-import Territorio from "components/seleccion_inicial/Territorio";
+// src/components/consultas/generales/todasGeoComunidadesPorTerritorio.ts
 
 const todasGeoComunidadesPorTerritorio = {
     sexo: (territorioId: string) => `

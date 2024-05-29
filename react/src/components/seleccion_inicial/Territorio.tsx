@@ -18,6 +18,7 @@ interface TerritorioImp {
   siguientePaso: () => void;
 }
 
+
 const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
 
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);

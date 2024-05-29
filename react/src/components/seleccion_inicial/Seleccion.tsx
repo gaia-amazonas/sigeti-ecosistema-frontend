@@ -16,6 +16,7 @@ interface SeleccionImp {
   alFinalizar: (datos: Datos) => void;
 }
 
+
 const ProcesoSeleccion: React.FC<SeleccionImp> = ({ alFinalizar }) => {
 
   const siguientePaso = () => establecerPaso(paso + 1);

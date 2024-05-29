@@ -14,14 +14,14 @@ export const Titulo = styled.h1`
   text-align: center;
 `;
 
-export const ListaTabs = styled.div`
+export const ListaPestanhas = styled.div`
   display: flex;
   justify-content: center;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);  // Shadow for a better visual separation
 `;
 
-export const EstiloTab = styled.button<{ active: boolean }>`
+export const EstiloPestanha = styled.button<{ active: boolean }>`
   background-color: ${({ active }) => (active ? '#228B22' : '#8B4513')}; /* Amazonian Green or Earth Brown */
   color: white;
   padding: 1rem;
@@ -34,7 +34,7 @@ export const EstiloTab = styled.button<{ active: boolean }>`
   }
 `;
 
-export const PanelTabs = styled.div`
+export const PanelPestanhas = styled.div`
   background-color: white;
   display: flex;
   justify-content: center;

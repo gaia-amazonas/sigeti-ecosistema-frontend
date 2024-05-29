@@ -1,4 +1,5 @@
 // src/components/consultas/generales/porTerritorio.ts
+
 const porTerritorio = {
     sexo: (comunidadId: string) => `
         SELECT

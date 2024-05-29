@@ -40,6 +40,6 @@ const esperaRespuestaBigQuery = async (query: string | string[] | undefined, res
 }
 
 const logRespuestaErroneaBigQuery = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
-  console.error(`Error ejectuando la query: ${query}`, error);
-  respuesta.status(500).json({ error: 'Error running query', details: error });
+  console.error(`Error ejecutando la query: ${query}`, error);
+  respuesta.status(500).json({ error: 'Error ejecutando query', details: error });
 }
