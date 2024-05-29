@@ -9,7 +9,7 @@
 Construye la imagen Docker con el siguiente comando:
 
 ```sh
-docker build -t gcr.io/sigeti/sigeti-ecosistema-frontend:production --build-arg ENV=production --build-arg GOOGLE_APPLICATION_CREDENTIALS_JSON=/secrets/sigeti-dee63dd3ec66.json .
+docker build -t gcr.io/sigeti/sigeti-ecosistema-frontend:produccion --build-arg AMBIENTE=produccion .
 ```
 
 ### Paso 2: Probar Localmente
@@ -17,34 +17,30 @@ docker build -t gcr.io/sigeti/sigeti-ecosistema-frontend:production --build-arg 
 Para probar la aplicación localmente, ejecuta:
 
 ```sh
-docker run -p 3000:3000 -e ENV=production -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/sigeti-dee63dd3ec66.json gcr.io/sigeti/sigeti-ecosistema-frontend:production
+docker run -p 3000:3000 -e AMBIENTE=produccion gcr.io/sigeti/sigeti-ecosistema-frontend:produccion
 ```
 
-### Paso 3: Crear un Servicio en GCP Run
+### Paso 3: 
+
+Empujar la imagen Docker a GCR
+
+```sh
+docker push gcr.io/sigeti/sigeti-ecosistema-frontend:produccion
+```
+
+### Paso 4: Crear un Servicio en GCP Run
 
 Despliega la imagen Docker en Google Cloud Run con el siguiente comando:
 
 ```sh
 gcloud run deploy sigeti-ecosistema-frontend \
-  --image gcr.io/YOUR_PROJECT_ID/sigeti-ecosistema-frontend:production \
-  --platform managed \
-  --region southamerica-east1 \
-  --allow-unauthenticated
-```
-
-### Paso 4: Desplegar la Imagen en el Servicio GCP Run con Secretos
-
-Despliega la imagen en el servicio Google Cloud Run, asegurándote de configurar correctamente las variables de entorno:
-
-```sh
-gcloud run deploy sigeti-ecosistema-frontend \
-  --image gcr.io/sigeti/sigeti-ecosistema-frontend:production \
+  --image gcr.io/sigeti/sigeti-ecosistema-frontend:produccion \
   --platform managed \
   --region southamerica-east1 \
   --allow-unauthenticated \
-  --set-env-vars "ENV=production,GOOGLE_APPLICATION_CREDENTIALS=/secrets/sigeti-dee63dd3ec66.json"
+  --min-instances 1
+  --set-env-vars "AMBIENTE=produccion"
 ```
-
 ---
 
 Siguiendo estos pasos, puedes construir, probar y desplegar la aplicación **sigeti-ecosistema-frontend** usando Google Cloud Run.

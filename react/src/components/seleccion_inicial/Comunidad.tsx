@@ -38,6 +38,7 @@ const consultas = {
         id_cnida;`
 };
 
+
 const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);

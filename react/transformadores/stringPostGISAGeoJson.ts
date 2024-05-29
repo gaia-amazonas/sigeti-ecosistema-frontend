@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Polygon as GeoJSONPolygon, Point as GeoJSONPoint, MultiPolygon as GeoJSONMultiPolygon } from 'geojson';
+import { Feature, Polygon as GeoJSONPolygon, Point as GeoJSONPoint, MultiPolygon as GeoJSONMultiPolygon } from 'geojson';
 
 type GeoJSON = Feature<GeoJSONPolygon> | Feature<GeoJSONPoint> | Feature<GeoJSONMultiPolygon>;
 

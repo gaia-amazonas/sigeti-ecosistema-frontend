@@ -4,38 +4,42 @@ import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 
-// Determine which environment file to load based on the NODE_ENV variable
-const envFile = process.env.ENV === 'production'
-  ? '.env.production'
-  : process.env.ENV === 'development'
-  ? '.env.development'
-  : '.env.local';
 
-// Load environment variables from the appropriate file
-const envPath = path.resolve(process.cwd(), envFile);
-config({ path: envPath });
+const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
+  ? '.ambiente.produccion'
+  : process.env.AMBIENTE === 'desarrollo'
+  ? '.ambiente.desarrollo'
+  : '.ambiente.local';
 
-console.log('Environment Variables:', process.env);
+const direccionAmbiente = path.resolve(process.cwd(), archivoVariablesAmbiente);
+config({ path: direccionAmbiente });
 
-// Initialize BigQuery client with credentials
-const bigqueryClient = new BigQuery({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+const clienteBigQuery = new BigQuery({
+  keyFilename: process.env.CREDENCIALES_GOOGLE,
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    const { query } = req.query;
+export default async function handler(solicitud: NextApiRequest, respuesta: NextApiResponse) {
 
+  if (solicitud.method === 'GET') {
+    const { query } = solicitud.query;
     try {
-      const [job] = await bigqueryClient.createQueryJob({ query: query as string });
-      const [rows] = await job.getQueryResults();
-
-      res.status(200).json({ rows });
+      esperaRespuestaBigQuery(query, respuesta);
     } catch (error) {
-      console.error('Error running query:', error);
-      res.status(500).json({ error: 'Error running query', details: error });
+      logRespuestaErroneaBigQuery(error, query, respuesta)
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    respuesta.status(405).json({ error: 'Método no permitido' });
   }
+
+}
+
+const esperaRespuestaBigQuery = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {
+  const [job] = await clienteBigQuery.createQueryJob({ query: query as string });
+  const [rows] = await job.getQueryResults();
+  respuesta.status(200).json({ rows });
+}
+
+const logRespuestaErroneaBigQuery = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
+  console.error(`Error ejecutando la query: ${query}`, error);
+  respuesta.status(500).json({ error: 'Error ejecutando query', details: error });
 }

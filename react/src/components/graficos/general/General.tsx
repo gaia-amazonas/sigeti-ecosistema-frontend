@@ -4,7 +4,7 @@ import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
 import TotalYFamilias from './TotalYFamilias';
-import MapComponent from './MapaComunidadesPorTerritorio';
+import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GraphComponentProps {
@@ -31,24 +31,19 @@ export const General: React.FC<GraphComponentProps> = ({ data }) => {
     [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
   }));
 
-  const mujeresPorEdadMaximo = Math.max(...datosPiramidales.filter((item: { Mujer: any }) => item.Mujer).map((item: { Mujer: any }) => item.Mujer));
-  const hombresPorEdadMaximo = Math.abs(Math.min(...datosPiramidales.filter((item: { Hombre: any }) => item.Hombre).map((item: { Hombre: any }) => item.Hombre)));
-
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <ContenedorGrafico>
-        <Mujer count={mujerContador} />
-        <TotalYFamilias totalCount={totalContador} familiasCount={familiasDatos} />
-        <Hombre count={hombreContador} />
+        <Mujer contador={mujerContador} />
+        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={familiasDatos} />
+        <Hombre contador={hombreContador} />
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
       <SexoEdad
         datosPiramidales={datosPiramidales}
-        mujeresPorEdadMaximo={mujeresPorEdadMaximo}
-        hombresPorEdadMaximo={hombresPorEdadMaximo}
       />
       <CajaTitulo>MAPA</CajaTitulo>
-      <MapComponent
+      <MapaComunidadesPorTerritorio
         territoriosGeometry={territoriosGeometry}
         comunidadesGeometries={comunidadesGeometries}
       />

@@ -1,6 +1,5 @@
 // components/graficos/general/General.tsx
 import React from 'react';
-import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GraphComponentProps {
   data: any[];

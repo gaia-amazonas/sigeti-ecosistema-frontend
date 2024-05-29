@@ -1,3 +1,4 @@
+// src/components/seleccion_inicial/Territorio.tsx
 import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
@@ -17,6 +18,7 @@ interface TerritorioImp {
   establecerDatos: (datos: Datos) => void;
   siguientePaso: () => void;
 }
+
 
 const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
 

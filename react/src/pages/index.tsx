@@ -1,32 +1,37 @@
 // src/pages/index.tsx
 import React, { useState } from 'react';
 
-import Tabs from 'components/Tabs';
+import BotonReiniciar from 'components/seleccion_inicial/BotonReiniciar';
+import Pestanhas from 'components/Pestanhas';
 import Seleccion from 'components/seleccion_inicial/Seleccion';
 
-import EstiloGlobal from './estilos/global';
-
+import EstiloGlobal, { Titulo } from './estilos/global';
 
 const Home: React.FC = () => {
-
-  const [mostrarTabs, setMostrarTabs] = useState(false);
+  const [mostrarPestanhas, setMostrarPestanhas] = useState(false);
   const [datos, setDatos] = useState({});
 
-  const direccionaSeleccionFinalizadaATabs = (selectionData: any) => {
-    setDatos(selectionData);
-    setMostrarTabs(true);
+  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
+    setDatos(seleccionaDatos);
+    setMostrarPestanhas(true);
+  };
+
+  const reiniciarEstado = () => {
+    setDatos({});
+    setMostrarPestanhas(false);
   };
 
   return (
     <>
       <EstiloGlobal />
-      <div>
-        {mostrarTabs ? (
-          <Tabs datos={datos} />
+      <div style={{ position: 'relative' }}>
+        <BotonReiniciar onClick={reiniciarEstado}/>
+        {mostrarPestanhas ? (
+          <Pestanhas datos={datos} />
         ) : (
           <>
-            <h1>Seleccionando...</h1>
-            <Seleccion alFinalizar={direccionaSeleccionFinalizadaATabs} />
+            <Titulo>Seleccionando...</Titulo>
+            <Seleccion alFinalizar={direccionaSeleccionFinalizadaAPestanhas} reiniciar={reiniciarEstado} />
           </>
         )}
       </div>
