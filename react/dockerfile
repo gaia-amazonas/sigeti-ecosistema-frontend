@@ -13,35 +13,25 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Copy the fetch_secret.py script
-COPY fetch_secret.py .
+# Copy the fetch_secret.sh script
+COPY fetch_secret.sh .
+
+# Make the fetch_secret.sh script executable
+RUN chmod +x fetch_secret.sh
 
 # Install Python and necessary dependencies
-RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev
-
-# Create a virtual environment for Python dependencies within the app directory
-RUN python3 -m venv /app/venv
-
-# Activate virtual environment and install the google-cloud-secret-manager package
-RUN /app/venv/bin/pip install google-cloud-secret-manager google-auth
-
-# Ensure the virtual environment is activated for subsequent commands
-ENV PATH="/app/venv/bin:$PATH"
+RUN apk add --no-cache python3 py3-pip gcc musl-dev libffi-dev google-cloud-sdk
 
 # Set environment variables for fetching the secret
 ENV PROJECT_NUMBER="580004149041"
 ENV SECRET_ID="multiple_sigeti-bq-para-run"
-ENV VERSION_ID="latest"
-ENV DESTINATION_FILE="/app/service-account.json"
-
-# Set environment variables for the service account key (assuming it's a secret)
-# Expose the service account key as an environment variable in Cloud Run
+ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
 
 # Fetch the service account key from Secret Manager and save it to the correct location
-RUN python fetch_secret.py
+RUN ./fetch_secret.sh
 
-# Set environment variables for the service account key again to ensure it's available during runtime
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account.json"
+# Set environment variables for the service account key
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
 
 # Build the Next.js application
 RUN npm run build
