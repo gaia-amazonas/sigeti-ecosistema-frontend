@@ -20,7 +20,15 @@ Para probar la aplicación localmente, ejecuta:
 docker run -p 3000:3000 -e AMBIENTE=produccion gcr.io/sigeti/sigeti-ecosistema-frontend:produccion
 ```
 
-### Paso 3: Crear un Servicio en GCP Run
+### Paso 3: 
+
+Empuja la imagen Docker a GCR
+
+```sh
+docker push gcr.io/sigeti/sigeti-ecosistema-frontend:produccion
+```
+
+### Paso 4: Crear un Servicio en GCP Run
 
 Despliega la imagen Docker en Google Cloud Run con el siguiente comando:
 
@@ -31,21 +39,8 @@ gcloud run deploy sigeti-ecosistema-frontend \
   --region southamerica-east1 \
   --allow-unauthenticated \
   --min-instances 1
-```
-
-### Paso 4: Desplegar la Imagen en el Servicio GCP Run con Secretos
-
-Despliega la imagen en el servicio Google Cloud Run, asegurándote de configurar correctamente las variables de entorno:
-
-```sh
-gcloud run deploy sigeti-ecosistema-frontend \
-  --image gcr.io/sigeti/sigeti-ecosistema-frontend:produccion \
-  --platform managed \
-  --region southamerica-east1 \
-  --allow-unauthenticated \
   --set-env-vars "AMBIENTE=produccion"
 ```
-
 ---
 
 Siguiendo estos pasos, puedes construir, probar y desplegar la aplicación **sigeti-ecosistema-frontend** usando Google Cloud Run.
