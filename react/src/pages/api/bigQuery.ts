@@ -1,11 +1,18 @@
-// src/pages/api/queryBigQuery.ts
+// src/pages/api/bigQuery.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 
-// Load environment variables from .env.local
-const envPath = path.resolve(process.cwd(), '.env.local');
+// Determine which environment file to load based on the NODE_ENV variable
+const envFile = process.env.ENV === 'production'
+  ? '.env.production'
+  : process.env.ENV === 'development'
+  ? '.env.development'
+  : '.env.local';
+
+// Load environment variables from the appropriate file
+const envPath = path.resolve(process.cwd(), envFile);
 config({ path: envPath });
 
 console.log('Environment Variables:', process.env);

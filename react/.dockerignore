@@ -1,4 +1,13 @@
+# .dockerignore
+
 node_modules
+dist
 build
-.next
+*.log
+.DS_Store
 .git
+.gitignore
+.vscode
+.env.local
+.env.development
+.env.production
