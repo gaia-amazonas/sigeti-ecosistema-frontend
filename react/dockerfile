@@ -34,16 +34,16 @@ ENV PATH $PATH:/app/google-cloud-sdk/bin
 # Set environment variables for fetching the secret
 ENV PROJECT_NUMBER="580004149041"
 ENV SECRET_ID="multiple_sigeti-bq-para-run"
-ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
+ENV DESTINATION_FILE="/app/service-account.json"
 
-# Set the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable to contain the service account key JSON content
-# Ensure that the service account key is added to the environment variables in the Cloud Run deployment
+# Ensure the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is set
+ARG GOOGLE_APPLICATION_CREDENTIALS_JSON
 
 # Fetch the service account key from Secret Manager and save it to the correct location
 RUN ./fetch_secret.sh
 
 # Set environment variables for the service account key
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sigeti-dee63dd3ec66.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/service-account.json"
 
 # Build the Next.js application
 RUN npm run build
