@@ -1,5 +1,6 @@
 // src/components/Pestanhas.tsx
 import React, { useState, useEffect } from 'react';
+import BotonReiniciar from 'components/seleccion_inicial/BotonReiniciar';
 import { General } from 'components/graficos/general/General';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
@@ -9,6 +10,7 @@ import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } fr
 
 interface PestanhasImp {
   datos: any;
+  reiniciar: () => void;
 }
 
 interface DatosPorPestanhaImp {
@@ -17,7 +19,7 @@ interface DatosPorPestanhaImp {
   educacion: any[];
 }
 
-const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territorio_id: '' } }) => {
+const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territorio_id: '' }, reiniciar }) => {
   const [activo, establecerActivo] = useState('pestanha_general');
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
     general: [],
@@ -89,6 +91,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
 
   return (
     <Contenedor>
+      <BotonReiniciar onClick={reiniciar} />
       <Titulo>Temáticas</Titulo>
       <ListaPestanhas>
         <EstiloPestanha active={activo === 'pestanha_general'} onClick={() => establecerActivo('pestanha_general')}>General</EstiloPestanha>

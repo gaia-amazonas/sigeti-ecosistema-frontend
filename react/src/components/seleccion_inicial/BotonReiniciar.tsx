@@ -7,7 +7,7 @@ interface BotonReiniciarProps {
   onClick: () => void;
 }
 
-const Boton = styled.button`
+const Button = styled.button`
   position: absolute;
   top: 10px;
   left: 10px;
@@ -19,9 +19,9 @@ const Boton = styled.button`
 
 const BotonReiniciar: React.FC<BotonReiniciarProps> = ({ onClick }) => {
   return (
-    <Boton onClick={onClick}>
+    <Button onClick={onClick}>
       <FaArrowLeft size={24} />
-    </Boton>
+    </Button>
   );
 };
 

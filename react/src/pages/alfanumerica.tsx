@@ -19,6 +19,7 @@ const Alfanumerica: React.FC = () => {
 
   const reiniciarEstado = () => {
     setDatos({});
+    router.push('/');
   };
 
   return (

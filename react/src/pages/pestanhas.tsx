@@ -15,10 +15,14 @@ const PestanhasPage: React.FC = () => {
     parsedDatos = {};
   }
 
+  const reiniciarEstado = () => {
+    router.push('/alfanumerica');
+  };
+
   return (
     <>
       <EstiloGlobal />
-      <Pestanhas datos={parsedDatos} />
+      <Pestanhas datos={parsedDatos} reiniciar={reiniciarEstado} />
     </>
   );
 };
