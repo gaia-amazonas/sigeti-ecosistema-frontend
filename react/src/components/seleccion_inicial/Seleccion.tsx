@@ -14,10 +14,11 @@ interface Datos {
 
 interface SeleccionImp {
   alFinalizar: (datos: Datos) => void;
+  reiniciar: () => void;
 }
 
 
-const ProcesoSeleccion: React.FC<SeleccionImp> = ({ alFinalizar }) => {
+const ProcesoSeleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar }) => {
 
   const siguientePaso = () => establecerPaso(paso + 1);
   const [paso, establecerPaso] = useState(1);
@@ -31,6 +32,14 @@ const ProcesoSeleccion: React.FC<SeleccionImp> = ({ alFinalizar }) => {
       alFinalizar(datos);
     }
   }, [paso, datos, alFinalizar]);
+
+  useEffect(() => {
+    establecerPaso(1);
+    establecerDatos({
+      territorio_id: '',
+      comunidad_id: '',
+    });
+  }, [reiniciar]);
 
   return (
     <Contenedor>

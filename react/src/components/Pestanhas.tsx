@@ -1,5 +1,7 @@
-// src/components/Pestanjas.tsx
+// src/components/Pestanhas.tsx
 import React, { useState, useEffect } from 'react';
+import { FaHome } from 'react-icons/fa';
+import Link from 'next/link'; // Import the Link component from next/link
 
 import { General } from 'components/graficos/general/General';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
@@ -7,7 +9,6 @@ import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoT
 import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/generales/todasGeoComunidadesPorTerritorio';
 
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/estilos/Pestanhas';
-
 
 interface PestanhasImp {
   datos: any;
@@ -19,7 +20,6 @@ interface DatosPorPestanhaImp {
   educacion: any[];
 }
 
-
 const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
   
   const [activo, establecerActivo] = useState('pestanha_general');
@@ -30,7 +30,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
   });
 
   useEffect(() => {
-
     const buscarDatos = async () => {
       if (datos.comunidad_id !== 'Todas') {
         await buscarDatosPorTerritorioYComunidad(datos);
@@ -44,12 +43,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
     };
 
     buscarDatos();
-
   }, [datos.comunidad_id, datos.territorio_id]);
 
-
   const buscarDatosPorTerritorioYComunidad = async (datos: any) => {
-
     const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datos.comunidad_id));
     const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datos.comunidad_id));
     const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id));
@@ -60,11 +56,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
       ...datosPrevios,
       general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
-
   };
 
   const buscarDatosParaTodosTerritoriosYComunidades = async () => {
-
     const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo);
     const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias);
     const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad);
@@ -75,11 +69,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
       ...datosPrevios,
       general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
-
   };
 
   const buscarDatosPorTerritorio = async (datos: any) => {
-
     const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datos.territorio_id));
     const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datos.territorio_id));
     const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id));
@@ -90,12 +82,15 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
       ...datosPrevios,
       general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
     }));
-
   };
 
   return (
     <Contenedor>
-      <Titulo>Temáticas</Titulo>
+      <Titulo>
+        Temáticas
+        <Link href="/">
+        </Link>
+      </Titulo>
       <ListaPestanhas>
         <EstiloPestanha active={activo === 'pestanha_general'} onClick={() => establecerActivo('pestanha_general')}>General</EstiloPestanha>
         <EstiloPestanha active={activo === 'pestanha_cultural'} onClick={() => establecerActivo('pestanha_cultural')}>Cultural</EstiloPestanha>
