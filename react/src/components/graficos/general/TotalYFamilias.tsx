@@ -1,3 +1,4 @@
+// src/components/graficos/general/TotalYFamilias.tsx
 import React from 'react';
 import { ContenedorTotal, CajaReductor, CajaTitulo, RectanguloAmarillo } from '../estilos';
 

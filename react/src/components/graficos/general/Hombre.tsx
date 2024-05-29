@@ -1,3 +1,4 @@
+// src/components/graficos/general/Hombre.tsx
 import React from 'react';
 import { ContenedorImagen, Imagen, CajaReductor } from '../estilos';
 

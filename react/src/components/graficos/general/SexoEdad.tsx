@@ -1,3 +1,4 @@
+// src/components/graficos/general/SexoEdad.tsx
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
