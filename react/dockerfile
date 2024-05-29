@@ -36,7 +36,7 @@ ENV PROJECT_NUMBER="580004149041"
 ENV SECRET_ID="multiple_sigeti-bq-para-run"
 ENV DESTINATION_FILE="/app/service-account.json"
 
-# Ensure the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is set
+# Define build argument for service account JSON
 ARG GOOGLE_APPLICATION_CREDENTIALS_JSON
 
 # Fetch the service account key from Secret Manager and save it to the correct location
