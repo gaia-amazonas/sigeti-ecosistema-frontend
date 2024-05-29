@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-.env.local
+.env.*
+sigeti-dee63dd3ec66.json
 cambiar_usuario_git.sh
 
 # dependencies
