@@ -35,8 +35,6 @@ if __name__ == "__main__":
     project_number = os.environ.get("PROJECT_NUMBER")
     secret_id = os.environ.get("SECRET_ID")
     version_id = os.environ.get("VERSION_ID", "latest")
-    destination_file = os.environ.get(
-        "DESTINATION_FILE", "/app/sigeti-dee63dd3ec66.json"
-    )
+    destination_file = os.environ.get("DESTINATION_FILE", "/app/service-account.json")
 
     fetch_secret(project_number, secret_id, version_id, destination_file)
