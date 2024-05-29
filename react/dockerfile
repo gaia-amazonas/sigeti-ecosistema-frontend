@@ -36,6 +36,9 @@ ENV PROJECT_NUMBER="580004149041"
 ENV SECRET_ID="multiple_sigeti-bq-para-run"
 ENV DESTINATION_FILE="/app/sigeti-dee63dd3ec66.json"
 
+# Set the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable to contain the service account key JSON content
+# Ensure that the service account key is added to the environment variables in the Cloud Run deployment
+
 # Fetch the service account key from Secret Manager and save it to the correct location
 RUN ./fetch_secret.sh
 
