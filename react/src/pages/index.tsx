@@ -1,39 +1,19 @@
 // src/pages/index.tsx
-import React, { useState } from 'react';
-
-import BotonReiniciar from 'components/seleccion_inicial/BotonReiniciar';
-import Pestanhas from 'components/Pestanhas';
-import Seleccion from 'components/seleccion_inicial/Seleccion';
-
+import React from 'react';
+import Link from 'next/link';
 import EstiloGlobal, { Titulo } from './estilos/global';
 
 const Home: React.FC = () => {
-  const [mostrarPestanhas, setMostrarPestanhas] = useState(false);
-  const [datos, setDatos] = useState({});
-
-  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
-    setDatos(seleccionaDatos);
-    setMostrarPestanhas(true);
-  };
-
-  const reiniciarEstado = () => {
-    setDatos({});
-    setMostrarPestanhas(false);
-  };
-
   return (
     <>
       <EstiloGlobal />
       <div style={{ position: 'relative' }}>
-        <BotonReiniciar onClick={reiniciarEstado}/>
-        {mostrarPestanhas ? (
-          <Pestanhas datos={datos} />
-        ) : (
-          <>
-            <Titulo>Seleccionando...</Titulo>
-            <Seleccion alFinalizar={direccionaSeleccionFinalizadaAPestanhas} reiniciar={reiniciarEstado} />
-          </>
-        )}
+        <Titulo>Bienvenido</Titulo>
+        <Link href="/alfanumerica" legacyBehavior>
+          <a style={{ textDecoration: 'none', color: '#2F4F4F', fontSize: '20px', fontWeight: 'bold' }}>
+            Ir a Selección
+          </a>
+        </Link>
       </div>
     </>
   );
