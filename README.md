@@ -43,4 +43,4 @@ gcloud run deploy sigeti-ecosistema-frontend \
 ```
 ---
 
-Siguiendo estos pasos, puedes construir, probar y desplegar la aplicación **sigeti-ecosistema-frontend** usando Google Cloud Run.
+Siguiendo estos pasos, puedes construir, probar y desplegar la aplicación **sigeti-ecosistema-frontend** usando Google Cloud Run.a
