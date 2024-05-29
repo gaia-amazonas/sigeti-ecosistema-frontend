@@ -2,6 +2,8 @@
 
 # Authenticate with Google Cloud using the service account key
 echo "Authenticating with Google Cloud..."
+echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+echo $GOOGLE_APPLICATION_CREDENTIALS_JSON
 echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /app/sigeti-dee63dd3ec66.json
 gcloud auth activate-service-account --key-file=/app/sigeti-dee63dd3ec66.json
 
