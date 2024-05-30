@@ -2,8 +2,8 @@
 import React from 'react';
 import Link from 'next/link';
 import EstiloGlobal from './estilos/global';
-import { Boton, BotonesContenedor, Titulo } from './estilos/Boton';
-
+import Boton, { BotonesContenedor, Titulo} from './estilos/boton';
+ 
 const Home: React.FC = () => {
   return (
     <>
