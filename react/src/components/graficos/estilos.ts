@@ -1,3 +1,4 @@
+// src/components/graficos/estilos.tsx
 import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`

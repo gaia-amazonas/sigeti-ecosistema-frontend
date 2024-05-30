@@ -1,6 +1,6 @@
 // src/components/Pestanhas.tsx
 import React, { useState, useEffect } from 'react';
-import BotonReiniciar from 'components/seleccion_inicial/BotonReiniciar';
+import BotonReiniciar from 'components/BotonReiniciar';
 import { General } from 'components/graficos/general/General';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
@@ -28,6 +28,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
   });
 
   useEffect(() => {
+
     const buscarDatos = async () => {
       if (datos.comunidad_id && datos.comunidad_id !== 'Todas') {
         await buscarDatosPorTerritorioYComunidad(datos);
@@ -43,6 +44,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
     if (datos.comunidad_id && datos.territorio_id) {
       buscarDatos();
     }
+    
   }, [datos.comunidad_id, datos.territorio_id]);
 
   const buscarDatosPorTerritorioYComunidad = async (datos: any) => {

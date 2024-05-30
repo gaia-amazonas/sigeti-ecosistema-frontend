@@ -1,8 +1,8 @@
 // src/pages/pestanhas.tsx
 import React from 'react';
 import { useRouter } from 'next/router';
-import Pestanhas from 'components/Pestanhas';
-import EstiloGlobal from './estilos/global';
+import Pestanhas from 'components/graficos/Pestanhas';
+import EstiloGlobal from 'estilos_paginas/global';
 
 const PestanhasPage: React.FC = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const PestanhasPage: React.FC = () => {
   }
 
   const reiniciarEstado = () => {
-    router.push('/alfanumerica');
+    router.push('/consulta/alfanumerica/inicio');
   };
 
   return (

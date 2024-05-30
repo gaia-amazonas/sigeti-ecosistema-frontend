@@ -1,19 +1,23 @@
 // src/pages/index.tsx
 import React from 'react';
 import Link from 'next/link';
-import EstiloGlobal, { Titulo } from './estilos/global';
+import EstiloGlobal from './estilos/global';
+import { Boton, BotonesContenedor, Titulo } from './estilos/Boton';
 
 const Home: React.FC = () => {
   return (
     <>
       <EstiloGlobal />
-      <div style={{ position: 'relative' }}>
-        <Titulo>Bienvenido</Titulo>
-        <Link href="/alfanumerica" legacyBehavior>
-          <a style={{ textDecoration: 'none', color: '#2F4F4F', fontSize: '20px', fontWeight: 'bold' }}>
-            Ir a Selección
-          </a>
-        </Link>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', justifyContent: 'center' }}>
+        <Titulo>Bienvenido a SIGETI</Titulo>
+        <BotonesContenedor>
+          <Link href="/consulta/alfanumerica/inicio" passHref>
+            <Boton as="span">Seleccionar por Territorio y Comunidad</Boton>
+          </Link>
+          <Link href="/consulta/espacial/inicio" passHref>
+            <Boton as="span">Consultar con Mapa</Boton>
+          </Link>
+        </BotonesContenedor>
       </div>
     </>
   );
