@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
-import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
 import { estiloLinea, estiloTerritorio } from './estilos';
-
+import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
+import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
@@ -15,6 +15,7 @@ const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod
 const Mapa: React.FC = () => {
   const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
+  const [gestionDocumentalTerritorio, establecerGestionDocumentalTerritorio] = useState<any>({});
 
   useEffect(() => {
     const buscarLineas = async () => {
@@ -48,7 +49,8 @@ const Mapa: React.FC = () => {
         return {
           type: 'Feature',
           properties: {
-            territorio: row.territorio
+            territorio: row.territorio,
+            id_ti: row.id_ti
           },
           geometry: geometry
         };
@@ -62,6 +64,7 @@ const Mapa: React.FC = () => {
 
     buscarLineas();
     buscarTerritorios();
+
   }, []);
 
   const enCadaLinea = (linea: any, capa: any) => {
@@ -71,9 +74,33 @@ const Mapa: React.FC = () => {
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
-    if (territorio.properties && territorio.properties.territorio) {
-      capa.bindPopup(`${territorio.properties.territorio}`);
-    }
+    capa.on('click', async () => {
+      if (territorio.properties && territorio.properties.id_ti) {
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental(territorio.properties.id_ti));
+        establecerGestionDocumentalTerritorio({ gestion_documental });
+        const formattedData = gestion_documental.rows.map((doc: any) => {
+          return `
+            Lugar: ${doc.Lugar}<br/>
+            Nombre Documento: ${doc.Nombre_documento}<br/>
+            Tipo Escenario: ${doc.Tipo_escenario}<br/>
+            Link_documento: ${doc.Link_documento}<br/>
+            Link_acta_asistencia: ${doc.Link_acta_asistencia}<br/>
+            Fecha_ini_actividad: ${doc.Fecha_ini_actividad.value}<br/>
+          `;
+        }).join('<br/><br/>');
+
+        capa.bindPopup(`
+          Territorio: ${territorio.properties.territorio}<br/>
+          Territorio ID: ${territorio.properties.id_ti}<br/><br/>
+          Historia:<br/><br/> ${formattedData || 'Sin información relacionada'}
+        `).openPopup();
+      }
+    });
+  };
+
+  const buscarDatos = async (consulta: string) => {
+    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+    return await respuesta.json();
   };
 
   if (!lineasGeoJson || !territoriosGeoJson) {
