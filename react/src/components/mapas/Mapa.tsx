@@ -85,7 +85,7 @@ const Mapa: React.FC = () => {
         timelineContainer.style.width = '100%';
         timelineContainer.style.height = 'auto';
 
-        const infoContainer = document.createElement('div');
+        let infoContainer = document.createElement('div');
         infoContainer.style.marginTop = '10px';
         infoContainer.style.width = '100%';
 
@@ -103,20 +103,22 @@ const Mapa: React.FC = () => {
             infoContainer.innerHTML = `
               <strong>Documento:</strong> ${doc.Nombre_documento}<br/>
               <strong>Lugar:</strong> ${doc.Lugar}<br/>
-              <strong>Fechas</strong>
-              <strong>  de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
-              <strong>  de Finalización</strong> ${doc.Fecha_fin_actividad.value}<br/>
-              <strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
-              <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
-              <strong><a href="${doc.Link_acta_asistencia}" target="_blank">Link Acta Asistencia</a></strong><br/>
+              <strong>Fechas</strong><br/>
+              <strong> - de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
             `;
+            if (doc.Fecha_fin_actividad) {
+              infoContainer.innerHTML = infoContainer.innerHTML + `<strong> - de Finalización</strong> ${doc.Fecha_fin_actividad.value}<br/>`;
+            }
+            infoContainer.innerHTML = infoContainer.innerHTML + `<strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
+              <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
+              <strong><a href="${doc.Link_acta_asistencia}" target="_blank">Link Acta Asistencia</a></strong><br/>`;
           });
 
           timelineContainer.appendChild(circle);
         });
 
         capa.bindPopup(`
-          <div style="width: 600px;">
+          <div style="width: auto; max-width: 20rem;">
             <strong>Territorio: ${territorio.properties.territorio}</strong>
             (${territorio.properties.id_ti})<br/>
             <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;"></div>
