@@ -78,22 +78,61 @@ const Mapa: React.FC = () => {
       if (territorio.properties && territorio.properties.id_ti) {
         const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental(territorio.properties.id_ti));
         establecerGestionDocumentalTerritorio({ gestion_documental });
-        const formattedData = gestion_documental.rows.map((doc: any) => {
-          return `
-            Lugar: ${doc.Lugar}<br/>
-            Nombre Documento: ${doc.Nombre_documento}<br/>
-            Tipo Escenario: ${doc.Tipo_escenario}<br/>
-            Link_documento: ${doc.Link_documento}<br/>
-            Link_acta_asistencia: ${doc.Link_acta_asistencia}<br/>
-            Fecha_ini_actividad: ${doc.Fecha_ini_actividad.value}<br/>
-          `;
-        }).join('<br/><br/>');
+
+        const timelineContainer = document.createElement('div');
+        timelineContainer.style.display = 'flex';
+        timelineContainer.style.flexWrap = 'wrap';
+        timelineContainer.style.width = '100%';
+        timelineContainer.style.height = 'auto';
+
+        const infoContainer = document.createElement('div');
+        infoContainer.style.marginTop = '10px';
+        infoContainer.style.width = '100%';
+
+        gestion_documental.rows.forEach((doc: any, index: number) => {
+          const circle = document.createElement('div');
+          circle.style.width = '20px';
+          circle.style.height = '20px';
+          circle.style.backgroundColor = 'orange';
+          circle.style.borderRadius = '50%';
+          circle.style.cursor = 'pointer';
+          circle.style.margin = '5px';
+          circle.title = doc.Fecha_ini_actividad.value;
+
+          circle.addEventListener('click', () => {
+            infoContainer.innerHTML = `
+              <strong>Documento:</strong> ${doc.Nombre_documento}<br/>
+              <strong>Lugar:</strong> ${doc.Lugar}<br/>
+              <strong>Fechas</strong>
+              <strong>  de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
+              <strong>  de Finalización</strong> ${doc.Fecha_fin_actividad.value}<br/>
+              <strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
+              <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
+              <strong><a href="${doc.Link_acta_asistencia}" target="_blank">Link Acta Asistencia</a></strong><br/>
+            `;
+          });
+
+          timelineContainer.appendChild(circle);
+        });
 
         capa.bindPopup(`
-          Territorio: ${territorio.properties.territorio}<br/>
-          Territorio ID: ${territorio.properties.id_ti}<br/><br/>
-          Historia:<br/><br/> ${formattedData || 'Sin información relacionada'}
+          <div style="width: 600px;">
+            <strong>Territorio: ${territorio.properties.territorio}</strong>
+            (${territorio.properties.id_ti})<br/>
+            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;"></div>
+            <div id="info-${territorio.properties.id_ti}"></div>
+          </div>
         `).openPopup();
+
+        const popupContent = document.getElementById(`timeline-${territorio.properties.id_ti}`);
+        if (popupContent) {
+          popupContent.appendChild(timelineContainer);
+        }
+
+        const infoContent = document.getElementById(`info-${territorio.properties.id_ti}`);
+        if (infoContent) {
+          infoContent.appendChild(infoContainer);
+        }
       }
     });
   };

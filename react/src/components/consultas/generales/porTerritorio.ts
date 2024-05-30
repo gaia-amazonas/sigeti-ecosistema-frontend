@@ -108,7 +108,8 @@ const porTerritorio = {
             Tipo_escenario,
             Link_documento,
             Link_acta_asistencia,
-            Fecha_ini_actividad
+            Fecha_ini_actividad,
+            Fecha_fin_actividad
         FROM
             \`sigeti-admin-364713.Gestion_Documental.Tabla_general\`
         WHERE
