@@ -7,11 +7,9 @@ import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 
 const Alfanumerica: React.FC = () => {
   const [pasoDinamico, establecerPasoDinamico] = useState(1);
-  const [datos, estabecerDatos] = useState({});
   const router = useRouter();
 
   const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
-    estabecerDatos(seleccionaDatos);
     router.push({
       pathname: '/consulta/alfanumerica/pestanhas',
       query: { datos: JSON.stringify(seleccionaDatos) },
@@ -24,7 +22,6 @@ const Alfanumerica: React.FC = () => {
     } else {
       router.push('/consulta/alfanumerica/inicio');
     }
-    estabecerDatos({});
     establecerPasoDinamico(1);
   };
 
