@@ -1,26 +1,26 @@
-// src/components/graficos/general/MapaComunidadesPorTerritorio.tsx
+// src/components/graficos/general/Mapa.tsx
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import { stringPostGISAGeoJson } from 'transformadores/stringPostGISAGeoJson';
+import { stringPostGISAGeoJson } from '../../../transformadores/stringPostGISAGeoJson';
 import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
 
 import markerIconPng from 'iconos/marker-icon.png';
 import markerShadowPng from 'iconos/marker-shadow.png';
 
 // Dynamically import react-leaflet components with SSR disabled
-const ContenedorMapaComunidadesPorTerritorio = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaMapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const GeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const Marcador = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 const VentanaEmergente = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
-interface MapaComunidadesPorTerritorioImp {
+interface MapaImp {
     territoriosGeometry: any[];
     comunidadesGeometries: any[];
 }
 
-const MapaComunidadesPorTerritorio: React.FC<MapaComunidadesPorTerritorioImp> = ({ territoriosGeometry, comunidadesGeometries }) => {
+const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, comunidadesGeometries }) => {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const MapaComunidadesPorTerritorio: React.FC<MapaComunidadesPorTerritorioImp> = 
     const centroMapa = [0.969793, -70.830454];
 
     return (
-        <ContenedorMapaComunidadesPorTerritorio center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%' }}>
+        <Contenedor center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%' }}>
             <CapaMapaOSM
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -74,8 +74,8 @@ const MapaComunidadesPorTerritorio: React.FC<MapaComunidadesPorTerritorioImp> = 
                     return <GeoJson key={idx} data={feature} style={{ color: 'red' }} />;
                 }
             })}
-        </ContenedorMapaComunidadesPorTerritorio>
+        </Contenedor>
     );
 };
 
-export default MapaComunidadesPorTerritorio;
+export default Mapa;

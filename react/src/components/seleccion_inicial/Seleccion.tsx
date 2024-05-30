@@ -34,7 +34,7 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
     if (paso > 2) {
       alFinalizar(datos);
     }
-  }, [paso, datos, alFinalizar]);
+  }, [paso, datos]);
 
   useEffect(() => {
     establecerPaso(pasoDinamico);

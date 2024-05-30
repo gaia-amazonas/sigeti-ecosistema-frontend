@@ -4,16 +4,20 @@ import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
 import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
+import { estiloLinea, estiloTerritorio } from './estilos';
+
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const GeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
 const Mapa: React.FC = () => {
-  const [geoJsonDatos, establecerGeoJsonDatos] = useState<FeatureCollection | null>(null);
+  const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
+  const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
-    const buscarDatosEspaciales = async () => {
+    const buscarLineas = async () => {
       const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.lineas));
       const json = await respuesta.json();
       const features = json.rows.map((row: any) => ({
@@ -24,22 +28,55 @@ const Mapa: React.FC = () => {
         geometry: JSON.parse(row.geometry)
       }));
 
-      establecerGeoJsonDatos({
+      establecerLineasGeoJson({
         type: 'FeatureCollection',
         features: features,
       });
     };
 
-    buscarDatosEspaciales();
+    const buscarTerritorios = async () => {
+      const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.territorios));
+      const json = await respuesta.json();
+
+      const features = json.rows.map((row: any) => {
+        let geometry;
+        try {
+          geometry = JSON.parse(row.geometry);
+        } catch (error) {
+          throw new Error(`Error (${error}) parsing the geometry of the row ${row}`);
+        }
+        return {
+          type: 'Feature',
+          properties: {
+            territorio: row.territorio
+          },
+          geometry: geometry
+        };
+      }).filter((feature: any) => feature !== null);
+
+      establecerTerritoriosGeoJson({
+        type: 'FeatureCollection',
+        features: features,
+      });
+    };
+
+    buscarLineas();
+    buscarTerritorios();
   }, []);
 
-  const enCadaFeature = (feature: any, capa: any) => {
-    if (feature.properties && feature.properties.OBJECTID) {
-      capa.bindPopup(`OBJECTID: ${feature.properties.OBJECTID}`);
+  const enCadaLinea = (linea: any, capa: any) => {
+    if (linea.properties && linea.properties.OBJECTID) {
+      capa.bindPopup(`ID: ${linea.properties.OBJECTID}`);
     }
   };
 
-  if (!geoJsonDatos) {
+  const enCadaTerritorio = (territorio: any, capa: any) => {
+    if (territorio.properties && territorio.properties.territorio) {
+      capa.bindPopup(`${territorio.properties.territorio}`);
+    }
+  };
+
+  if (!lineasGeoJson || !territoriosGeoJson) {
     return <div>Cargando el mapa...</div>;
   }
 
@@ -50,7 +87,8 @@ const Mapa: React.FC = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <GeoJson data={geoJsonDatos} onEachFeature={enCadaFeature} />
+        <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />
+        <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
       </Contenedor>
     </div>
   );
