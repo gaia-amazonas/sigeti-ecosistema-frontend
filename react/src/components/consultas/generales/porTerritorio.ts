@@ -100,7 +100,20 @@ const porTerritorio = {
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         WHERE
-            c.id_cnida = '${comunidadId}';`
+            c.id_cnida = '${comunidadId}';`,
+    gestion_documental: (territorioId: string) => `
+        SELECT
+            Lugar,
+            Nombre_documento,
+            Tipo_escenario,
+            Link_documento,
+            Link_acta_asistencia,
+            Fecha_ini_actividad,
+            Fecha_fin_actividad
+        FROM
+            \`sigeti-admin-364713.Gestion_Documental.Tabla_general\`
+        WHERE
+            id_ti = '${territorioId}';`
     };
 
 export default porTerritorio;
