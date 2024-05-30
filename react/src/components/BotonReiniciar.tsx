@@ -1,21 +1,11 @@
-// src/components/seleccion_inicial/BotonReiniciar.tsx
+// src/components/BotonReiniciar.tsx
 import React from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import styled from 'styled-components';
+import Boton from './estilos/BotonReiniciar';
 
 interface BotonReiniciarProps {
   onClick: () => void;
 }
-
-const Boton = styled.button`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-`;
 
 const BotonReiniciar: React.FC<BotonReiniciarProps> = ({ onClick }) => {
   return (

@@ -1,8 +1,6 @@
 // src/components/Pestanhas.tsx
 import React, { useState, useEffect } from 'react';
-import { FaHome } from 'react-icons/fa';
-import Link from 'next/link'; // Import the Link component from next/link
-
+import BotonReiniciar from 'components/BotonReiniciar';
 import { General } from 'components/graficos/general/General';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
@@ -12,6 +10,7 @@ import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } fr
 
 interface PestanhasImp {
   datos: any;
+  reiniciar: () => void;
 }
 
 interface DatosPorPestanhaImp {
@@ -20,8 +19,7 @@ interface DatosPorPestanhaImp {
   educacion: any[];
 }
 
-const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
-  
+const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territorio_id: '' }, reiniciar }) => {
   const [activo, establecerActivo] = useState('pestanha_general');
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
     general: [],
@@ -30,8 +28,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
   });
 
   useEffect(() => {
+
     const buscarDatos = async () => {
-      if (datos.comunidad_id !== 'Todas') {
+      if (datos.comunidad_id && datos.comunidad_id !== 'Todas') {
         await buscarDatosPorTerritorioYComunidad(datos);
       } else if (datos.territorio_id === 'Todos' && datos.comunidad_id === 'Todas') {
         await buscarDatosParaTodosTerritoriosYComunidades();
@@ -42,7 +41,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
       }
     };
 
-    buscarDatos();
+    if (datos.comunidad_id && datos.territorio_id) {
+      buscarDatos();
+    }
+    
   }, [datos.comunidad_id, datos.territorio_id]);
 
   const buscarDatosPorTerritorioYComunidad = async (datos: any) => {
@@ -84,13 +86,15 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
     }));
   };
 
+  const buscarDatos = async (consulta: string) => {
+    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+    return await respuesta.json();
+  };
+
   return (
     <Contenedor>
-      <Titulo>
-        Temáticas
-        <Link href="/">
-        </Link>
-      </Titulo>
+      <BotonReiniciar onClick={reiniciar} />
+      <Titulo>Temáticas</Titulo>
       <ListaPestanhas>
         <EstiloPestanha active={activo === 'pestanha_general'} onClick={() => establecerActivo('pestanha_general')}>General</EstiloPestanha>
         <EstiloPestanha active={activo === 'pestanha_cultural'} onClick={() => establecerActivo('pestanha_cultural')}>Cultural</EstiloPestanha>
@@ -103,11 +107,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos }) => {
       </PanelPestanhas>
     </Contenedor>
   );
-};
-
-const buscarDatos = async (consulta: string) => {
-  const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
-  return await respuesta.json();
 };
 
 export default Pestanhas;

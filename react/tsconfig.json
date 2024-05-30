@@ -22,7 +22,8 @@
       "logos/*": ["./public/logos/*"],
       "iconos/*": ["./public/iconos/*"],
       "transformadores/*": ["./transformadores/*"],
-      "consultas/*": ["./src/components/consultas/*"]
+      "consultas/*": ["./src/components/consultas/*"],
+      "estilos_paginas/*": ["./src/pages/estilos/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
