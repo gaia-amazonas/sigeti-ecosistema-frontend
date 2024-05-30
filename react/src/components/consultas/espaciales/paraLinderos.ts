@@ -1,5 +1,5 @@
-// src/consultas/spatialQueries.ts
-const spatialQueries = {
+// src/consultas/espaciales/paraLinderos.ts
+const consultasEspaciales = {
   lineas: `
     SELECT
       OBJECTID, ST_AsGeoJSON(geo) AS geometry
@@ -8,4 +8,4 @@ const spatialQueries = {
   `,
 };
 
-export default spatialQueries;
+export default consultasEspaciales;

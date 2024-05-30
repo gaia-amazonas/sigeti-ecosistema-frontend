@@ -1,14 +1,14 @@
-// src/pages/estilos/Boton.ts
+// src/components/estilos/Boton.ts
 import styled from 'styled-components';
 
-export const Boton = styled.button`
+const Boton = styled.button`
   width: 80%;
   padding: 15px;
   margin: 10px 0;
   font-size: 1.2em;
   color: #fff;
   background-color: #4682b4; /* Sky Blue */
-  border: none;
+  border: none; 
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -42,3 +42,5 @@ export const Titulo = styled.h1`
   text-align: center;
   margin-top: 20px;
 `;
+
+export default Boton;

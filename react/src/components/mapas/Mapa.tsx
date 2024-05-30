@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
-import consultaEspacial from 'components/consultas/espaciales/lineas';
-import BotonReiniciar from 'components/BotonReiniciar';
+import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });

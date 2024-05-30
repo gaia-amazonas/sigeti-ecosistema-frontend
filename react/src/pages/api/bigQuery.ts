@@ -1,9 +1,20 @@
-// src/pages/api/bigQuery.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
+import winston from 'winston';
 
+
+const logger = winston.createLogger({
+  level: 'error',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console()
+  ]
+});
 
 const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
   ? '.ambiente.produccion'
@@ -25,7 +36,7 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
     try {
       esperaRespuestaBigQuery(query, respuesta);
     } catch (error) {
-      logRespuestaErroneaBigQuery(error, query, respuesta)
+      logRespuestaErroneaBigQuery(error, query, respuesta);
     }
   } else {
     respuesta.status(405).json({ error: 'Método no permitido' });
@@ -40,6 +51,6 @@ const esperaRespuestaBigQuery = async (query: string | string[] | undefined, res
 }
 
 const logRespuestaErroneaBigQuery = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
-  console.log(`Error ejecutando la query: ${query}`, error);
+  logger.error(`Error ejecutando la query: ${query}`, error);
   respuesta.status(500).json({ error: 'Error ejecutando query', details: error });
 }
