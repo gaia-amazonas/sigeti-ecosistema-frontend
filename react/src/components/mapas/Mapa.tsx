@@ -166,7 +166,7 @@ const Mapa: React.FC = () => {
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <div style={{
         position: 'absolute',
-        bottom: 80,
+        bottom: '10rem',
         right: 20,
         zIndex: 1000,
         background: 'transparent',
