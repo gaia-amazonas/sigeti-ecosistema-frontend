@@ -13,9 +13,11 @@ const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJ
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
 const Mapa: React.FC = () => {
-
   const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
+  const [showOSM, setShowOSM] = useState(true);
+  const [showLineas, setShowLineas] = useState(true);
+  const [showTerritorios, setShowTerritorios] = useState(true);
 
   useEffect(() => {
     const buscarLineas = async () => {
@@ -65,7 +67,6 @@ const Mapa: React.FC = () => {
 
     buscarLineas();
     buscarTerritorios();
-
   }, []);
 
   const enCadaLinea = (linea: any, capa: any) => {
@@ -163,13 +164,77 @@ const Mapa: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+      <div style={{
+        position: 'absolute',
+        bottom: 80,
+        right: 20,
+        zIndex: 1000,
+        background: 'transparent',
+        padding: '10px',
+        borderRadius: '5px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px'
+      }}>
+        <button
+          onClick={() => setShowOSM(!showOSM)}
+          style={{
+            backgroundColor: showOSM ? 'green' : 'gray',
+            opacity: showOSM ? 0.8 : 0.6,
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: showOSM ? 'bold' : 'normal'
+          }}
+        >
+          OSM
+        </button>
+        <button
+          onClick={() => setShowLineas(!showLineas)}
+          style={{
+            backgroundColor: showLineas ? '#FF0000' : 'gray',
+            opacity: showLineas ? 0.8 : 0.6,
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: showLineas ? 'bold' : 'normal'
+          }}
+        >
+          Lineas
+        </button>
+        <button
+          onClick={() => setShowTerritorios(!showTerritorios)}
+          style={{
+            backgroundColor: showTerritorios ? '#3388FF' : 'gray',
+            opacity: showTerritorios ? 0.8 : 0.6,
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: showTerritorios ? 'bold' : 'normal'
+          }}
+        >
+          Territorios
+        </button>
+      </div>
       <Contenedor center={[-1.014411, -70.603798]} zoom={8} style={{ height: '100%', width: '100%' }}>
-        <CapaOSM
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />
-        <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+        {showOSM && (
+          <CapaOSM
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+        )}
+        {showLineas && lineasGeoJson && (
+          <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />
+        )}
+        {showTerritorios && territoriosGeoJson && (
+          <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+        )}
       </Contenedor>
     </div>
   );
