@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import { stringPostGISAGeoJson } from '../../../transformadores/stringPostGISAGeoJson';
+import { stringPostGISAGeoJson } from 'transformadores/stringPostGISAGeoJson';
 import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
 
 import markerIconPng from 'iconos/marker-icon.png';
@@ -28,7 +28,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, comunidadesGeometries })
         (async () => {
             const Leaflet = await import('leaflet');
             Leaflet.Icon.Default.mergeOptions({
-                iconUrl: markerIconPng.src,
+                iconUrl:  markerIconPng.src,
                 shadowUrl: markerShadowPng.src,
             });
         })();

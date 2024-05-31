@@ -20,9 +20,9 @@ const Mapa: React.FC = () => {
   const [showTerritorios, setShowTerritorios] = useState(true);
 
   useEffect(() => {
+
     const buscarLineas = async () => {
-      const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.lineas));
-      const json = await respuesta.json();
+      const json = await buscarDatos(consultaEspacial.lineas);
       const features = json.rows.map((row: any) => ({
         type: 'Feature',
         properties: {
@@ -38,10 +38,15 @@ const Mapa: React.FC = () => {
       });
     };
 
-    const buscarTerritorios = async () => {
-      const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.territorios));
-      const json = await respuesta.json();
+    buscarLineas();
 
+  }, []);
+
+  useEffect(() => {
+
+    const buscarTerritorios = async () => {
+
+      const json = await buscarDatos(consultaEspacial.territorios);
       const features = json.rows.map((row: any) => {
         let geometry;
         try {
@@ -65,14 +70,13 @@ const Mapa: React.FC = () => {
       });
     };
 
-    buscarLineas();
     buscarTerritorios();
   }, []);
 
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {
       capa.on('click', async () => {
-        const gestion_documental = await buscarDatosLinea(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id));
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id));
         const info = gestion_documental.rows[0];
         if (info) {
           const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
@@ -149,11 +153,6 @@ const Mapa: React.FC = () => {
   };
 
   const buscarDatos = async (consulta: string) => {
-    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
-    return await respuesta.json();
-  };
-
-  const buscarDatosLinea = async (consulta: string) => {
     const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
     return await respuesta.json();
   };

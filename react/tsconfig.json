@@ -21,7 +21,7 @@
       "components/*": ["./src/components/*"],
       "logos/*": ["./public/logos/*"],
       "iconos/*": ["./public/iconos/*"],
-      "transformadores/*": ["./src/components/transformadores/*"],
+      "transformadores/*": ["./src/transformadores/*"],
       "consultas/*": ["./src/components/consultas/*"],
       "estilos_paginas/*": ["./src/pages/estilos/*"],
     }
