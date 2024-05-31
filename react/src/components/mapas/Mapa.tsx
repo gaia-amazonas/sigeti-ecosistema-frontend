@@ -13,9 +13,9 @@ const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJ
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
 const Mapa: React.FC = () => {
+
   const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
-  const [gestionDocumentalTerritorio, establecerGestionDocumentalTerritorio] = useState<any>({});
 
   useEffect(() => {
     const buscarLineas = async () => {
@@ -24,7 +24,8 @@ const Mapa: React.FC = () => {
       const features = json.rows.map((row: any) => ({
         type: 'Feature',
         properties: {
-          OBJECTID: row.OBJECTID
+          id: row.OBJECTID,
+          col_entre: row.COL_ENTRE,
         },
         geometry: JSON.parse(row.geometry)
       }));
@@ -68,16 +69,23 @@ const Mapa: React.FC = () => {
   }, []);
 
   const enCadaLinea = (linea: any, capa: any) => {
-    if (linea.properties && linea.properties.OBJECTID) {
-      capa.bindPopup(`ID: ${linea.properties.OBJECTID}`);
+    if (linea.properties && linea.properties.id) {
+      capa.on('click', async () => {
+        const gestion_documental = await buscarDatosLinea(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id));
+        const info = gestion_documental.rows[0];
+        if (info) {
+          const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
+          <strong>Acuerdo:</strong> ${info.ACUERDO}`;
+          capa.bindPopup(texto).openPopup();
+        }
+      });
     }
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
     capa.on('click', async () => {
       if (territorio.properties && territorio.properties.id_ti) {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental(territorio.properties.id_ti));
-        establecerGestionDocumentalTerritorio({ gestion_documental });
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti));
 
         const timelineContainer = document.createElement('div');
         timelineContainer.style.display = 'flex';
@@ -107,7 +115,7 @@ const Mapa: React.FC = () => {
               <strong> - de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
             `;
             if (doc.Fecha_fin_actividad) {
-              infoContainer.innerHTML = infoContainer.innerHTML + `<strong> - de Finalización</strong> ${doc.Fecha_fin_actividad.value}<br/>`;
+              infoContainer.innerHTML = infoContainer.innerHTML + `<strong> - de Finalización:</strong> ${doc.Fecha_fin_actividad.value}<br/>`;
             }
             infoContainer.innerHTML = infoContainer.innerHTML + `<strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
               <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
@@ -119,7 +127,7 @@ const Mapa: React.FC = () => {
 
         capa.bindPopup(`
           <div style="width: auto; max-width: 20rem;">
-            <strong>Territorio: ${territorio.properties.territorio}</strong>
+            <strong>${territorio.properties.territorio}</strong>
             (${territorio.properties.id_ti})<br/>
             <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;"></div>
             <div id="info-${territorio.properties.id_ti}"></div>
@@ -140,6 +148,11 @@ const Mapa: React.FC = () => {
   };
 
   const buscarDatos = async (consulta: string) => {
+    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+    return await respuesta.json();
+  };
+
+  const buscarDatosLinea = async (consulta: string) => {
     const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
     return await respuesta.json();
   };

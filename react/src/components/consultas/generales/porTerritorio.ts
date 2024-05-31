@@ -101,7 +101,7 @@ const porTerritorio = {
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         WHERE
             c.id_cnida = '${comunidadId}';`,
-    gestion_documental: (territorioId: string) => `
+    gestion_documental_territorio: (territorioId: string) => `
         SELECT
             Lugar,
             Nombre_documento,
@@ -113,7 +113,15 @@ const porTerritorio = {
         FROM
             \`sigeti-admin-364713.Gestion_Documental.Tabla_general\`
         WHERE
-            id_ti = '${territorioId}';`
+            id_ti = '${territorioId}';`,
+    gestion_documental_linea_colindante: (lineaId: string) => `
+        SELECT
+            COL_ENTRE,
+            ACUERDO
+        FROM
+            \`sigeti-admin-364713.analysis_units.LineasColindantes\`
+        WHERE
+            OBJECTID = ${lineaId};`
     };
 
 export default porTerritorio;
