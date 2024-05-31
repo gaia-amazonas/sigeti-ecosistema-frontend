@@ -2,7 +2,8 @@
 const consultasEspaciales = {
   lineas: `
     SELECT
-      OBJECTID, ST_AsGeoJSON(geo) AS geometry
+      ST_AsGeoJSON(geo) AS geometry,
+      OBJECTID,
     FROM
       \`sigeti-admin-364713.analysis_units.LineasColindantes\`;
   `,
