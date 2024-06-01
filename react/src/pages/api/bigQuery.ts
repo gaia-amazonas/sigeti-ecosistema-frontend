@@ -1,3 +1,5 @@
+// src/pages/api/bigQuery.ts
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
