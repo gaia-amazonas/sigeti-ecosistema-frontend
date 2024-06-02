@@ -21,18 +21,19 @@ interface ComunidadImp {
 const consultas = {
   segregado: (territorio_id: string, mode: 'online' | 'offline') => `
     SELECT id_cnida, comunidad
-    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'comunidades_por_territorio'}
+    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
     WHERE id_ti = '${territorio_id}'
     ORDER BY id_cnida;
   `,
   total: (mode: 'online' | 'offline') => `
     SELECT id_cnida, comunidad
-    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'comunidades_por_territorio'}
+    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
     ORDER BY id_cnida;
   `
 };
 
 const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso, mode }) => {
+
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
@@ -45,8 +46,8 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
       } else {
         consulta = consultas.segregado(territorio_id, mode);
       }
-      const endpoint = mode === 'online' ? '/api/bigQuery' : '/api/postgresql';
-      const respuesta = await fetch(`${endpoint}?query=${encodeURIComponent(consulta)}`);
+      const puntofinal = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
       const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas', comunidad: 'Todas' }, ...resultado.rows];
       establecerOpciones(opcionesConTodas);

@@ -30,13 +30,14 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
           id_ti, territorio
         FROM
           ${mode === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
-        ORDER BY id_ti ASC;
+        ORDER BY
+          id_ti ASC;
       `;
-      const endpoint = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
-      const respuesta = await fetch(`${endpoint}?query=${encodeURIComponent(consulta)}`);
-      console.log("API Response:", respuesta);
+      const puntofinal = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
+      console.log("Respuesta API:", respuesta);
       const resultado = await respuesta.json();
-      console.log("Parsed Result:", resultado);
+      console.log("Resultado analizado:", resultado);
 
       if (resultado && resultado.rows) {
         const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
