@@ -1,18 +1,20 @@
+import { CSSProperties } from "styled-components";
+
 export const estiloLinea = {
-  color: '#FF0000', // Red color for lines
-  weight: 8,        // Line thickness
-  opacity: 0.6      // Line opacity
+  color: '#FF0000', // Red
+  weight: 8,
+  opacity: 0.6
 };
 
 export const estiloTerritorio = {
-  color: '#3388FF',  // Blue color for borders
-  weight: 2,        // Border thickness
+  color: '#3388FF',  // Blue
+  weight: 2,
   opacity: 0.6,
-  fillColor: '#3388FF', // Fill color
-  fillOpacity: 0.2   // Fill opacity
+  fillColor: '#3388FF',
+  fillOpacity: 0.2
 };
 
-export const contenedorBotones = {
+export const estiloContenedorBotones: CSSProperties = {
   position: 'absolute',
   bottom: '10rem',
   right: 20,
@@ -36,7 +38,7 @@ export const estiloBoton = (isActive: boolean, color: string) => ({
   fontWeight: isActive ? 'bold' : 'normal'
 });
 
-export const estiloCircle = {
+export const estiloCirculo = {
   width: '20px',
   height: '20px',
   backgroundColor: 'orange',
@@ -45,14 +47,14 @@ export const estiloCircle = {
   margin: '5px',
 };
 
-export const estiloTimelineContainer = {
+export const estiloContenedorLineaTiempo = {
   display: 'flex',
   flexWrap: 'wrap',
   width: '100%',
   height: 'auto'
 };
 
-export const estiloInfoContainer = {
+export const estiloContenedorInformacion = {
   marginTop: '10px',
   width: '100%'
 };

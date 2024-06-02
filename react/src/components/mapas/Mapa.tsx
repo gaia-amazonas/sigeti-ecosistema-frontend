@@ -1,21 +1,20 @@
 // .src/components/mapas/Mapa.tsx
-
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
+
 import { FeatureCollection } from 'geojson';
-import {
-  estiloLinea,
-  estiloTerritorio,
-  contenedorBotones,
-  estiloBoton,
-  estiloCircle,
-  estiloTimelineContainer,
-  estiloInfoContainer
-} from './estilos';
 import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/buscarDatosBigQuery';
+import { creaContenedorLineaTiempo, creaContenedorInformacion, creaCirculo, adjuntarAPopUp } from './graficosDinamicos';
+
+import {
+  estiloLinea,
+  estiloTerritorio,
+  estiloContenedorBotones,
+  estiloBoton
+} from './estilos';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
@@ -92,37 +91,17 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
+    
     capa.on('click', async () => {
       if (territorio.properties && territorio.properties.id_ti) {
         const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
 
-        const timelineContainer = document.createElement('div');
-        Object.assign(timelineContainer.style, estiloTimelineContainer);
+        const contenedorLineaTiempo = creaContenedorLineaTiempo();
+        const contenedorInformacion = creaContenedorInformacion();
 
-        let infoContainer = document.createElement('div');
-        Object.assign(infoContainer.style, estiloInfoContainer);
-
-        gestion_documental.rows.forEach((doc: any, index: number) => {
-          const circle = document.createElement('div');
-          Object.assign(circle.style, estiloCircle);
-          circle.title = doc.Fecha_ini_actividad.value;
-
-          circle.addEventListener('click', () => {
-            infoContainer.innerHTML = `
-              <strong>Documento:</strong> ${doc.Nombre_documento}<br/>
-              <strong>Lugar:</strong> ${doc.Lugar}<br/>
-              <strong>Fechas</strong><br/>
-              <strong> - de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
-            `;
-            if (doc.Fecha_fin_actividad) {
-              infoContainer.innerHTML = infoContainer.innerHTML + `<strong> - de Finalización:</strong> ${doc.Fecha_fin_actividad.value}<br/>`;
-            }
-            infoContainer.innerHTML = infoContainer.innerHTML + `<strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
-              <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
-              <strong><a href="${doc.Link_acta_asistencia}" target="_blank">Link Acta Asistencia</a></strong><br/>`;
-          });
-
-          timelineContainer.appendChild(circle);
+        gestion_documental.rows.forEach((doc: any) => {
+          const circle = creaCirculo(doc, contenedorInformacion);
+          contenedorLineaTiempo.appendChild(circle);
         });
 
         capa.bindPopup(`
@@ -134,15 +113,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           </div>
         `).openPopup();
 
-        const popupContent = document.getElementById(`timeline-${territorio.properties.id_ti}`);
-        if (popupContent) {
-          popupContent.appendChild(timelineContainer);
-        }
-
-        const infoContent = document.getElementById(`info-${territorio.properties.id_ti}`);
-        if (infoContent) {
-          infoContent.appendChild(infoContainer);
-        }
+        adjuntarAPopUp(territorio, contenedorLineaTiempo, contenedorInformacion);
       }
     });
   };
@@ -153,7 +124,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      <div style={contenedorBotones}>
+      <div style={estiloContenedorBotones}>
         <button
           onClick={() => setShowOSM(!showOSM)}
           style={estiloBoton(showOSM, 'green')}
