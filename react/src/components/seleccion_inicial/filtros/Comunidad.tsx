@@ -15,24 +15,24 @@ interface ComunidadImp {
   datos: Datos;
   establecerDatos: (datos: Datos) => void;
   siguientePaso: () => void;
-  mode: 'online' | 'offline';
+  modo: 'online' | 'offline';
 }
 
 const consultas = {
-  segregado: (territorio_id: string, mode: 'online' | 'offline') => `
+  segregado: (territorio_id: string, modo: 'online' | 'offline') => `
     SELECT id_cnida, comunidad
-    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+    FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
     WHERE id_ti = '${territorio_id}'
     ORDER BY id_cnida;
   `,
-  total: (mode: 'online' | 'offline') => `
+  total: (modo: 'online' | 'offline') => `
     SELECT id_cnida, comunidad
-    FROM ${mode === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+    FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
     ORDER BY id_cnida;
   `
 };
 
-const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso, mode }) => {
+const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso, modo }) => {
 
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
@@ -42,11 +42,11 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
     async function buscarDatos(territorio_id: string) {
       let consulta: string;
       if (territorio_id === 'Todos') {
-        consulta = consultas.total(mode);
+        consulta = consultas.total(modo);
       } else {
-        consulta = consultas.segregado(territorio_id, mode);
+        consulta = consultas.segregado(territorio_id, modo);
       }
-      const puntofinal = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
       const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
       const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas', comunidad: 'Todas' }, ...resultado.rows];
@@ -55,7 +55,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
     }
 
     buscarDatos(datos.territorio_id);
-  }, [datos.territorio_id, mode]);
+  }, [datos.territorio_id, modo]);
 
   useEffect(() => {
     establecerOpcionesFiltradas(
