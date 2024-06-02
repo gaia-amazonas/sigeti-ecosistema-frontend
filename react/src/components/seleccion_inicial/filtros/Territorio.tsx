@@ -15,10 +15,10 @@ interface TerritorioImp {
   datos: Datos;
   establecerDatos: (datos: Datos) => void;
   siguientePaso: () => void;
-  mode: 'online' | 'offline';
+  modo: 'online' | 'offline';
 }
 
-const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso, mode }) => {
+const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso, modo }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
@@ -29,14 +29,15 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
         SELECT
           id_ti, territorio
         FROM
-          ${mode === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
-        ORDER BY id_ti ASC;
+          ${modo === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
+        ORDER BY
+          id_ti ASC;
       `;
-      const endpoint = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
-      const respuesta = await fetch(`${endpoint}?query=${encodeURIComponent(consulta)}`);
-      console.log("API Response:", respuesta);
+      const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
+      console.log("Respuesta API:", respuesta);
       const resultado = await respuesta.json();
-      console.log("Parsed Result:", resultado);
+      console.log("Resultado analizado:", resultado);
 
       if (resultado && resultado.rows) {
         const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
@@ -48,7 +49,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
     }
 
     buscarDatos();
-  }, [mode]);
+  }, [modo]);
 
   useEffect(() => {
     establecerOpcionesFiltradas(
