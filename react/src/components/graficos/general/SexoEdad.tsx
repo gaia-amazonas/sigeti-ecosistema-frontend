@@ -3,16 +3,16 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
 interface SexoEdadImp {
-  datosPiramidales: any[];
+  datosPiramidalesSexoEdad: any[];
 }
 
-const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidales }) => {
+const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidalesSexoEdad }) => {
 
-  const mujeresDatosPiramidales = datosPiramidales
+  const mujeresDatosPiramidales = datosPiramidalesSexoEdad
     .filter((item: { Mujer: any }) => item.Mujer)
     .map((item: { Mujer: any }) => item.Mujer);
 
-  const hombresDatosPiramidales = datosPiramidales
+  const hombresDatosPiramidales = datosPiramidalesSexoEdad
     .filter((item: {Hombre: any}) => item.Hombre)
     .map((item: {Hombre: any}) => item.Hombre);
   
@@ -22,7 +22,7 @@ const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidales }) => {
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
-        data={datosPiramidales}
+        data={datosPiramidalesSexoEdad}
         layout="vertical"
         margin={{ top: 10, right: 30, left: 70, bottom: 20 }}
       >

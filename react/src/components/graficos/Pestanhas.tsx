@@ -24,9 +24,6 @@ interface DatosPorPestanhaImp {
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territorio_id: '' }, reiniciar, modo }) => {
 
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-  console.log(modo);
-
   const [activo, establecerActivo] = useState('pestanha_general');
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
     general: [],
