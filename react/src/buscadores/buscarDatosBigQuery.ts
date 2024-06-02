@@ -1,3 +1,4 @@
+// .src/buscadores/buscarDatosBigQuery.ts
 import { FeatureCollection } from 'geojson';
 
 export const buscarDatos = async (consulta: string, modo: string) => {
@@ -7,15 +8,15 @@ export const buscarDatos = async (consulta: string, modo: string) => {
     return await respuesta.json();
 };
 
-export const buscarDatosGeoJson = async (query: string, establecedor: React.Dispatch<React.SetStateAction<FeatureCollection | null>>, featuresMapa: (filas: any) => any) => {
-    
-    const respuesta = await fetch(`/api/bigQueryEspacial?query=${encodeURIComponent(query)}`);
-    const json = await respuesta.json();
+export const buscarDatosGeoJson = async (
+    consulta: string,
+    modo: string,
+    featuresMapa: (row: any) => any
+): Promise<FeatureCollection> => {
+    const json = await buscarDatos(consulta, modo);
     const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
-
-    establecedor({
+    return {
         type: 'FeatureCollection',
         features: features,
-    });
-
+    };
 };
