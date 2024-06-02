@@ -6,6 +6,7 @@ import Comunidad from './filtros/Comunidad';
 
 import { Contenedor, ContenedorPaso, Titulo } from './estilos/Seleccion';
 
+
 interface Datos {
   territorio_id: string;
   comunidad_id: string;
@@ -19,17 +20,18 @@ interface SeleccionImp {
 }
 
 const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamico, establecerPasoDinamico }) => {
+  
   const [paso, establecerPaso] = useState(1);
   const [datos, establecerDatos] = useState<Datos>({
     territorio_id: '',
     comunidad_id: '',
   });
-
   const siguientePaso = () => {
     establecerPaso(paso + 1);
     establecerPasoDinamico(paso + 1);
   }
 
+  
   useEffect(() => {
     if (paso > 2) {
       alFinalizar(datos);

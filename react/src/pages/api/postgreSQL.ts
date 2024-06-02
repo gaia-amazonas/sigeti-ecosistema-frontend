@@ -1,11 +1,10 @@
-// src/pages/api/bigQuery.ts
+// src/pages/api/postgreSQL.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { BigQuery } from '@google-cloud/bigquery';
+import { Client } from 'pg';
 import path from 'path';
 import { config } from 'dotenv';
 import winston from 'winston';
-import postgresHandler from './postgreSQL';
 
 const logger = winston.createLogger({
   level: 'error',
@@ -27,36 +26,34 @@ const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
 const direccionAmbiente = path.resolve(process.cwd(), archivoVariablesAmbiente);
 config({ path: direccionAmbiente });
 
-const clienteBigQuery = new BigQuery({
-  keyFilename: process.env.CREDENCIALES_GOOGLE,
+const clientePostgres = new Client({
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: Number(process.env.POSTGRES_PORT),
 });
+clientePostgres.connect();
 
 export default async function handler(solicitud: NextApiRequest, respuesta: NextApiResponse) {
-  const mode = solicitud.cookies.mode || 'online'; // Read mode from cookies
-
   if (solicitud.method === 'GET') {
     const { query } = solicitud.query;
     try {
-      if (mode === 'online') {
-        await esperaRespuestaBigQuery(query, respuesta);
-      } else {
-        await postgresHandler(solicitud, respuesta);
-      }
+      await esperaRespuestaPostgres(query, respuesta);
     } catch (error) {
-      logRespuestaErroneaBigQuery(error, query, respuesta);
+      logRespuestaErroneaPostgres(error, query, respuesta);
     }
   } else {
     respuesta.status(405).json({ error: 'Método no permitido' });
   }
 }
 
-const esperaRespuestaBigQuery = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {
-  const [job] = await clienteBigQuery.createQueryJob({ query: query as string });
-  const [rows] = await job.getQueryResults();
-  respuesta.status(200).json({ rows });
+const esperaRespuestaPostgres = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {
+  const result = await clientePostgres.query(query as string);
+  respuesta.status(200).json({ rows: result.rows });
 }
 
-const logRespuestaErroneaBigQuery = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
+const logRespuestaErroneaPostgres = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
   logger.error(`Error ejecutando la query: ${query}`, error);
   respuesta.status(500).json({ error: 'Error ejecutando query', details: error });
 }
