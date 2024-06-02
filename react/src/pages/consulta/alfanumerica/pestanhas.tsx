@@ -6,7 +6,8 @@ import EstiloGlobal from 'estilos_paginas/global';
 
 const PestanhasPage: React.FC = () => {
   const router = useRouter();
-  const { datos } = router.query;
+  const datos = router.query.datos;
+  const modo = router.query.modo;
 
   let parsedDatos;
   try {
@@ -16,13 +17,16 @@ const PestanhasPage: React.FC = () => {
   }
 
   const reiniciarEstado = () => {
-    router.push('/consulta/alfanumerica/inicio');
+    router.push({
+      pathname: '/consulta/alfanumerica/inicio',
+      query: { modo },
+    });
   };
 
   return (
     <>
       <EstiloGlobal />
-      <Pestanhas datos={parsedDatos} reiniciar={reiniciarEstado} />
+      <Pestanhas datos={parsedDatos} reiniciar={reiniciarEstado} modo={modo as 'online' | 'offline'} />
     </>
   );
 };

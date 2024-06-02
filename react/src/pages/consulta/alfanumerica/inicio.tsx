@@ -14,7 +14,7 @@ const Alfanumerica: React.FC = () => {
   const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
     router.push({
       pathname: '/consulta/alfanumerica/pestanhas',
-      query: { datos: JSON.stringify(seleccionaDatos) },
+      query: { datos: JSON.stringify(seleccionaDatos), modo },
     });
   };
 
@@ -22,7 +22,10 @@ const Alfanumerica: React.FC = () => {
     if (pasoDinamico === 1) {
       router.push('/');
     } else {
-      router.push('/consulta/alfanumerica/inicio');
+      router.push({
+        pathname: '/consulta/alfanumerica/inicio',
+        query: { modo },
+      });
     }
     establecerPasoDinamico(1);
   };

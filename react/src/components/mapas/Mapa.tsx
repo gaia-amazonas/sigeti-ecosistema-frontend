@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
 import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
-import { buscarDatos, buscarDatosGeoJson } from 'buscadores/buscarDatosBigQuery';
+import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
 import { creaContenedorLineaTiempo, creaContenedorInformacion, creaCirculo, adjuntarAPopUp } from './graficosDinamicos';
 
 import {
