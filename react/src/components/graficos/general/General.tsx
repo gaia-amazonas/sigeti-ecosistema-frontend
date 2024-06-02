@@ -13,6 +13,8 @@ interface GeneralImp {
 
 export const General: React.FC<GeneralImp> = ({ datos }) => {
 
+  console.log(datos);
+
   if (!datos || datos.length < 5 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows) {
     return <div>Cargando...</div>;
   }
@@ -65,9 +67,9 @@ const extractorDeDatosEntrantes = (datos: any[]) => {
 
 }
 
-const calculadorDeSexosPorEdades = (sexoDatos: any[]) {
-  const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0,
-  const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0,
+const calculadorDeSexosPorEdades = (sexoDatos: any[]) => {
+  const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0;
+  const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0;
   return {
     mujerContador: mujerContador,
     hombreContador: hombreContador,
@@ -75,7 +77,7 @@ const calculadorDeSexosPorEdades = (sexoDatos: any[]) {
   }
 }
 
-const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: any[]) {
+const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: any[]) => {
   return sexoEdadDatos.map((item: any) => ({
     ageGroup: item.age_group,
     [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
