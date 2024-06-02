@@ -1,8 +1,9 @@
 import { FeatureCollection } from 'geojson';
 
-
-export const buscarDatos = async (consulta: string) => {
-    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+export const buscarDatos = async (consulta: string, modo: string) => {
+    const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+    const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
+    console.log("Respuesta API:", respuesta);
     return await respuesta.json();
 };
 

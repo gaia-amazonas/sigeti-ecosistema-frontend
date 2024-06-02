@@ -6,13 +6,18 @@ import { FeatureCollection } from 'geojson';
 import { estiloLinea, estiloTerritorio } from './estilos';
 import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
+import { buscarDatos, buscarDatosGeoJson } from 'buscadores/buscarDatosBigQuery';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
-const Mapa: React.FC = () => {
+interface MapaImp {
+  modo: string;
+}
+
+const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
   const [showOSM, setShowOSM] = useState(true);
@@ -22,7 +27,7 @@ const Mapa: React.FC = () => {
   useEffect(() => {
 
     const buscarLineas = async () => {
-      const json = await buscarDatos(consultaEspacial.lineas);
+      const json = await buscarDatos(consultaEspacial.lineas, modo);
       const features = json.rows.map((row: any) => ({
         type: 'Feature',
         properties: {
@@ -46,7 +51,7 @@ const Mapa: React.FC = () => {
 
     const buscarTerritorios = async () => {
 
-      const json = await buscarDatos(consultaEspacial.territorios);
+      const json = await buscarDatos(consultaEspacial.territorios, modo);
       const features = json.rows.map((row: any) => {
         let geometry;
         try {
@@ -76,7 +81,7 @@ const Mapa: React.FC = () => {
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {
       capa.on('click', async () => {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id));
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id), modo);
         const info = gestion_documental.rows[0];
         if (info) {
           const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
@@ -90,7 +95,7 @@ const Mapa: React.FC = () => {
   const enCadaTerritorio = (territorio: any, capa: any) => {
     capa.on('click', async () => {
       if (territorio.properties && territorio.properties.id_ti) {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti));
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
 
         const timelineContainer = document.createElement('div');
         timelineContainer.style.display = 'flex';
@@ -150,11 +155,6 @@ const Mapa: React.FC = () => {
         }
       }
     });
-  };
-
-  const buscarDatos = async (consulta: string) => {
-    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
-    return await respuesta.json();
   };
 
   if (!lineasGeoJson || !territoriosGeoJson) {
