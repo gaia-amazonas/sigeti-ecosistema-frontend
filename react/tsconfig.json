@@ -24,6 +24,7 @@
       "transformadores/*": ["./src/transformadores/*"],
       "consultas/*": ["./src/components/consultas/*"],
       "estilos_paginas/*": ["./src/pages/estilos/*"],
+      "bases_de_datos/*": ["./src/bases_de_datos/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

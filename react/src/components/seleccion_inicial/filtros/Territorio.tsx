@@ -1,7 +1,5 @@
-// src/components/seleccion_inicial/Territorio.tsx
 import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
-
 
 interface Datos {
   territorio_id: string;
@@ -17,36 +15,40 @@ interface TerritorioImp {
   datos: Datos;
   establecerDatos: (datos: Datos) => void;
   siguientePaso: () => void;
+  mode: 'online' | 'offline';
 }
 
-
-const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso }) => {
-
+const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso, mode }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
 
   useEffect(() => {
-    
     async function buscarDatos() {
       const consulta = `
         SELECT
           id_ti, territorio
         FROM
-          \`sigeti.censo_632.territorios\`
-        ORDER BY
-          id_ti;
+          ${mode === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
+        ORDER BY id_ti ASC;
       `;
-      const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+      const endpoint = mode === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const respuesta = await fetch(`${endpoint}?query=${encodeURIComponent(consulta)}`);
+      console.log("API Response:", respuesta);
       const resultado = await respuesta.json();
-      const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
-      establecerOpciones(opcionesConTodos);
-      establecerOpcionesFiltradas(opcionesConTodos);
+      console.log("Parsed Result:", resultado);
+
+      if (resultado && resultado.rows) {
+        const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
+        establecerOpciones(opcionesConTodos);
+        establecerOpcionesFiltradas(opcionesConTodos);
+      } else {
+        console.error("No rows found in response");
+      }
     }
 
     buscarDatos();
-
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     establecerOpcionesFiltradas(
