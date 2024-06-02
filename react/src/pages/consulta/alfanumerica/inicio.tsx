@@ -1,4 +1,5 @@
 // src/pages/alfanumerica/inicio.tsx
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import BotonReiniciar from 'components/BotonReiniciar';
@@ -8,6 +9,7 @@ import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 const Alfanumerica: React.FC = () => {
   const [pasoDinamico, establecerPasoDinamico] = useState(1);
   const router = useRouter();
+  const { mode } = router.query;
 
   const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
     router.push({
@@ -36,6 +38,7 @@ const Alfanumerica: React.FC = () => {
           reiniciar={reiniciarEstado} 
           pasoDinamico={pasoDinamico} 
           establecerPasoDinamico={establecerPasoDinamico} 
+          mode={mode as 'online' | 'offline'}
         />
       </div>
     </>

@@ -1,9 +1,6 @@
-// src/components/seleccion_inicial/Seleccion.tsx
 import React, { useEffect, useState } from 'react';
-
 import Territorio from './filtros/Territorio';
 import Comunidad from './filtros/Comunidad';
-
 import { Contenedor, ContenedorPaso, Titulo } from './estilos/Seleccion';
 
 interface Datos {
@@ -16,9 +13,10 @@ interface SeleccionImp {
   reiniciar: () => void;
   pasoDinamico: number;
   establecerPasoDinamico: (paso: number) => void;
+  mode: 'online' | 'offline';
 }
 
-const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamico, establecerPasoDinamico }) => {
+const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamico, establecerPasoDinamico, mode }) => {
   const [paso, establecerPaso] = useState(1);
   const [datos, establecerDatos] = useState<Datos>({
     territorio_id: '',
@@ -55,13 +53,13 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
         {paso === 1 && (
           <>
             <Titulo>Territorio</Titulo>
-            <Territorio datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} />
+            <Territorio datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} mode={mode} />
           </>
         )}
         {paso === 2 && (
           <>
             <Titulo>Comunidad</Titulo>
-            <Comunidad datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} />
+            <Comunidad datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} mode={mode} />
           </>
         )}
       </ContenedorPaso>
