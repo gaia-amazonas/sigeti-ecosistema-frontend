@@ -8,12 +8,12 @@ import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface GeneralImp {
-  data: any[];
+  datos: any[];
 }
 
-export const General: React.FC<GeneralImp> = ({ data }) => {
+export const General: React.FC<GeneralImp> = ({ datos }) => {
 
-  if (!data || data.length < 5 || !data[0].rows || !data[1].rows || !data[2].rows || !data[3].rows || !data[4].rows) {
+  if (!datos || datos.length < 5 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows) {
     return <div>Cargando...</div>;
   }
 
@@ -23,7 +23,7 @@ export const General: React.FC<GeneralImp> = ({ data }) => {
     sexoEdadDatos: sexoEdadDatos,
     territoriosGeometry: territoriosGeometry,
     comunidadesGeometries: comunidadesGeometries
-  } = extractorDeDatosEntrantes(data);
+  } = extractorDeDatosEntrantes(datos);
 
   const {
     mujerContador: mujerContador,
