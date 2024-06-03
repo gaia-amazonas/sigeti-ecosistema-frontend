@@ -1,4 +1,4 @@
-// .src/buscadores/buscarDatosBigQuery.ts
+// .src/buscadores/buscarSQL.ts
 import { FeatureCollection } from 'geojson';
 
 export const buscarDatos = async (consulta: string, modo: string) => {
@@ -11,12 +11,13 @@ export const buscarDatos = async (consulta: string, modo: string) => {
 export const buscarDatosGeoJson = async (
     consulta: string,
     modo: string,
-    featuresMapa: (row: any) => any
-): Promise<FeatureCollection> => {
+    featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
+
     const json = await buscarDatos(consulta, modo);
     const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
     return {
         type: 'FeatureCollection',
         features: features,
     };
+    
 };

@@ -1,25 +1,23 @@
-// src/components/consultas/generales/todasGeoComunidadesPorTerritorio.ts
+// src/components/consultas/generales/porTerritorio.ts
 
-const todasGeoComunidadesPorTerritorio = {
-    sexo: (territorioId: string) => `
+const porTerritorio = {
+    sexo: (comunidadId: string) => `
         SELECT
             SEXO, COUNT(*) 
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            id_ti = '${territorioId}'
+            id_cnida = '${comunidadId}'
         GROUP BY
-            sexo;`
-    ,
-    familias: (territorioId: string) => `
+            id_cnida, sexo, id_ti;`,
+    familias: (comunidadId: string) => `
         SELECT
             COUNT(*) as familias
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
-            id_ti = '${territorioId}';`
-    ,
-    sexo_edad: (territorioId: string) => `
+            id_cnida = '${comunidadId}';`,
+    sexo_edad: (comunidadId: string) => `
         SELECT 
             CASE 
                 WHEN edad BETWEEN 0 AND 5 THEN '0-5'
@@ -74,38 +72,56 @@ const todasGeoComunidadesPorTerritorio = {
         FROM 
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            id_ti = '${territorioId}'
+            ID_CNIDA = '${comunidadId}'
         GROUP BY 
             age_group, 
             sexo, 
             age_group_order
         ORDER BY 
             age_group_order, 
-            sexo;`
-    ,
-    territorio: (territorioId: string) => `
+            sexo;`,
+    territorio: (comunidadId: string) => `
         SELECT
-            geometry,
-            id_ti,
-            territorio
+            ST_AsGeoJSON(t.geometry) as geometry,
+            t.id_ti as id_ti,
+            t.territorio as territorio
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
-        WHERE
-            id_ti = '${territorioId}';`
-    ,
-    comunidades_en_territorio: (territorioId: string) => `
-        SELECT
-            g.geometry,
-            g.nomb_cnida
-        FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` g
+            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` a
+            \`sigeti.censo_632.comunidades_por_territorio\` AS c
         ON
-            a.id_cnida = g.id_cnida
+            t.id_ti = c.id_ti
         WHERE
-            a.id_ti = '${territorioId}';`
-};
+            c.id_cnida = '${comunidadId}';`,
+    comunidades_en_territorio: (comunidadId: string) => `
+        SELECT
+            c.geometry,
+            c.nomb_cnida
+        FROM
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+        WHERE
+            c.id_cnida = '${comunidadId}';`,
+    gestion_documental_territorio: (territorioId: string) => `
+        SELECT
+            Lugar,
+            Nombre_documento,
+            Tipo_escenario,
+            Link_documento,
+            Link_acta_asistencia,
+            Fecha_ini_actividad,
+            Fecha_fin_actividad
+        FROM
+            \`sigeti-admin-364713.Gestion_Documental.Tabla_general\`
+        WHERE
+            id_ti = '${territorioId}';`,
+    gestion_documental_linea_colindante: (lineaId: string) => `
+        SELECT
+            COL_ENTRE,
+            ACUERDO
+        FROM
+            \`sigeti-admin-364713.analysis_units.LineasColindantes\`
+        WHERE
+            OBJECTID = ${lineaId};`
+    };
 
-
-export default todasGeoComunidadesPorTerritorio;
+export default porTerritorio;

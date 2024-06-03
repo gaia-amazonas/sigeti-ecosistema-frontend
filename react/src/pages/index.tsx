@@ -8,6 +8,7 @@ const Home: React.FC = () => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
+
     const updateOnlineStatus = () => {
       const onlineStatus = navigator.onLine;
       setIsOnline(onlineStatus);
@@ -24,6 +25,7 @@ const Home: React.FC = () => {
         window.removeEventListener('offline', updateOnlineStatus);
       };
     }
+    
   }, []);
 
   return (

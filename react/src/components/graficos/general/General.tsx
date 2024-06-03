@@ -7,29 +7,45 @@ import TotalYFamilias from './TotalYFamilias';
 import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
-interface GraphComponentProps {
-  data: any[];
+interface GeneralImp {
+  datos: any[];
 }
 
-export const General: React.FC<GraphComponentProps> = ({ data }) => {
-  if (!data || data.length < 5 || !data[0].rows || !data[1].rows || !data[2].rows || !data[3].rows || !data[4].rows) {
+export const General: React.FC<GeneralImp> = ({ datos }) => {
+
+  console.log(datos);
+  // console.log(!datos);
+  // console.log(datos.length < 6);
+  // console.log(!datos[0].rows);
+  // console.log(!datos[1].rows);
+  // console.log(!datos[2].rows);
+  // console.log(!datos[3].rows);
+  // console.log(!datos[4].rows);
+  // console.log(!datos[5].rows);
+
+  if (!datos || datos.length < 6 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows || !datos[5].features) {
     return <div>Cargando...</div>;
   }
 
-  const sexoDatos = data[0].rows;
-  const familiasDatos = data[1].rows[0].familias;
-  const sexoEdadDatos = data[2].rows;
-  const territoriosGeometry = data[3].rows;
-  const comunidadesGeometries = data[4].rows.map((row: any) => row.geometry);
+  const {
+    sexoDatos: sexoDatos,
+    familiasDatos: familiasDatos,
+    sexoEdadDatos: sexoEdadDatos,
+    territoriosGeometry: territoriosGeometry,
+    comunidadesGeometries: comunidadesGeometries,
+    territoriosGeoJson: territoriosGeoJson
+  } = extractorDeDatosEntrantes(datos);
 
-  const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0;
-  const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0;
-  const totalContador = mujerContador + hombreContador;
+  console.log("EN GENERAAAAAAAAAAAAAAL");
+  console.log(territoriosGeoJson);
 
-  const datosPiramidales = sexoEdadDatos.map((item: any) => ({
-    ageGroup: item.age_group,
-    [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
-  }));
+  const {
+    mujerContador: mujerContador,
+    hombreContador: hombreContador,
+    totalContador: totalContador
+  } = calculadorDeSexosPorEdades(sexoDatos);
+
+  const datosPiramidalesSexoEdad = segmentaPorEdadYSexoParaGraficasPiramidales(sexoEdadDatos);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
@@ -40,15 +56,46 @@ export const General: React.FC<GraphComponentProps> = ({ data }) => {
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
       <SexoEdad
-        datosPiramidales={datosPiramidales}
+        datosPiramidalesSexoEdad={datosPiramidalesSexoEdad}
       />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeometry={territoriosGeometry}
+        territoriosGeoJson={territoriosGeoJson}
         comunidadesGeometries={comunidadesGeometries}
       />
     </div>
   );
 };
+
+const extractorDeDatosEntrantes = (datos: any[]) => {
+
+  return {
+    sexoDatos: datos[0].rows,
+    familiasDatos: datos[1].rows[0].familias,
+    sexoEdadDatos: datos[2].rows,
+    territoriosGeometry: datos[3].rows,
+    comunidadesGeometries: datos[4].rows.map((row: any) => row.geometry),
+    territoriosGeoJson: datos[5]
+  }
+
+}
+
+const calculadorDeSexosPorEdades = (sexoDatos: any[]) => {
+  const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0;
+  const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0;
+  return {
+    mujerContador: mujerContador,
+    hombreContador: hombreContador,
+    totalContador: mujerContador + hombreContador,
+  }
+}
+
+const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: any[]) => {
+  return sexoEdadDatos.map((item: any) => ({
+    ageGroup: item.age_group,
+    [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
+  }));
+}
 
 export default General;
