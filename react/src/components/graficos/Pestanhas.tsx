@@ -47,57 +47,52 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
     };
 
     const buscarDatosPorTerritorioYComunidad = async (datos: any) => {
+
       const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datos.comunidad_id), modo);
       const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datos.comunidad_id), modo);
       const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id), modo);
       const territorio = await buscarDatos(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id), modo);
       const comunidades_en_territorio = await buscarDatos(consultasGeneralesPorTerritorio.comunidades_en_territorio(datos.comunidad_id), modo);
       const territoriosGeoJson = await buscarTerritorios(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id), modo);
-
       establecerDatosPorPestanha(datosPrevios => ({
         ...datosPrevios,
         general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
       }));
+
     };
 
     const buscarDatosParaTodosTerritoriosYComunidades = async () => {
+
       const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo, modo);
       const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias, modo);
       const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad, modo);
       const territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.territorio, modo);
       const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.comunidades_en_territorio, modo);
       const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodosGeoTerritorios.territorio, modo);
-
       establecerDatosPorPestanha(datosPrevios => ({
         ...datosPrevios,
         general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
       }));
+
     };
 
     const buscarDatosPorTerritorio = async (datos: any) => {
+
       const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datos.territorio_id), modo);
       const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datos.territorio_id), modo);
       const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id), modo);
       const territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id), modo);
       const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datos.territorio_id), modo);
       const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id), modo);
-
       establecerDatosPorPestanha(datosPrevios => ({
         ...datosPrevios,
         general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
       }));
+
     };
-
     buscarDatosParaPestanha();
+    
   }, [datos, modo]);
-
-  useEffect(() => {
-    console.log("TERRITORIOS GEOJSON", territoriosGeoJson);
-  }, [territoriosGeoJson]);
-
-  useEffect(() => {
-    console.log("DATOS PESTANHA", datosPorPestanha);
-  }, [datosPorPestanha]);
 
   return (
     <Contenedor>

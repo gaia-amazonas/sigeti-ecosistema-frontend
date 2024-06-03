@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import logger from 'utilidades/logger';
+
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
+
 
 interface Datos {
   territorio_id: string;
@@ -34,17 +37,21 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
           id_ti ASC;
       `;
       const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
-      const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
-      console.log("Respuesta API:", respuesta);
-      const resultado = await respuesta.json();
-      console.log("Resultado analizado:", resultado);
+      try {
+        const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
+        logger.info("Respuesta API", { respuesta: await respuesta.clone().text() });
+        const resultado = await respuesta.json();
+        logger.info("Resultado analizado", { resultado });
 
-      if (resultado && resultado.rows) {
-        const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
-        establecerOpciones(opcionesConTodos);
-        establecerOpcionesFiltradas(opcionesConTodos);
-      } else {
-        console.error("No rows found in response");
+        if (resultado && resultado.rows) {
+          const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
+          establecerOpciones(opcionesConTodos);
+          establecerOpcionesFiltradas(opcionesConTodos);
+        } else {
+          logger.error("No rows found in response");
+        }
+      } catch (error) {
+        logger.error("Error fetching data", { error });
       }
     }
 
