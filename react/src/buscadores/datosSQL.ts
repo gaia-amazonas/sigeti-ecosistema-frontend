@@ -3,10 +3,10 @@ import { FeatureCollection } from 'geojson';
 import logger from 'utilidades/logger';
 
 export const buscarDatos = async (consulta: string, modo: string | string[] | undefined) => {
-    const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+    const puntoFinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
     try {
-        const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
-        logger.info("API Response", { url: puntofinal, status: respuesta.status, statusText: respuesta.statusText });
+        const respuesta = await fetch(`${puntoFinal}?query=${encodeURIComponent(consulta)}`);
+        logger.info("API Response", { url: puntoFinal, status: respuesta.status, statusText: respuesta.statusText });
         const json = await respuesta.json();
         logger.info("Analizada Respuesta API", { json });
         return json;
@@ -19,19 +19,31 @@ export const buscarDatos = async (consulta: string, modo: string | string[] | un
 export const buscarDatosGeoJson = async (
     consulta: string,
     modo: string | string[] | undefined,
-    featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
+    featuresMapa: (row: any) => any
+): Promise<FeatureCollection> => {
 
     try {
-        const json = await buscarDatos(consulta, modo);
-        const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
-        const featureCollection: FeatureCollection = {
-            type: 'FeatureCollection',
-            features: features,
-        };
-        logger.info("GeoJSON Feature Collection", { featureCollection });
-        return featureCollection;
+        return await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
     } catch (error) {
-        logger.error("Error converting data to GeoJSON", { error });
+        logger.error("Error convirtiendo datos a GeoJson", { error });
         throw error;
     }
+
+};
+
+const intentaBuscarDatosGeoJson = async (
+    consulta: string,
+    modo: string | string[] | undefined,
+    featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
+
+    const json = await buscarDatos(consulta, modo);
+    const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
+    const featureCollection: FeatureCollection = {
+        type: 'FeatureCollection',
+        features: features,
+    };
+
+    logger.info("GeoJSON Feature Collection", { featureCollection });
+    return featureCollection;
+
 };
