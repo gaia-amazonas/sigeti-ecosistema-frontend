@@ -14,6 +14,8 @@ const Espacial: React.FC = () => {
     router.push('/');
   };
 
+  const modoString = Array.isArray(modo) ? modo[0] : modo || '';
+
   return (
     <>
       <EstiloGlobal />

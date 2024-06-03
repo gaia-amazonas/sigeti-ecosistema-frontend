@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 
 import { FeatureCollection } from 'geojson';
-import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
-import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
+import consultaEspacial from '../../consultas/espaciales/paraLinderos';
+import consultasGeneralesPorTerritorio from '../../consultas/generales/porTerritorio';
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
 import { creaContenedorLineaTiempo, creaContenedorInformacion, creaCirculo, adjuntarAPopUp } from './graficosDinamicos';
 
@@ -22,7 +22,7 @@ const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJ
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
 interface MapaImp {
-  modo: string;
+  modo: string | string[] | undefined;
 }
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {

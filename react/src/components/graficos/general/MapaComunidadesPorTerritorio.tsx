@@ -40,10 +40,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comu
         })();
     }, []);
 
-    useEffect(() => {
-        console.log("EN MAPA COMUNIDADESSSS", territoriosGeoJson);
-    }, [territoriosGeoJson]);
-
     if (!isClient) {
         return <div>Cargando el mapa...</div>;
     }
@@ -63,19 +59,15 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comu
             />
             <TerritoriosGeoJson data={territoriosGeoJson} style={estiloTerritorio} />
             {comunidadesGeoJson.features.map((feature, idx) => {
-                if (feature.geometry.type === 'Point') {
-                    const pointFeature = feature as Feature<Point>;
-                    const { coordinates } = pointFeature.geometry;
-                    return (
-                        <Marcador key={idx} position={[coordinates[1], coordinates[0]]}>
-                            <VentanaEmergente>
-                                <span>Coordinates: {coordinates}</span>
-                            </VentanaEmergente>
-                        </Marcador>
-                    );
-                } else {
-                    return <GeoJson key={idx} data={feature} style={{ color: 'red' }} />;
-                }
+                const pointFeature = feature as Feature<Point>;
+                const { coordinates } = pointFeature.geometry;
+                return (
+                    <Marcador key={idx} position={[coordinates[1], coordinates[0]]}>
+                        <VentanaEmergente>
+                            <span>Coordinates: {coordinates}</span>
+                        </VentanaEmergente>
+                    </Marcador>
+                );
             })}
         </Contenedor>
     );
