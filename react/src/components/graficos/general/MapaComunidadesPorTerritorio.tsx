@@ -6,11 +6,8 @@ import { stringPostGISAGeoJson } from 'transformadores/stringPostGISAGeoJson';
 import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
 
 import {
-  estiloLinea,
   estiloTerritorio,
-  estiloContenedorBotones,
-  estiloBoton
-} from '../../mapas/estilos';
+} from 'estilosMapas';
 
 import markerIconPng from 'iconos/marker-icon.png';
 import markerShadowPng from 'iconos/marker-shadow.png';
@@ -51,11 +48,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comu
         return <div>Cargando el mapa...</div>;
     }
 
-    // const territorioGeoJson: FeatureCollection<Geometry> = {
-    //     type: 'FeatureCollection',
-    //     features: territoriosGeometry.map(stringPostGISAGeoJson).filter(Boolean),
-    // };
-
     const comunidadesGeoJson: FeatureCollection<Geometry> = {
         type: 'FeatureCollection',
         features: comunidadesGeometries.map(stringPostGISAGeoJson).filter(Boolean),
@@ -69,10 +61,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comu
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            {/* <TerritoriosGeoJson data={territoriosGeoJson} style={estiloTerritorio} /> */}
-            {territoriosGeoJson.features.map((feature, idx) => (
-                <TerritoriosGeoJson key={idx} data={feature} style={{ color: 'blue' }} />
-            ))}
+            <TerritoriosGeoJson data={territoriosGeoJson} style={estiloTerritorio} />
             {comunidadesGeoJson.features.map((feature, idx) => {
                 if (feature.geometry.type === 'Point') {
                     const pointFeature = feature as Feature<Point>;
