@@ -55,6 +55,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       const featuresMapa = (row: any) => {
         let geometry;
         try {
+          console.log("MAPA TACTIL", row.geometry);
           geometry = JSON.parse(row.geometry);
         } catch (error) {
           throw new Error(`Error (${error}) parsing the geometry of the row ${row}`);
@@ -68,13 +69,17 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           geometry: geometry
         };
       };
-
+      console.log("CONSULTA TERRITORIO MAPA TACTIL", consultaEspacial.territorios);
       const geoJson = await buscarDatosGeoJson(consultaEspacial.territorios, modo, featuresMapa);
       establecerTerritoriosGeoJson(geoJson);
     };
 
     buscarTerritorios();
   }, [modo]);
+
+  useEffect(() => {
+    console.log("TERRITORIOS GEOJSON MAPA CONSULTA", territoriosGeoJson);
+  }, [territoriosGeoJson]);
 
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {

@@ -85,7 +85,7 @@ const todasGeoComunidadesPorTerritorio = {
     ,
     territorio: (territorioId: string) => `
         SELECT
-            geometry,
+            ST_AsGeoJSON(geometry) AS geometry,
             id_ti,
             territorio
         FROM

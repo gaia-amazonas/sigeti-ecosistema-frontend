@@ -7,13 +7,15 @@ import { buscarDatos } from 'buscadores/datosSQL';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
 import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/generales/todasGeoComunidadesPorTerritorio';
+import { buscarTerritorios } from '../../utils/geoJsonUtils';
 
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/estilos/Pestanhas';
+import { FeatureCollection } from 'geojson';
 
 interface PestanhasImp {
   datos: any;
   reiniciar: () => void;
-  modo: string
+  modo: string;
 }
 
 interface DatosPorPestanhaImp {
@@ -23,8 +25,8 @@ interface DatosPorPestanhaImp {
 }
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territorio_id: '' }, reiniciar, modo }) => {
-
   const [activo, establecerActivo] = useState('pestanha_general');
+  const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
     general: [],
     cultural: [],
@@ -32,8 +34,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
   });
 
   useEffect(() => {
-
-    const buscarDatos = async () => {
+    const buscarDatosParaPestanha = async () => {
       if (datos.comunidad_id && datos.comunidad_id !== 'Todas') {
         await buscarDatosPorTerritorioYComunidad(datos);
       } else if (datos.territorio_id === 'Todos' && datos.comunidad_id === 'Todas') {
@@ -41,54 +42,62 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datos = { comunidad_id: '', territo
       } else if (datos.comunidad_id === 'Todas') {
         await buscarDatosPorTerritorio(datos);
       } else {
-        throw new Error(`Tipo de filtrado (comunidad: ${datos.comunidad_id}, territorio: ${datos.territorio_id})`);
+        throw new Error(`Tipo de filtrado no manejado (comunidad: ${datos.comunidad_id}, territorio: ${datos.territorio_id})`);
       }
     };
 
-    if (datos.comunidad_id && datos.territorio_id) {
-      buscarDatos();
-    }
-    
-  }, [datos.comunidad_id, datos.territorio_id]);
+    const buscarDatosPorTerritorioYComunidad = async (datos: any) => {
+      const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datos.comunidad_id), modo);
+      const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datos.comunidad_id), modo);
+      const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id), modo);
+      const territorio = await buscarDatos(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id), modo);
+      const comunidades_en_territorio = await buscarDatos(consultasGeneralesPorTerritorio.comunidades_en_territorio(datos.comunidad_id), modo);
+      const territoriosGeoJson = await buscarTerritorios(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id), modo);
 
-  const buscarDatosPorTerritorioYComunidad = async (datos: any) => {
-    const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datos.comunidad_id), modo);
-    const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datos.comunidad_id), modo);
-    const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datos.comunidad_id), modo);
-    const territorio = await buscarDatos(consultasGeneralesPorTerritorio.territorio(datos.comunidad_id), modo);
-    const comunidades_en_territorio = await buscarDatos(consultasGeneralesPorTerritorio.comunidades_en_territorio(datos.comunidad_id), modo);
+      establecerDatosPorPestanha(datosPrevios => ({
+        ...datosPrevios,
+        general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
+      }));
+    };
 
-    establecerDatosPorPestanha(datosPrevios => ({
-      ...datosPrevios,
-      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
-    }));
-  };
+    const buscarDatosParaTodosTerritoriosYComunidades = async () => {
+      const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo, modo);
+      const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias, modo);
+      const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad, modo);
+      const territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.territorio, modo);
+      const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.comunidades_en_territorio, modo);
+      const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodosGeoTerritorios.territorio, modo);
 
-  const buscarDatosParaTodosTerritoriosYComunidades = async () => {
-    const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo, modo);
-    const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias, modo);
-    const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad, modo);
-    const territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.territorio, modo);
-    const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodosGeoTerritorios.comunidades_en_territorio, modo);
+      establecerDatosPorPestanha(datosPrevios => ({
+        ...datosPrevios,
+        general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
+      }));
+    };
 
-    establecerDatosPorPestanha(datosPrevios => ({
-      ...datosPrevios,
-      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
-    }));
-  };
+    const buscarDatosPorTerritorio = async (datos: any) => {
+      const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datos.territorio_id), modo);
+      const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datos.territorio_id), modo);
+      const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id), modo);
+      const territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id), modo);
+      const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datos.territorio_id), modo);
+      const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id), modo);
 
-  const buscarDatosPorTerritorio = async (datos: any) => {
-    const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datos.territorio_id), modo);
-    const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datos.territorio_id), modo);
-    const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datos.territorio_id), modo);
-    const territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datos.territorio_id), modo);
-    const comunidades_en_territorio = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datos.territorio_id), modo);
+      establecerDatosPorPestanha(datosPrevios => ({
+        ...datosPrevios,
+        general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio, territoriosGeoJson],
+      }));
+    };
 
-    establecerDatosPorPestanha(datosPrevios => ({
-      ...datosPrevios,
-      general: [sexo, familias, sexo_edad, territorio, comunidades_en_territorio],
-    }));
-  };
+    buscarDatosParaPestanha();
+  }, [datos, modo]);
+
+  useEffect(() => {
+    console.log("TERRITORIOS GEOJSON", territoriosGeoJson);
+  }, [territoriosGeoJson]);
+
+  useEffect(() => {
+    console.log("DATOS PESTANHA", datosPorPestanha);
+  }, [datosPorPestanha]);
 
   return (
     <Contenedor>

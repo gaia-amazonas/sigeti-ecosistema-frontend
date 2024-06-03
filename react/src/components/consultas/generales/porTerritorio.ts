@@ -82,9 +82,9 @@ const porTerritorio = {
             sexo;`,
     territorio: (comunidadId: string) => `
         SELECT
-            t.geometry,
-            t.id_ti,
-            t.territorio
+            ST_AsGeoJSON(t.geometry) as geometry,
+            t.id_ti as id_ti,
+            t.territorio as territorio
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
         JOIN

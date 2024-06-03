@@ -78,7 +78,7 @@ const todosGeoTerritorios = {
     ,
     territorio: `
         SELECT
-            geometry,
+            ST_AsGeoJSON(geometry) AS geometry,
             id_ti,
             territorio
         FROM
