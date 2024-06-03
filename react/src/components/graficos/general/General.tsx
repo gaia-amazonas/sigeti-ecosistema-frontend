@@ -56,12 +56,6 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
   );
 };
 
-const aseguraEntradaCompletadeDatosParaPestanha = (datos: string | any[]) => {
-  if (!datos || datos.length < 6 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows || !datos[5].features) {
-    return <div>Cargando...</div>;
-  }
-} 
-
 const extractorDeDatosEntrantes = (datos: any[]) => {
 
   return {

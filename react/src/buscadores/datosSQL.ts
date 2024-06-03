@@ -2,7 +2,7 @@
 import { FeatureCollection } from 'geojson';
 import logger from 'utilidades/logger';
 
-export const buscarDatos = async (consulta: string, modo: string) => {
+export const buscarDatos = async (consulta: string, modo: string | string[] | undefined) => {
     const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
     try {
         const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
