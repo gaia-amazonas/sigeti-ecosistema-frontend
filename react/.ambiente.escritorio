@@ -1,6 +1,6 @@
 # .ambiente.escritorio
-CREDENCIALES_GOOGLE=./secrets/sigeti-dee63dd3ec66.json
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+# CREDENCIALES_GOOGLE=./secrets/sigeti-dee63dd3ec66.json
+# NEXT_PUBLIC_API_URL=http://localhost:3000/api
 
 POSTGRES_USER=postgres
 POSTGRES_HOST=localhost

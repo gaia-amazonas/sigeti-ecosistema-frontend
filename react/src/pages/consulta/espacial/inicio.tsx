@@ -23,7 +23,7 @@ const Espacial: React.FC = () => {
       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
         <Titulo>Consultar con Mapa</Titulo>
         <Mapa
-          modo={modo}
+          modo={modoString}
         />
       </div>
     </>
