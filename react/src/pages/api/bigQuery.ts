@@ -1,11 +1,10 @@
-// src/pages/api/bigQuery.ts
+// .src/pages/api/bigQuery.ts
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 import winston from 'winston';
-import postgresHandler from './postgreSQL';
 
 const logger = winston.createLogger({
   level: 'error',
@@ -37,6 +36,7 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
   if (solicitud.method === 'GET') {
     const { query } = solicitud.query;
     try {
+      await esperaRespuestaBigQuery(query, respuesta);
       if (mode === 'online') {
         await esperaRespuestaBigQuery(query, respuesta);
       } else {

@@ -1,5 +1,5 @@
-// src/consultas/espaciales/paraLinderos.ts
-const consultasEspaciales = {
+// src/consultas/espaciales/paraLineasColindates.ts
+export const consultasEspacialesBigQuery = {
   lineas: `
     SELECT
       ST_AsGeoJSON(geo) AS geometry,
@@ -16,4 +16,7 @@ const consultasEspaciales = {
       \`sigeti.unidades_de_analisis.territorios_censo632\`;`
 };
 
-export default consultasEspaciales;
+export const consultasEspacialesPostgreSQL = {
+  lineas: `SELECT * FROM sigetiescritorio.lineascolindantes_ln;`,
+  territorios: `SELECT * FROM sigetiescritorio.territoriosindigenas_pg;`
+}

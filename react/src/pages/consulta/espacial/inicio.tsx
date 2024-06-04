@@ -8,10 +8,13 @@ import BotonReiniciar from 'components/BotonReiniciar';
 const Espacial: React.FC = () => {
 
   const router = useRouter();
+  const { modo } = router.query;
 
   const reiniciarEstado = () => {
     router.push('/');
   };
+
+  const modoString = Array.isArray(modo) ? modo[0] : modo || '';
 
   return (
     <>
@@ -19,7 +22,9 @@ const Espacial: React.FC = () => {
       <BotonReiniciar onClick={reiniciarEstado} />
       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
         <Titulo>Consultar con Mapa</Titulo>
-        <Mapa />
+        <Mapa
+          modo={modoString}
+        />
       </div>
     </>
   );

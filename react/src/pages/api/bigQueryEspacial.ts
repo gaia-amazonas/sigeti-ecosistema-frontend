@@ -4,19 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
-import winston from 'winston';
+import logger from 'utilidades/logger';
 
-
-const logger = winston.createLogger({
-  level: 'error',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console()
-  ]
-});
 
 const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
   ? '.ambiente.produccion'
