@@ -165,10 +165,18 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       </div>
       <Contenedor center={[-1.014411, -70.603798]} zoom={8} style={{ height: '100%', width: '100%' }}>
         {showOSM && (
-          <CapaOSM
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
+          modo === "online" ? (
+            <CapaOSM
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+          ) : (
+            <CapaOSM
+              url="http://localhost:8080/{z}/{x}/{y}.png.tile"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+          )
+
         )}
         {showLineas && lineasGeoJson && (
           <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />
