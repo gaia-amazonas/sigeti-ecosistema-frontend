@@ -6,7 +6,6 @@ import path from 'path';
 import { config } from 'dotenv';
 import logger from 'utilidades/logger';
 
-
 const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
   ? '.ambiente.produccion'
   : process.env.AMBIENTE === 'desarrollo'
@@ -48,10 +47,8 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
 const esperaRespuestaPostgreSQL = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {
   const client = await pool.connect();
   try {
-    logger.info("Executing query:", { query });
     await client.query(`SET search_path TO sigetiescritorio`);
     const res = await client.query(query as string);
-    logger.info("Query Result:", { res });
     respuesta.status(200).json({ rows: res.rows });
   } finally {
     client.release();
