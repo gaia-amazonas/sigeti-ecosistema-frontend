@@ -24,10 +24,6 @@ const Home: React.FC = () => {
       <EstiloGlobal />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', justifyContent: 'center' }}>
         <Titulo>Bienvenido a SIGETI</Titulo>
-        <div>
-          <button onClick={() => handleModeChange('online')}>Online</button>
-          <button onClick={() => handleModeChange('offline')}>Offline</button>
-        </div>
         <BotonesContenedor>
           <Link href="/consulta/alfanumerica/inicio" passHref>
             <Boton as="span">Seleccionar por Territorio y Comunidad</Boton>
