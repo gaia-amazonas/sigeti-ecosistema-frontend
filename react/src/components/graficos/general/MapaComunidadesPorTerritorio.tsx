@@ -5,6 +5,10 @@ import 'leaflet/dist/leaflet.css';
 import { stringPostGISAGeoJson } from 'transformadores/stringPostGISAGeoJson';
 import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
 
+import {
+  estiloTerritorio,
+} from 'estilosMapas';
+
 import markerIconPng from 'iconos/marker-icon.png';
 import markerShadowPng from 'iconos/marker-shadow.png';
 
@@ -12,15 +16,17 @@ import markerShadowPng from 'iconos/marker-shadow.png';
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaMapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const GeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const Marcador = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 const VentanaEmergente = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 interface MapaImp {
     territoriosGeometry: any[];
+    territoriosGeoJson: FeatureCollection;
     comunidadesGeometries: any[];
 }
 
-const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, comunidadesGeometries }) => {
+const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comunidadesGeometries }) => {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -38,11 +44,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, comunidadesGeometries })
         return <div>Cargando el mapa...</div>;
     }
 
-    const territorioGeoJson: FeatureCollection<Geometry> = {
-        type: 'FeatureCollection',
-        features: territoriosGeometry.map(stringPostGISAGeoJson).filter(Boolean),
-    };
-
     const comunidadesGeoJson: FeatureCollection<Geometry> = {
         type: 'FeatureCollection',
         features: comunidadesGeometries.map(stringPostGISAGeoJson).filter(Boolean),
@@ -56,23 +57,17 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, comunidadesGeometries })
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            {territorioGeoJson.features.map((feature, idx) => (
-                <GeoJson key={idx} data={feature} style={{ color: 'blue' }} />
-            ))}
+            <TerritoriosGeoJson data={territoriosGeoJson} style={estiloTerritorio} />
             {comunidadesGeoJson.features.map((feature, idx) => {
-                if (feature.geometry.type === 'Point') {
-                    const pointFeature = feature as Feature<Point>;
-                    const { coordinates } = pointFeature.geometry;
-                    return (
-                        <Marcador key={idx} position={[coordinates[1], coordinates[0]]}>
-                            <VentanaEmergente>
-                                <span>Coordinates: {coordinates}</span>
-                            </VentanaEmergente>
-                        </Marcador>
-                    );
-                } else {
-                    return <GeoJson key={idx} data={feature} style={{ color: 'red' }} />;
-                }
+                const pointFeature = feature as Feature<Point>;
+                const { coordinates } = pointFeature.geometry;
+                return (
+                    <Marcador key={idx} position={[coordinates[1], coordinates[0]]}>
+                        <VentanaEmergente>
+                            <span>Coordinates: {coordinates}</span>
+                        </VentanaEmergente>
+                    </Marcador>
+                );
             })}
         </Contenedor>
     );

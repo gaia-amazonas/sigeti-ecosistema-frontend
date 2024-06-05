@@ -1,9 +1,11 @@
+// .src/pages/api/bigQuery.ts
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 import winston from 'winston';
-
+import esperaRespuestaPostgreSQL from './postgreSQL'
 
 const logger = winston.createLogger({
   level: 'error',
@@ -30,18 +32,23 @@ const clienteBigQuery = new BigQuery({
 });
 
 export default async function handler(solicitud: NextApiRequest, respuesta: NextApiResponse) {
+  const mode = solicitud.cookies.mode || 'online'; // Read mode from cookies
 
   if (solicitud.method === 'GET') {
     const { query } = solicitud.query;
     try {
-      esperaRespuestaBigQuery(query, respuesta);
+      await esperaRespuestaBigQuery(query, respuesta);
+      if (mode === 'online') {
+        await esperaRespuestaBigQuery(query, respuesta);
+      } else {
+        await esperaRespuestaPostgreSQL(solicitud, respuesta);
+      }
     } catch (error) {
       logRespuestaErroneaBigQuery(error, query, respuesta);
     }
   } else {
     respuesta.status(405).json({ error: 'Método no permitido' });
   }
-
 }
 
 const esperaRespuestaBigQuery = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {

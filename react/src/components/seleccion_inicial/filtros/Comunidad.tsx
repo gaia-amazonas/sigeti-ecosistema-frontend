@@ -1,4 +1,3 @@
-// src/components/seleccion_inicial/Comunidad.tsx
 import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
 
@@ -16,30 +15,25 @@ interface ComunidadImp {
   datos: Datos;
   establecerDatos: (datos: Datos) => void;
   siguientePaso: () => void;
+  modo: 'online' | 'offline';
 }
 
 const consultas = {
-  segregado: (territorio_id: string) => `
-    SELECT
-        id_cnida, comunidad
-    FROM
-        \`sigeti.censo_632.comunidades_por_territorio\`
-    WHERE
-        id_ti = '${territorio_id}'
-    ORDER BY
-        id_cnida;
-    `,
-  total: `
-    SELECT
-        id_cnida, comunidad
-    FROM
-        \`sigeti.censo_632.comunidades_por_territorio\`
-    ORDER BY
-        id_cnida;`
+  segregado: (territorio_id: string, modo: 'online' | 'offline') => `
+    SELECT id_cnida, comunidad
+    FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+    WHERE id_ti = '${territorio_id}'
+    ORDER BY id_cnida;
+  `,
+  total: (modo: 'online' | 'offline') => `
+    SELECT id_cnida, comunidad
+    FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+    ORDER BY id_cnida;
+  `
 };
 
+const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso, modo }) => {
 
-const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePaso }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState('');
@@ -48,11 +42,12 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
     async function buscarDatos(territorio_id: string) {
       let consulta: string;
       if (territorio_id === 'Todos') {
-        consulta = consultas.total;
+        consulta = consultas.total(modo);
       } else {
-        consulta = consultas.segregado(territorio_id);
+        consulta = consultas.segregado(territorio_id, modo);
       }
-      const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
+      const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
+      const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
       const resultado = await respuesta.json();
       const opcionesConTodas: Opcion[] = [{ id_cnida: 'Todas', comunidad: 'Todas' }, ...resultado.rows];
       establecerOpciones(opcionesConTodas);
@@ -60,7 +55,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datos, establecerDatos, siguientePa
     }
 
     buscarDatos(datos.territorio_id);
-  }, [datos.territorio_id]);
+  }, [datos.territorio_id, modo]);
 
   useEffect(() => {
     establecerOpcionesFiltradas(

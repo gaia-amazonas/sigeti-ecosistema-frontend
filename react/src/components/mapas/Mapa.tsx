@@ -1,82 +1,78 @@
-// src/components/Mapa.tsx
+// .src/components/mapas/Mapa.tsx
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
-import { estiloLinea, estiloTerritorio } from './estilos';
-import consultaEspacial from 'components/consultas/espaciales/paraLinderos';
+import * as turf from '@turf/turf';
+
+import { consultasEspacialesBigQuery, consultasEspacialesPostgreSQL } from 'consultas/espaciales/paraLineasColindantes';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
+import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
+import { estiloLinea, estiloTerritorio, estiloContenedorBotones, estiloBoton } from './estilos';
+import { adjuntarAPopUp, creaCirculo, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 
-const Mapa: React.FC = () => {
-  const [lineasGeoJson, establecerLineasGeoJson] = useState<FeatureCollection | null>(null);
-  const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
+interface MapaImp {
+  modo: string | string[];
+}
+
+const Mapa: React.FC<MapaImp> = ({ modo }) => {
+  const [lineasGeoJson, setLineasGeoJson] = useState<FeatureCollection | null>(null);
+  const [territoriosGeoJson, setTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
   const [showOSM, setShowOSM] = useState(true);
   const [showLineas, setShowLineas] = useState(true);
   const [showTerritorios, setShowTerritorios] = useState(true);
 
   useEffect(() => {
-    const buscarLineas = async () => {
-      const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.lineas));
-      const json = await respuesta.json();
-      const features = json.rows.map((row: any) => ({
+    const fetchLineas = async () => {
+      const featuresMapa = (row: any) => ({
         type: 'Feature',
-        properties: {
-          id: row.OBJECTID,
-          col_entre: row.COL_ENTRE,
-        },
+        properties: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
         geometry: JSON.parse(row.geometry)
-      }));
-
-      establecerLineasGeoJson({
-        type: 'FeatureCollection',
-        features: features,
       });
+      const geoJson = await (modo === "online" 
+        ? buscarDatosGeoJson(consultasEspacialesBigQuery.lineas, modo, featuresMapa) 
+        : buscarDatosGeoJson(consultasEspacialesPostgreSQL.lineas, modo, featuresMapa));
+      setLineasGeoJson(geoJson);
     };
+    fetchLineas();
+  }, [modo]);
 
-    const buscarTerritorios = async () => {
-      const respuesta = await fetch('/api/bigQueryEspacial?query=' + encodeURIComponent(consultaEspacial.territorios));
-      const json = await respuesta.json();
-
-      const features = json.rows.map((row: any) => {
-        let geometry;
-        try {
-          geometry = JSON.parse(row.geometry);
-        } catch (error) {
-          throw new Error(`Error (${error}) parsing the geometry of the row ${row}`);
-        }
-        return {
-          type: 'Feature',
-          properties: {
-            territorio: row.territorio,
-            id_ti: row.id_ti
-          },
-          geometry: geometry
-        };
-      }).filter((feature: any) => feature !== null);
-
-      establecerTerritoriosGeoJson({
-        type: 'FeatureCollection',
-        features: features,
+  useEffect(() => {
+    const fetchTerritorios = async () => {
+      const featuresMapa = (row: any) => ({
+        type: 'Feature',
+        properties: { territorio: row.territorio, id_ti: row.id_ti },
+        geometry: JSON.parse(row.geometry)
       });
+      const geoJson = await (modo === "online" 
+        ? buscarDatosGeoJson(consultasEspacialesBigQuery.territorios, modo, featuresMapa) 
+        : buscarDatosGeoJson(consultasEspacialesPostgreSQL.territorios, modo, featuresMapa));
+      setTerritoriosGeoJson(geoJson);
     };
-
-    buscarLineas();
-    buscarTerritorios();
-  }, []);
+    fetchTerritorios();
+  }, [modo]);
 
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {
       capa.on('click', async () => {
-        const gestion_documental = await buscarDatosLinea(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id));
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id), modo);
         const info = gestion_documental.rows[0];
         if (info) {
           const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
-          <strong>Acuerdo:</strong> ${info.ACUERDO}`;
+          <strong>¿Hubo acuerdp?:</strong> ${info.ACUERDO}<br/>
+          <strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
+          <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
+          <strong>Fecha:</strong> ${info.FECHA_INICIO.value}<br/>
+          <strong>Lugar:</strong> ${info.LUGAR}<br/>
+          <strong>Tipo de documento:</strong> ${info.TIPO_DOC}<br/>
+          <strong>Escenario:</strong> ${info.ESCENARIO}<br/>
+          <strong>Nombre del escenario:</strong> ${info.FECHA_INICIO.value}<br/>
+          <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
           capa.bindPopup(texto).openPopup();
         }
       });
@@ -84,157 +80,75 @@ const Mapa: React.FC = () => {
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
-    capa.on('click', async () => {
-      if (territorio.properties && territorio.properties.id_ti) {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti));
+    if (territorio.properties && territorio.properties.id_ti) {
+      capa.on('click', async () => {
+        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+        
+        // Sort documents by FECHA_INICIO.value in ascending order
+        gestion_documental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
+        
+        const contenedorLineaTiempo = creaContenedorLineaTiempo();
+        const contenedorInformacion = creaContenedorInformacion();
 
-        const timelineContainer = document.createElement('div');
-        timelineContainer.style.display = 'flex';
-        timelineContainer.style.flexWrap = 'wrap';
-        timelineContainer.style.width = '100%';
-        timelineContainer.style.height = 'auto';
-
-        let infoContainer = document.createElement('div');
-        infoContainer.style.marginTop = '10px';
-        infoContainer.style.width = '100%';
-
-        gestion_documental.rows.forEach((doc: any, index: number) => {
-          const circle = document.createElement('div');
-          circle.style.width = '20px';
-          circle.style.height = '20px';
-          circle.style.backgroundColor = 'orange';
-          circle.style.borderRadius = '50%';
-          circle.style.cursor = 'pointer';
-          circle.style.margin = '5px';
-          circle.title = doc.Fecha_ini_actividad.value;
-
-          circle.addEventListener('click', () => {
-            infoContainer.innerHTML = `
-              <strong>Documento:</strong> ${doc.Nombre_documento}<br/>
-              <strong>Lugar:</strong> ${doc.Lugar}<br/>
-              <strong>Fechas</strong><br/>
-              <strong> - de Inicio:</strong> ${doc.Fecha_ini_actividad.value}<br/>
-            `;
-            if (doc.Fecha_fin_actividad) {
-              infoContainer.innerHTML = infoContainer.innerHTML + `<strong> - de Finalización:</strong> ${doc.Fecha_fin_actividad.value}<br/>`;
-            }
-            infoContainer.innerHTML = infoContainer.innerHTML + `<strong>Tipo Escenario:</strong> ${doc.Tipo_escenario}<br/>
-              <strong><a href="${doc.Link_documento}" target="_blank">Link Documento</a></strong><br/>
-              <strong><a href="${doc.Link_acta_asistencia}" target="_blank">Link Acta Asistencia</a></strong><br/>`;
-          });
-
-          timelineContainer.appendChild(circle);
+        gestion_documental.rows.forEach((doc: any) => {
+          const circulo = creaCirculo(doc, contenedorInformacion);
+          contenedorLineaTiempo.appendChild(circulo);
         });
 
         capa.bindPopup(`
           <div style="width: auto; max-width: 20rem;">
-            <strong>${territorio.properties.territorio}</strong>
-            (${territorio.properties.id_ti})<br/>
-            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;"></div>
+            <strong>${territorio.properties.territorio}</strong> (${territorio.properties.id_ti})<br/>
+            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
             <div id="info-${territorio.properties.id_ti}"></div>
           </div>
         `).openPopup();
-
-        const popupContent = document.getElementById(`timeline-${territorio.properties.id_ti}`);
-        if (popupContent) {
-          popupContent.appendChild(timelineContainer);
+        adjuntarAPopUp(territorio, contenedorLineaTiempo, contenedorInformacion);
+      });
+      tieneDatos(territorio, capa).then((hasData) => {
+        if (hasData) {
+          agregarSimboloDatos(territorio, capa);
         }
+      });
+    }
+  };
 
-        const infoContent = document.getElementById(`info-${territorio.properties.id_ti}`);
-        if (infoContent) {
-          infoContent.appendChild(infoContainer);
-        }
-      }
+  const tieneDatos = async (territorio: any, capa: any): Promise<boolean> => {
+    const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+    return gestion_documental.rows.length !== 0;
+  };
+
+  const agregarSimboloDatos = async (territorio: any, capa: any) => {
+    // Import leaflet inside useEffect
+    const leaflet = (await import('leaflet')).default;
+    const simbolo = leaflet.divIcon({
+      className: 'custom-data-icon',
+      html: '<div style="font-size: 24px;">📄</div>', // Increase the font size here
+      iconSize: [1, 1], // Set the container size to match the larger font size
     });
+
+    // Calculate the centroid of the polygon
+    const centroid = turf.centroid(territorio).geometry.coordinates;
+    const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
+    marker.addTo(capa._map);
   };
 
-  const buscarDatos = async (consulta: string) => {
-    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
-    return await respuesta.json();
-  };
-
-  const buscarDatosLinea = async (consulta: string) => {
-    const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(consulta)}`);
-    return await respuesta.json();
-  };
-
-  if (!lineasGeoJson || !territoriosGeoJson) {
-    return <div>Cargando el mapa...</div>;
-  }
+  if (!lineasGeoJson || !territoriosGeoJson) return <div>Cargando el mapa...</div>;
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      <div style={{
-        position: 'absolute',
-        bottom: '10rem',
-        right: 20,
-        zIndex: 1000,
-        background: 'transparent',
-        padding: '10px',
-        borderRadius: '5px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px'
-      }}>
-        <button
-          onClick={() => setShowOSM(!showOSM)}
-          style={{
-            backgroundColor: showOSM ? 'green' : 'gray',
-            opacity: showOSM ? 0.8 : 0.6,
-            color: 'white',
-            border: 'none',
-            padding: '10px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontWeight: showOSM ? 'bold' : 'normal'
-          }}
-        >
-          OSM
-        </button>
-        <button
-          onClick={() => setShowLineas(!showLineas)}
-          style={{
-            backgroundColor: showLineas ? '#FF0000' : 'gray',
-            opacity: showLineas ? 0.8 : 0.6,
-            color: 'white',
-            border: 'none',
-            padding: '10px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontWeight: showLineas ? 'bold' : 'normal'
-          }}
-        >
-          Lineas
-        </button>
-        <button
-          onClick={() => setShowTerritorios(!showTerritorios)}
-          style={{
-            backgroundColor: showTerritorios ? '#3388FF' : 'gray',
-            opacity: showTerritorios ? 0.8 : 0.6,
-            color: 'white',
-            border: 'none',
-            padding: '10px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontWeight: showTerritorios ? 'bold' : 'normal'
-          }}
-        >
-          Territorios
-        </button>
+      <div style={estiloContenedorBotones}>
+        <button onClick={() => setShowOSM(!showOSM)} style={estiloBoton(showOSM, 'green')}>OSM</button>
+        <button onClick={() => setShowLineas(!showLineas)} style={estiloBoton(showLineas, '#FF0000')}>Lineas</button>
+        <button onClick={() => setShowTerritorios(!showTerritorios)} style={estiloBoton(showTerritorios, '#3388FF')}>Territorios</button>
       </div>
-      <Contenedor center={[-1.014411, -70.603798]} zoom={8} style={{ height: '100%', width: '100%' }}>
-        {showOSM && (
+      <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
+        {showOSM &&
           <CapaOSM
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-        )}
-        {showLineas && lineasGeoJson && (
-          <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />
-        )}
-        {showTerritorios && territoriosGeoJson && (
-          <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
-        )}
+          />}
+        {showTerritorios && territoriosGeoJson && <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />}
+        {showLineas && lineasGeoJson && <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />}
       </Contenedor>
     </div>
   );
