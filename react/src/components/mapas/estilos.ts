@@ -12,7 +12,8 @@ const colorMapping: { [key: string]: string } = {
   "UI": "#4c85b4",
   "PP": "#d59196",
   "GA": "#2dbeb9",
-  "TQ": "#ecec9d"
+  "TQ": "#ecec9d",
+  "MP": "#bbaf7b"
 };
 
 

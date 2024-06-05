@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
 import * as turf from '@turf/turf';
-import leaflet from 'leaflet';
 
 import { consultasEspacialesBigQuery, consultasEspacialesPostgreSQL } from 'consultas/espaciales/paraLineasColindantes';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
@@ -64,7 +63,16 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id), modo);
         const info = gestion_documental.rows[0];
         if (info) {
-          const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/><strong>Acuerdo:</strong> ${info.ACUERDO}`;
+          const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
+          <strong>¿Hubo acuerdp?:</strong> ${info.ACUERDO}<br/>
+          <strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
+          <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
+          <strong>Fecha:</strong> ${info.FECHA_INICIO.value}<br/>
+          <strong>Lugar:</strong> ${info.LUGAR}<br/>
+          <strong>Tipo de documento:</strong> ${info.TIPO_DOC}<br/>
+          <strong>Escenario:</strong> ${info.ESCENARIO}<br/>
+          <strong>Nombre del escenario:</strong> ${info.FECHA_INICIO.value}<br/>
+          <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
           capa.bindPopup(texto).openPopup();
         }
       });
@@ -75,6 +83,10 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     if (territorio.properties && territorio.properties.id_ti) {
       capa.on('click', async () => {
         const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+        
+        // Sort documents by FECHA_INICIO.value in ascending order
+        gestion_documental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
+        
         const contenedorLineaTiempo = creaContenedorLineaTiempo();
         const contenedorInformacion = creaContenedorInformacion();
 
@@ -106,7 +118,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const agregarSimboloDatos = async (territorio: any, capa: any) => {
-    if (!leaflet) return;
+    // Import leaflet inside useEffect
+    const leaflet = (await import('leaflet')).default;
     const simbolo = leaflet.divIcon({
       className: 'custom-data-icon',
       html: '<div style="font-size: 24px;">📄</div>', // Increase the font size here
@@ -128,7 +141,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         <button onClick={() => setShowLineas(!showLineas)} style={estiloBoton(showLineas, '#FF0000')}>Lineas</button>
         <button onClick={() => setShowTerritorios(!showTerritorios)} style={estiloBoton(showTerritorios, '#3388FF')}>Territorios</button>
       </div>
-      <Contenedor center={[-1.014411, -70.603798]} zoom={8} style={{ height: '100%', width: '100%' }}>
+      <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {showOSM &&
           <CapaOSM
             url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}

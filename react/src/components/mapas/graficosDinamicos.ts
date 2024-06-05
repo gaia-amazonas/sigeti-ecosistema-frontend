@@ -51,7 +51,6 @@ export const creaCirculo = (doc: any, contenedorInformacion: HTMLElement) => {
   return circle;
 };
 
-
 export const adjuntarAPopUp = (territorio: any, contenedorLineaTiempo: HTMLElement, contenedorInformacion: HTMLElement) => {
   const popupContent = document.getElementById(`timeline-${territorio.properties.id_ti}`);
   if (popupContent) {
