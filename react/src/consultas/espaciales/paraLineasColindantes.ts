@@ -9,11 +9,11 @@ export const consultasEspacialesBigQuery = {
   `,
   territorios: `
     SELECT
-      ST_AsGeoJSON(geometry) AS geometry,
-      id_ti,
-      territorio
+      ST_AsGeoJSON(geo) AS geometry,
+      ID_TI AS id_ti,
+      NOMBRE_TI AS territorio
     FROM
-      \`sigeti.unidades_de_analisis.territorios_censo632\`;`
+      \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\`;`
 };
 
 export const consultasEspacialesPostgreSQL = {

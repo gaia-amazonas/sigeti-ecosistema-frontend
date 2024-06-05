@@ -23,12 +23,7 @@ export const buscarDatosGeoJson = async (
 ): Promise<FeatureCollection> => {
 
     try {
-        console.log("CONSULTAAAAAAAAAAAAA");
-        console.log(consulta);
-        console.log("MODOOOOOOOOOOOOOOOOO");
-        console.log(modo);
         const datos = await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
-        console.log(datos);
         return datos;
     } catch (error) {
         logger.error("Error convirtiendo datos a GeoJson", { error });

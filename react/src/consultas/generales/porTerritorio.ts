@@ -104,16 +104,16 @@ const porTerritorio = {
     gestion_documental_territorio: (territorioId: string) => `
         SELECT
             Lugar,
-            Nombre_documento,
-            Tipo_escenario,
-            Link_documento,
-            Link_acta_asistencia,
-            Fecha_ini_actividad,
-            Fecha_fin_actividad
+            TIPO_DOC,
+            ESCENARIO,
+            LINK_DOC,
+            DES_DOC,
+            FECHA_FIN,
+            FECHA_INICIO
         FROM
-            \`sigeti-admin-364713.Gestion_Documental.Tabla_general\`
+            \`sigeti-admin-364713.Gestion_Documental.TablaInventarioDocumentos\`
         WHERE
-            id_ti = '${territorioId}';`,
+            TERRITORIO = '${territorioId}';`,
     gestion_documental_linea_colindante: (lineaId: string) => `
         SELECT
             COL_ENTRE,

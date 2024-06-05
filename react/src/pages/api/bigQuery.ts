@@ -5,6 +5,7 @@ import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 import winston from 'winston';
+import esperaRespuestaPostgreSQL from './postgreSQL'
 
 const logger = winston.createLogger({
   level: 'error',
@@ -40,7 +41,7 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
       if (mode === 'online') {
         await esperaRespuestaBigQuery(query, respuesta);
       } else {
-        await postgresHandler(solicitud, respuesta);
+        await esperaRespuestaPostgreSQL(solicitud, respuesta);
       }
     } catch (error) {
       logRespuestaErroneaBigQuery(error, query, respuesta);

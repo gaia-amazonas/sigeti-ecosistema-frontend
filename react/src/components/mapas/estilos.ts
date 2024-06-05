@@ -1,17 +1,40 @@
-import { CSSProperties } from "styled-components";
+import { CSSProperties } from 'react';
 
-export const estiloLinea = {
-  color: '#FF0000', // Red
-  weight: 8,
-  opacity: 0.6
+const colorMapping: { [key: string]: string } = {
+  "PN": "#FFE8C2",
+  "BC": "#ECA98A",
+  "YA": "#98C182",
+  "IS": "#D9B5E8",
+  "PH": "#e9b55f",
+  "VI": "#e9c0b8",
+  "GM": "#b18bb4",
+  "AR": "#c9d979",
+  "UI": "#4c85b4",
+  "PP": "#d59196",
+  "GA": "#2dbeb9",
+  "TQ": "#ecec9d"
 };
 
-export const estiloTerritorio = {
-  color: '#3388FF',  // Blue
-  weight: 2,
+
+export const estiloLinea = {
+  color: '#FF0000',
+  weight: 13,
   opacity: 0.6,
-  fillColor: '#3388FF',
-  fillOpacity: 0.2
+  zIndex: 10,
+};
+
+export const estiloTerritorio = (feature: any) => {
+  const color = feature.properties && colorMapping[feature.properties.id_ti]
+    ? colorMapping[feature.properties.id_ti]
+    : '#3388FF';
+  return {
+    color: "#7D7D7D",
+    weight: 2,
+    opacity: 0.6,
+    fillColor: color,
+    fillOpacity: 0.8,
+    zIndex: 5 // Ensure polygons are below lines
+  };
 };
 
 export const estiloContenedorBotones: CSSProperties = {
@@ -27,7 +50,7 @@ export const estiloContenedorBotones: CSSProperties = {
   gap: '10px'
 };
 
-export const estiloBoton = (isActive: boolean, color: string) => ({
+export const estiloBoton = (isActive: boolean, color: string): CSSProperties => ({
   backgroundColor: isActive ? color : 'gray',
   opacity: isActive ? 0.8 : 0.6,
   color: 'white',
