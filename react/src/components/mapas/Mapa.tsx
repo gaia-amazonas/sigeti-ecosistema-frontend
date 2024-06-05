@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
+import * as turf from '@turf/turf';
+import leaflet from 'leaflet';
+
 import { consultasEspacialesBigQuery, consultasEspacialesPostgreSQL } from 'consultas/espaciales/paraLineasColindantes';
 import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
@@ -69,8 +72,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
-    capa.on('click', async () => {
-      if (territorio.properties && territorio.properties.id_ti) {
+    if (territorio.properties && territorio.properties.id_ti) {
+      capa.on('click', async () => {
         const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
         const contenedorLineaTiempo = creaContenedorLineaTiempo();
         const contenedorInformacion = creaContenedorInformacion();
@@ -83,15 +86,37 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         capa.bindPopup(`
           <div style="width: auto; max-width: 20rem;">
             <strong>${territorio.properties.territorio}</strong> (${territorio.properties.id_ti})<br/>
-            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;"></div>
+            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
             <div id="info-${territorio.properties.id_ti}"></div>
           </div>
         `).openPopup();
-
         adjuntarAPopUp(territorio, contenedorLineaTiempo, contenedorInformacion);
-        
-      }
+      });
+      tieneDatos(territorio, capa).then((hasData) => {
+        if (hasData) {
+          agregarSimboloDatos(territorio, capa);
+        }
+      });
+    }
+  };
+
+  const tieneDatos = async (territorio: any, capa: any): Promise<boolean> => {
+    const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+    return gestion_documental.rows.length !== 0;
+  };
+
+  const agregarSimboloDatos = async (territorio: any, capa: any) => {
+    if (!leaflet) return;
+    const simbolo = leaflet.divIcon({
+      className: 'custom-data-icon',
+      html: '<div style="font-size: 24px;">📄</div>', // Increase the font size here
+      iconSize: [1, 1], // Set the container size to match the larger font size
     });
+
+    // Calculate the centroid of the polygon
+    const centroid = turf.centroid(territorio).geometry.coordinates;
+    const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
+    marker.addTo(capa._map);
   };
 
   if (!lineasGeoJson || !territoriosGeoJson) return <div>Cargando el mapa...</div>;
