@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+
 import EstiloGlobal from './estilos/global';
 import Boton, { BotonesContenedor, Titulo } from './estilos/boton';
 

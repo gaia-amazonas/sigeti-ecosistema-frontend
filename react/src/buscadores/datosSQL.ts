@@ -24,6 +24,8 @@ export const buscarDatosGeoJson = async (
 
     try {
         const datos = await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaffffffffffffffffffffffffffffff");
+        console.log(datos);
         return datos;
     } catch (error) {
         logger.error("Error convirtiendo datos a GeoJson", { error });
