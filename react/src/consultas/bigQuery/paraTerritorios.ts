@@ -1,6 +1,6 @@
 // src/consultas/bigQuery/paraTerritorios.ts
 const consultasBigQueryParaTerritorios = {
-    territorios: `
+    geometrias: `
         SELECT
             ST_AsGeoJSON(geo) AS geometry,
             ID_TI,
@@ -9,7 +9,7 @@ const consultasBigQueryParaTerritorios = {
         FROM
             \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\`;`
     ,
-    gestion_documental_territorio: (territorioId: string) => `
+    gestionDocumentalTerritorio: (territorioId: string) => `
         SELECT
             LUGAR,
             TIPO_DOC,

@@ -18,7 +18,7 @@ const colorMapping: { [key: string]: string } = {
   "MP": "#bbaf7b"
 };
 
-export function getRandomColor() {
+export function obtieneColorRandom() {
   const letters = '0123456789ABCDEF';
   let color = '#';
   for (let i = 0; i < 6; i++) {
@@ -27,17 +27,10 @@ export function getRandomColor() {
   return color;
 }
 
-export const estiloLinea = {
-  color: '#FF0000', // This can be ignored or set as a default
-  weight: 13,
-  opacity: 0.6,
-  zIndex: 10,
-};
-
 
 export const estiloTerritorio = (feature: any) => {
-  const color = feature.properties && colorMapping[feature.properties.id]
-    ? colorMapping[feature.properties.id]
+  const color = feature.variables && colorMapping[feature.variables.id]
+    ? colorMapping[feature.variables.id]
     : '#3388FF';
   return {
     color: "#7D7D7D",
@@ -45,7 +38,7 @@ export const estiloTerritorio = (feature: any) => {
     opacity: 0.6,
     fillColor: color,
     fillOpacity: 0.8,
-    zIndex: 5 // Ensure polygons are below lines
+    zIndex: 5
   };
 };
 
@@ -92,22 +85,4 @@ export const estiloContenedorLineaTiempo = {
 export const estiloContenedorInformacion = {
   marginTop: '10px',
   width: '100%'
-};
-
-export const estiloComunidad = {
-  radius: 8,
-  fillColor: '#000000',
-  color: '#000000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.3,
-};
-
-export const estiloDot = {
-  radius: 2,
-  fillColor: '#000000',
-  color: '#000000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 1,
 };

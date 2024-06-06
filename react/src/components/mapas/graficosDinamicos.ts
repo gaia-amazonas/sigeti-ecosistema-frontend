@@ -12,7 +12,7 @@ export const creaContenedorInformacion = () => {
   return contenedorInformacion;
 };
 
-export const creaCirculo = (doc: any, contenedorInformacion: HTMLElement) => {
+export const creaCirculoConAnhoDentro = (doc: any, contenedorInformacion: HTMLElement) => {
   
   const circle = document.createElement('div');
   Object.assign(circle.style, estiloCirculo);
@@ -40,7 +40,6 @@ export const creaCirculo = (doc: any, contenedorInformacion: HTMLElement) => {
   circle.addEventListener('click', () => {
     contenedorInformacion.innerHTML = `
       <strong>Documento:</strong> ${doc.TIPO_DOC}<br/>
-      <strong>Lugar:</strong> ${doc.Lugar}<br/>
       <strong>Fecha de Inicio:</strong> ${doc.FECHA_INICIO.value}<br/>
     `;
     contenedorInformacion.innerHTML += `<strong>Tipo Escenario:</strong> ${doc.ESCENARIO}<br/>
