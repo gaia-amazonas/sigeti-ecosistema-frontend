@@ -1,70 +1,92 @@
-// .src/components/mapas/Mapa.tsx
+// components/mapas/Mapa.tsx
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { FeatureCollection } from 'geojson';
 import * as turf from '@turf/turf';
+import styles from './Mapa.module.css'; // Import the CSS module
 
-import { consultasEspacialesBigQuery, consultasEspacialesPostgreSQL } from 'consultas/espaciales/paraLineasColindantes';
-import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorio';
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
-import { estiloLinea, estiloTerritorio, estiloContenedorBotones, estiloBoton } from './estilos';
+import { estiloLinea, estiloTerritorio, estiloContenedorBotones, estiloBoton, estiloComunidad, estiloDot, estiloCirculo } from './estilos';
 import { adjuntarAPopUp, creaCirculo, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
+import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
+import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
+import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const LineasGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const ComunidadesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const Circle = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
+const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 interface MapaImp {
   modo: string | string[];
 }
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
-  const [lineasGeoJson, setLineasGeoJson] = useState<FeatureCollection | null>(null);
-  const [territoriosGeoJson, setTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
-  const [showOSM, setShowOSM] = useState(true);
-  const [showLineas, setShowLineas] = useState(true);
-  const [showTerritorios, setShowTerritorios] = useState(true);
+  const [lineasColindantesGeoJson, establecerLineasColindantesGeoJson] = useState<FeatureCollection | null>(null);
+  const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
+  const [comunidadesGeoJson, establecerComunidadesGeoJson] = useState<FeatureCollection | null>(null);
+  const [mostrarOSM, establecerMostrarOSM] = useState(true);
+  const [mostrarLineasColindantes, establecerMostrarLineas] = useState(true);
+  const [mostrarTerritorios, establecerMostrarTerritorios] = useState(true);
+  const [mostrarComunidades, establecerMostrarComunidades] = useState(true);
 
   useEffect(() => {
-    const fetchLineas = async () => {
-      const featuresMapa = (row: any) => ({
+    const buscarLineas = async () => {
+      const features = (row: any) => ({
         type: 'Feature',
         properties: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
         geometry: JSON.parse(row.geometry)
       });
       const geoJson = await (modo === "online" 
-        ? buscarDatosGeoJson(consultasEspacialesBigQuery.lineas, modo, featuresMapa) 
-        : buscarDatosGeoJson(consultasEspacialesPostgreSQL.lineas, modo, featuresMapa));
-      setLineasGeoJson(geoJson);
+        ? buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.lineas_geometria, modo, features) 
+        : buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.lineas_geometria, modo, features));
+      establecerLineasColindantesGeoJson(geoJson);
     };
-    fetchLineas();
+    buscarLineas();
   }, [modo]);
 
   useEffect(() => {
-    const fetchTerritorios = async () => {
-      const featuresMapa = (row: any) => ({
+    const buscarTerritorios = async () => {
+      const features = (row: any) => ({
         type: 'Feature',
-        properties: { territorio: row.territorio, id_ti: row.id_ti },
+        properties: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
         geometry: JSON.parse(row.geometry)
       });
       const geoJson = await (modo === "online" 
-        ? buscarDatosGeoJson(consultasEspacialesBigQuery.territorios, modo, featuresMapa) 
-        : buscarDatosGeoJson(consultasEspacialesPostgreSQL.territorios, modo, featuresMapa));
-      setTerritoriosGeoJson(geoJson);
+        ? buscarDatosGeoJson(consultasBigQueryParaTerritorios.territorios, modo, features) 
+        : buscarDatosGeoJson(consultasBigQueryParaTerritorios.territorios, modo, features));
+      establecerTerritoriosGeoJson(geoJson);
     };
-    fetchTerritorios();
+    buscarTerritorios();
+  }, [modo]);
+
+  useEffect(() => {
+    const buscarComunidades = async () => {
+      const features = (row: any) => ({
+        type: 'Feature',
+        properties: { nombre: row.nomb_cnida, id: row.id_cnida },
+        geometry: JSON.parse(row.geometry)
+      });
+      const geoJson = await (modo === "online" 
+        ? buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, features) 
+        : buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, features));
+      establecerComunidadesGeoJson(geoJson);
+    };
+    buscarComunidades();
   }, [modo]);
 
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {
       capa.on('click', async () => {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_linea_colindante(linea.properties.id), modo);
+        const gestion_documental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestion_documental_linea_colindante(linea.properties.id), modo);
         const info = gestion_documental.rows[0];
         if (info) {
           const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
-          <strong>¿Hubo acuerdp?:</strong> ${info.ACUERDO}<br/>
+          <strong>¿Hubo acuerdo?:</strong> ${info.ACUERDO}<br/>
           <strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
           <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
           <strong>Fecha:</strong> ${info.FECHA_INICIO.value}<br/>
@@ -80,9 +102,11 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaTerritorio = (territorio: any, capa: any) => {
-    if (territorio.properties && territorio.properties.id_ti) {
+    if (territorio.properties && territorio.properties.id) {
+
       capa.on('click', async () => {
-        const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+
+        const gestion_documental = await buscarDatos(consultasBigQueryParaTerritorios.gestion_documental_territorio(territorio.properties.id), modo);
         
         // Sort documents by FECHA_INICIO.value in ascending order
         gestion_documental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
@@ -97,28 +121,31 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
         capa.bindPopup(`
           <div style="width: auto; max-width: 20rem;">
-            <strong>${territorio.properties.territorio}</strong> (${territorio.properties.id_ti})<br/>
-            <div id="timeline-${territorio.properties.id_ti}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
-            <div id="info-${territorio.properties.id_ti}"></div>
+            <strong>${territorio.properties.nombre}</strong> (${territorio.properties.id})<br/>
+            <div id="timeline-${territorio.properties.id}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
+            <div id="info-${territorio.properties.id}"></div>
           </div>
         `).openPopup();
+
         adjuntarAPopUp(territorio, contenedorLineaTiempo, contenedorInformacion);
+
       });
-      tieneDatos(territorio, capa).then((hasData) => {
+      agregaNombreTerritorioAPoligono(territorio, capa)
+      tieneDatos(territorio).then((hasData) => {
         if (hasData) {
-          agregarSimboloDatos(territorio, capa);
+          agregarSimboloDocumentacion(capa);
         }
       });
+
     }
   };
 
-  const tieneDatos = async (territorio: any, capa: any): Promise<boolean> => {
-    const gestion_documental = await buscarDatos(consultasGeneralesPorTerritorio.gestion_documental_territorio(territorio.properties.id_ti), modo);
+  const tieneDatos = async (territorio: any): Promise<boolean> => {
+    const gestion_documental = await buscarDatos(consultasBigQueryParaTerritorios.gestion_documental_territorio(territorio.properties.id), modo);
     return gestion_documental.rows.length !== 0;
   };
 
-  const agregarSimboloDatos = async (territorio: any, capa: any) => {
-    // Import leaflet inside useEffect
+  const agregarSimboloDocumentacion = async (capa: any) => {
     const leaflet = (await import('leaflet')).default;
     const simbolo = leaflet.divIcon({
       className: 'custom-data-icon',
@@ -126,29 +153,73 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       iconSize: [1, 1], // Set the container size to match the larger font size
     });
 
-    // Calculate the centroid of the polygon
+    const centroid = turf.centroid(capa.feature).geometry.coordinates;
+    const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
+    marker.addTo(capa._map);
+  };
+
+  const agregaNombreTerritorioAPoligono = async (territorio: any, capa: any) => {
+    const leaflet = (await import('leaflet')).default;
+    const abreviacionNombre = territorio.properties.abreviacion;
+    const simbolo = leaflet.divIcon({
+      className: styles['polygon-label'],
+      html: `<div>${abreviacionNombre}</div>`,
+      iconSize: [abreviacionNombre.length * 6, 20], // Dynamically adjust width based on text length
+      iconAnchor: [abreviacionNombre.length * 3, 10] // Center the label
+    });
+
     const centroid = turf.centroid(territorio).geometry.coordinates;
     const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
     marker.addTo(capa._map);
   };
 
-  if (!lineasGeoJson || !territoriosGeoJson) return <div>Cargando el mapa...</div>;
+  const enCadaComunidad = async (comunidad: any, capa: any) => {
+    if (comunidad.properties && comunidad.properties.id) {
+      const leaflet = (await import('leaflet')).default;
+      const centroide = turf.centroid(comunidad).geometry.coordinates;
+
+      leaflet.circleMarker([centroide[1], centroide[0]], estiloComunidad).addTo(capa._map);
+      leaflet.circleMarker([centroide[1], centroide[0]], estiloDot).addTo(capa._map);
+    }
+  };
+
+  if (!lineasColindantesGeoJson || !territoriosGeoJson || !comunidadesGeoJson) return <div>Cargando el mapa...</div>;
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <div style={estiloContenedorBotones}>
-        <button onClick={() => setShowOSM(!showOSM)} style={estiloBoton(showOSM, 'green')}>OSM</button>
-        <button onClick={() => setShowLineas(!showLineas)} style={estiloBoton(showLineas, '#FF0000')}>Lineas</button>
-        <button onClick={() => setShowTerritorios(!showTerritorios)} style={estiloBoton(showTerritorios, '#3388FF')}>Territorios</button>
+        <button onClick={() => establecerMostrarOSM(!mostrarOSM)} style={estiloBoton(mostrarOSM, 'green')}>OSM</button>
+        <button onClick={() => establecerMostrarLineas(!mostrarLineasColindantes)} style={estiloBoton(mostrarLineasColindantes, '#FF0000')}>Lineas</button>
+        <button onClick={() => establecerMostrarTerritorios(!mostrarTerritorios)} style={estiloBoton(mostrarTerritorios, '#3388FF')}>Territorios</button>
+        <button onClick={() => establecerMostrarComunidades(!mostrarComunidades)} style={estiloBoton(mostrarComunidades, '#3388FF')}>Comunidades</button>
       </div>
       <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
-        {showOSM &&
+        {mostrarOSM &&
           <CapaOSM
             url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />}
-        {showTerritorios && territoriosGeoJson && <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />}
-        {showLineas && lineasGeoJson && <LineasGeoJson data={lineasGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />}
+        { mostrarTerritorios && territoriosGeoJson && <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />}
+        { mostrarLineasColindantes && lineasColindantesGeoJson && <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />}
+        {/* Add circles with dots for each community point */}
+        { mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((feature, index) => {
+          const centroide = turf.centroid(feature).geometry.coordinates;
+          return (
+            <React.Fragment key={index}>
+              <Circle
+                center={[centroide[1], centroide[0]]}
+                radius={2500}
+                pathOptions={{ color: 'black', fillOpacity: 0.1 }}
+              />
+              <Circle
+                center={[centroide[1], centroide[0]]}
+                radius={10}
+                pathOptions={{ color: 'black', fillOpacity: 1 }}
+              />
+            </React.Fragment>
+          );
+        })}
+
       </Contenedor>
     </div>
   );

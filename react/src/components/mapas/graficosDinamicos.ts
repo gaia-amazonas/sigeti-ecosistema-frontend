@@ -52,12 +52,12 @@ export const creaCirculo = (doc: any, contenedorInformacion: HTMLElement) => {
 };
 
 export const adjuntarAPopUp = (territorio: any, contenedorLineaTiempo: HTMLElement, contenedorInformacion: HTMLElement) => {
-  const popupContent = document.getElementById(`timeline-${territorio.properties.id_ti}`);
+  const popupContent = document.getElementById(`timeline-${territorio.properties.id}`);
   if (popupContent) {
     popupContent.appendChild(contenedorLineaTiempo);
   }
 
-  const infoContent = document.getElementById(`info-${territorio.properties.id_ti}`);
+  const infoContent = document.getElementById(`info-${territorio.properties.id}`);
   if (infoContent) {
     infoContent.appendChild(contenedorInformacion);
   }

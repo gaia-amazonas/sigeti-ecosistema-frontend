@@ -1,3 +1,5 @@
+// src/components/mapas/estilos.ts
+
 import { CSSProperties } from 'react';
 
 const colorMapping: { [key: string]: string } = {
@@ -25,8 +27,8 @@ export const estiloLinea = {
 };
 
 export const estiloTerritorio = (feature: any) => {
-  const color = feature.properties && colorMapping[feature.properties.id_ti]
-    ? colorMapping[feature.properties.id_ti]
+  const color = feature.properties && colorMapping[feature.properties.id]
+    ? colorMapping[feature.properties.id]
     : '#3388FF';
   return {
     color: "#7D7D7D",
@@ -81,4 +83,22 @@ export const estiloContenedorLineaTiempo = {
 export const estiloContenedorInformacion = {
   marginTop: '10px',
   width: '100%'
+};
+
+export const estiloComunidad = {
+  radius: 8,
+  fillColor: '#000000',
+  color: '#000000',
+  weight: 1,
+  opacity: 1,
+  fillOpacity: 0.3,
+};
+
+export const estiloDot = {
+  radius: 2,
+  fillColor: '#000000',
+  color: '#000000',
+  weight: 1,
+  opacity: 1,
+  fillOpacity: 1,
 };

@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { General } from 'components/graficos/general/General';
 import BotonReiniciar from 'components/BotonReiniciar';
 import { buscarDatos } from 'buscadores/datosSQL';
-import consultasGeneralesPorTerritorio from '../../consultas/generales/porTerritorio';
-import consultasGeneralesTodosGeoTerritorios from '../../consultas/generales/todosGeoTerritorios';
-import consultasGeneralesTodasGeoComunidadesPorTerritorio from '../../consultas/generales/todasGeoComunidadesPorTerritorio';
-import { buscarTerritorios } from '../../utils/geoJsonUtils';
+import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorios';
+import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
+import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/generales/todasGeoComunidadesPorTerritorio';
+import { buscarTerritorios } from 'buscadores/geoJson';
 
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/estilos/Pestanhas';
 import { FeatureCollection } from 'geojson';
