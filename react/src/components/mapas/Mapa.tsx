@@ -7,7 +7,7 @@ import * as turf from '@turf/turf';
 import styles from './Mapa.module.css'; // Import the CSS module
 
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
-import { estiloLinea, estiloTerritorio, estiloContenedorBotones, estiloBoton, estiloComunidad, estiloDot, estiloCirculo } from './estilos';
+import { estiloLinea, estiloTerritorio, estiloContenedorBotones, estiloBoton, estiloComunidad, estiloDot, getRandomColor } from './estilos';
 import { adjuntarAPopUp, creaCirculo, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
 import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
@@ -79,11 +79,35 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     buscarComunidades();
   }, [modo]);
 
+  let selectedLine: { setStyle: (arg0: { color: any; weight: number; opacity: number; zIndex: number; }) => void; feature: { properties: { originalColor: any; }; }; } | null = null;
+
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.properties && linea.properties.id) {
+      // Store the original color in the line's properties
+      if (!linea.properties.originalColor) {
+        linea.properties.originalColor = getRandomColor();
+      }
+
       capa.on('click', async () => {
+        if (selectedLine && selectedLine !== capa) {
+          // Reset the style of the previously selected line to its original color
+          selectedLine.setStyle({
+            color: selectedLine.feature.properties.originalColor,
+            weight: 13,
+            opacity: 0.6,
+            zIndex: 10,
+          });
+        }
+
         const gestion_documental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestion_documental_linea_colindante(linea.properties.id), modo);
         const info = gestion_documental.rows[0];
+        capa.setStyle({
+          color: 'yellow',
+          weight: 13,
+          opacity: 0.8,
+          zIndex: 10,
+        });
+
         if (info) {
           const texto = `<strong>Colindante Entre:</strong> ${info.COL_ENTRE}<br/>
           <strong>¿Hubo acuerdo?:</strong> ${info.ACUERDO}<br/>
@@ -97,6 +121,16 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
           capa.bindPopup(texto).openPopup();
         }
+
+        // Update the selected line
+        selectedLine = capa;
+      });
+
+      capa.setStyle({
+        color: linea.properties.originalColor,
+        weight: 13,
+        opacity: 0.6,
+        zIndex: 10,
       });
     }
   };
@@ -173,16 +207,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     marker.addTo(capa._map);
   };
 
-  const enCadaComunidad = async (comunidad: any, capa: any) => {
-    if (comunidad.properties && comunidad.properties.id) {
-      const leaflet = (await import('leaflet')).default;
-      const centroide = turf.centroid(comunidad).geometry.coordinates;
-
-      leaflet.circleMarker([centroide[1], centroide[0]], estiloComunidad).addTo(capa._map);
-      leaflet.circleMarker([centroide[1], centroide[0]], estiloDot).addTo(capa._map);
-    }
-  };
-
   if (!lineasColindantesGeoJson || !territoriosGeoJson || !comunidadesGeoJson) return <div>Cargando el mapa...</div>;
 
   return (
@@ -198,10 +222,14 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           <CapaOSM
             url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />}
+          />
+          // <CapaOSM
+          //   url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=YOUR_MAPBOX_ACCESS_TOKEN" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+          //   attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
+          // />
+          }
         { mostrarTerritorios && territoriosGeoJson && <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />}
-        { mostrarLineasColindantes && lineasColindantesGeoJson && <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} style={estiloLinea} />}
-        {/* Add circles with dots for each community point */}
+        { mostrarLineasColindantes && lineasColindantesGeoJson && <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />}
         { mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((feature, index) => {
           const centroide = turf.centroid(feature).geometry.coordinates;
           return (

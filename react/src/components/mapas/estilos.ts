@@ -18,13 +18,22 @@ const colorMapping: { [key: string]: string } = {
   "MP": "#bbaf7b"
 };
 
+export function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 
 export const estiloLinea = {
-  color: '#FF0000',
+  color: '#FF0000', // This can be ignored or set as a default
   weight: 13,
   opacity: 0.6,
   zIndex: 10,
 };
+
 
 export const estiloTerritorio = (feature: any) => {
   const color = feature.properties && colorMapping[feature.properties.id]
