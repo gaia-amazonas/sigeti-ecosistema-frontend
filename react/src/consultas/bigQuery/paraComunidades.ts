@@ -1,22 +1,21 @@
-// src/components/consultas/generales/porTerritorio.ts
-
-const porTerritorio = {
-    sexo: (comunidadId: string) => `
+// src/consultas/bigQuery/paraComunidades.ts
+const consultasBigQueryParaComunidades = {
+    comunidades: `
         SELECT
-            SEXO, COUNT(*) 
+            ST_AsGeoJSON(geometry) AS geometry,
+            NOMB_CNIDA AS nomb_cnida,
+            ID_CNIDA AS id_cnida
         FROM
-            \`sigeti.censo_632.BD_personas\`
-        WHERE
-            id_cnida = '${comunidadId}'
-        GROUP BY
-            id_cnida, sexo, id_ti;`,
-    familias: (comunidadId: string) => `
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
+    ,
+    nombreComunidad: (comunidadId: string) => `
         SELECT
-            COUNT(*) as familias
+            NOMB_CNIDA
         FROM
-            \`sigeti.censo_632.BD_familias\`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
         WHERE
-            id_cnida = '${comunidadId}';`,
+            ID_CNIDA = '${comunidadId}';`
+    ,
     sexo_edad: (comunidadId: string) => `
         SELECT 
             CASE 
@@ -79,60 +78,57 @@ const porTerritorio = {
             age_group_order
         ORDER BY 
             age_group_order, 
-            sexo;`,
+            sexo;`
+    ,
     territorio: (comunidadId: string) => `
         SELECT
-            ST_AsGeoJSON(t.geometry) as geometry,
-            t.id_ti as id_ti,
-            t.territorio as territorio
+            ST_AsGeoJSON(t.geo) as geometry,
+            t.ID_TI as id_ti,
+            t.NOMBRE_TI as territorio
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
         JOIN
             \`sigeti.censo_632.comunidades_por_territorio\` AS c
         ON
             t.id_ti = c.id_ti
         WHERE
             c.id_cnida = '${comunidadId}';`,
-    comunidades_en_territorio: (comunidadId: string) => `
+    nombreTerritorio: (comunidadId: string) => `
         SELECT
-            c.geometry,
-            c.nomb_cnida
+            t.NOMBRE_TI as nombreTerritorio
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` AS c
+        ON
+            t.id_ti = c.id_ti
         WHERE
             c.id_cnida = '${comunidadId}';`,
-    gestion_documental_territorio: (territorioId: string) => `
+    sexo: (comunidadId: string) => `
         SELECT
-            LUGAR,
-            TIPO_DOC,
-            ESCENARIO,
-            LINK_DOC,
-            DES_DOC,
-            FECHA_FIN,
-            FECHA_INICIO
+            SEXO, COUNT(*) 
         FROM
-            \`sigeti-admin-364713.Gestion_Documental.TablaInventarioDocumentos\`
+            \`sigeti.censo_632.BD_personas\`
         WHERE
-            TERRITORIO = '${territorioId}';`,
-    gestion_documental_linea_colindante: (lineaId: string) => `
+            id_cnida = '${comunidadId}'
+        GROUP BY
+            id_cnida, sexo;`
+    ,
+    familias: (comunidadId: string) => `
         SELECT
-            LC.COL_ENTRE,
-            TID.ACUERDO,
-            TID.FECHA_INICIO,
-            TID.LUGAR,
-            TID.TIPO_DOC,
-            TID.ESCENARIO,
-            TID.NOM_ESCENARIO,
-            TID.DES_DOC,
-            TID.LINK_DOC
+            COUNT(*) as familias
         FROM
-            \`sigeti-admin-364713.analysis_units.LineasColindantes\` AS LC
-        JOIN
-            \`sigeti-admin-364713.Gestion_Documental.TablaInventarioDocumentos\` AS TID
-        ON
-            LC.ID_DOC = TID.ID_DOC
+            \`sigeti.censo_632.BD_familias\`
         WHERE
-            OBJECTID = ${lineaId};`
-    };
+            id_cnida = '${comunidadId}';`
+    ,
+    pueblos: (comunidadId: string) => `
+        SELECT
+            PUEBLO
+        FROM
+            \`sigeti.censo_632.Conteo_Pueblos\`
+        WHERE
+            ID_CNIDA='${comunidadId}';`
+}
 
-export default porTerritorio;
+export default consultasBigQueryParaComunidades;

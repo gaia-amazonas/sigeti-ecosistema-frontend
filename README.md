@@ -14,7 +14,7 @@ docker build -t gcr.io/sigeti/sigeti-ecosistema-frontend:produccion --build-arg 
 
 ### Paso 2: Probar Localmente
 
-Para probar la aplicación localmente, ejecuta:
+Para probar localmente la dockerización de la aplicación, ejecuta:
 
 ```sh
 docker run -p 3000:3000 -e AMBIENTE=produccion gcr.io/sigeti/sigeti-ecosistema-frontend:produccion

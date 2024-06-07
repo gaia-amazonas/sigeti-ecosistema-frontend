@@ -1,0 +1,10 @@
+/* components/mapas/Mapa.module.css */
+.territorio-nombre {
+  background: rgba(255, 255, 255, 0.8); /* semi-transparent background */
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap; /* prevent text from wrapping */
+  text-align: center; /* center align the text */
+}
