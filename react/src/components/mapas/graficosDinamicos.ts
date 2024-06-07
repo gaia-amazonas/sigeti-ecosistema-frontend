@@ -1,4 +1,4 @@
-import { estiloContenedorLineaTiempo, estiloContenedorInformacion, estiloCirculo } from './estilos';
+import { estiloContenedorLineaTiempo, estiloContenedorInformacion, estiloCirculo, estiloTextoEnCirculo } from './estilos';
 
 export const creaContenedorLineaTiempo = () => {
   const contenedorLineaTiempo = document.createElement('div');
@@ -12,51 +12,38 @@ export const creaContenedorInformacion = () => {
   return contenedorInformacion;
 };
 
-export const creaCirculoConAnhoDentro = (doc: any, contenedorInformacion: HTMLElement) => {
+export const creaCirculoConAnhoDentro = (documento: any, contenedorInformacion: HTMLElement) => {
   
-  const circle = document.createElement('div');
-  Object.assign(circle.style, estiloCirculo);
+  const circulo = document.createElement('div');
+  Object.assign(circulo.style, estiloCirculo);
+  Object.assign(circulo.style, estiloTextoEnCirculo);
 
-  // Additional styles to center the text within the circle
-  Object.assign(circle.style, {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    fontSize: '0.75rem',
-    fontWeight: 'bold'
-  });
+  circulo.title = documento.FECHA_INICIO.value;
+  const anho = documento.FECHA_INICIO.value;
+  const ultimosDosDigitos = anho.slice(2, 4);
+  const textEnCirculo = document.createTextNode(ultimosDosDigitos);
+  circulo.appendChild(textEnCirculo);
 
-  circle.title = doc.FECHA_INICIO.value;
-
-  // Extract the last two digits of the year from Fecha_ini_actividad
-  const year = doc.FECHA_INICIO.value;
-  const lastTwoDigits = year.slice(2, 4);
-
-  // Create a text node to display the last two digits within the circle
-  const textNode = document.createTextNode(lastTwoDigits);
-  circle.appendChild(textNode);
-
-  circle.addEventListener('click', () => {
+  circulo.addEventListener('click', () => {
     contenedorInformacion.innerHTML = `
-      <strong>Documento:</strong> ${doc.TIPO_DOC}<br/>
-      <strong>Fecha de Inicio:</strong> ${doc.FECHA_INICIO.value}<br/>
+      <strong>Documento:</strong> ${documento.TIPO_DOC}<br/>
+      <strong>Fecha de Inicio:</strong> ${documento.FECHA_INICIO.value}<br/>
     `;
-    contenedorInformacion.innerHTML += `<strong>Tipo Escenario:</strong> ${doc.ESCENARIO}<br/>
-      <strong>Resumen: </strong> ${doc.DES_DOC}<br/>
-      <strong><a href="${doc.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>`;
+    contenedorInformacion.innerHTML += `<strong>Tipo Escenario:</strong> ${documento.ESCENARIO}<br/>
+      <strong>Resumen: </strong> ${documento.DES_DOC}<br/>
+      <strong><a href="${documento.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>`;
   });
 
-  return circle;
+  return circulo;
 };
 
 export const adjuntarAPopUp = (territorio: any, contenedorLineaTiempo: HTMLElement, contenedorInformacion: HTMLElement) => {
-  const popupContent = document.getElementById(`timeline-${territorio.properties.id}`);
+  const popupContent = document.getElementById(`timeline-${territorio.variables.id}`);
   if (popupContent) {
     popupContent.appendChild(contenedorLineaTiempo);
   }
 
-  const infoContent = document.getElementById(`info-${territorio.properties.id}`);
+  const infoContent = document.getElementById(`info-${territorio.variables.id}`);
   if (infoContent) {
     infoContent.appendChild(contenedorInformacion);
   }

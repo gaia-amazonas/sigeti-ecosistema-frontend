@@ -1,5 +1,4 @@
-// .src/pages/api/postgreSQL.ts
-
+// src/pages/api/postgreSQL.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import path from 'path';

@@ -75,6 +75,15 @@ export const estiloCirculo = {
   margin: '5px',
 };
 
+export const estiloTextoEnCirculo = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  textAlign: 'center',
+  fontSize: '0.75rem',
+  fontWeight: 'bold'
+};
+
 export const estiloContenedorLineaTiempo = {
   display: 'flex',
   flexWrap: 'wrap',

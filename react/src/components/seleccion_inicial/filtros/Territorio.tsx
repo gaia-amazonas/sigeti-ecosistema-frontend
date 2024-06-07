@@ -1,8 +1,7 @@
+// src/components/seleccion_inicial/filtros/Territorio.tsx
 import React, { useState, useEffect } from 'react';
 import logger from 'utilidades/logger';
-
 import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
-
 
 interface Datos {
   territorio_id: string;
@@ -24,7 +23,7 @@ interface TerritorioImp {
 const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso, modo }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
-  const [filtro, establecerFiltro] = useState('');
+  const [filtro, establecerFiltro] = useState<string>('');
 
   useEffect(() => {
     async function buscarDatos() {

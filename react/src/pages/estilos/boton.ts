@@ -8,7 +8,7 @@ const Boton = styled.button`
   font-size: 1.2em;
   color: #fff;
   background-color: #4682b4; /* Sky Blue */
-  border: none; 
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;

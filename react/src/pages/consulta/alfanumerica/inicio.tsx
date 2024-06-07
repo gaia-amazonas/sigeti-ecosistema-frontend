@@ -6,12 +6,16 @@ import BotonReiniciar from 'components/BotonReiniciar';
 import Seleccion from 'components/seleccion_inicial/Seleccion';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 
+interface SeleccionDatos {
+  // Define the structure of the seleccionaDatos object here
+}
+
 const Alfanumerica: React.FC = () => {
-  const [pasoDinamico, establecerPasoDinamico] = useState(1);
+  const [pasoDinamico, establecerPasoDinamico] = useState<number>(1);
   const router = useRouter();
   const { modo } = router.query;
 
-  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: any) => {
+  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: SeleccionDatos) => {
     router.push({
       pathname: '/consulta/alfanumerica/pestanhas',
       query: { datos: JSON.stringify(seleccionaDatos), modo },
