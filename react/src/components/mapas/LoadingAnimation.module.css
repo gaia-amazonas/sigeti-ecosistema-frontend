@@ -1,0 +1,28 @@
+/* LoadingAnimation.module.css */
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: transparent; /* Fully transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of everything */
+  pointer-events: none; /* Allow interactions with the map */
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 16px solid rgba(243, 243, 243, 0.6); /* Slightly transparent border */
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  animation: spinner 2s linear infinite;
+}

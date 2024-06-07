@@ -27,7 +27,6 @@ export function obtieneColorRandom() {
   return color;
 }
 
-
 export const estiloTerritorio = (feature: any) => {
   const color = feature.variables && colorMapping[feature.variables.id]
     ? colorMapping[feature.variables.id]
@@ -38,7 +37,19 @@ export const estiloTerritorio = (feature: any) => {
     opacity: 0.6,
     fillColor: color,
     fillOpacity: 0.8,
-    zIndex: 5
+    zIndex: 5 // Lower zIndex for polygons
+  };
+};
+
+export const estiloLineaColindante = (feature: any) => {
+  const color = feature.variables && feature.variables.colorOriginal
+    ? feature.variables.colorOriginal
+    : '#3388FF';
+  return {
+    color: color,
+    weight: 4,
+    opacity: 0.8,
+    zIndex: 10 // Higher zIndex for lines
   };
 };
 
@@ -46,7 +57,7 @@ export const estiloContenedorBotones: CSSProperties = {
   position: 'absolute',
   bottom: '15rem',
   right: 20,
-  zIndex: 1000,
+  zIndex: 450,
   background: 'transparent',
   padding: '10px',
   borderRadius: '5px',
