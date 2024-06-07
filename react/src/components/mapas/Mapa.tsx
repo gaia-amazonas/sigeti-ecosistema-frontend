@@ -19,7 +19,7 @@ const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod 
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
 
-interface FeatureWithVariables extends Feature<Geometry> {
+interface GeometriasConVariables extends Feature<Geometry> {
   variables: {
     nombre: string;
     id: string;
@@ -185,7 +185,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         )}
         {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
           const centroide = turf.centroid(comunidad).geometry.coordinates;
-          const id = (comunidad as FeatureWithVariables).variables.id;
+          const id = (comunidad as GeometriasConVariables).variables.id;
           return (
             <React.Fragment key={index}>
               <CirculoComunidad
