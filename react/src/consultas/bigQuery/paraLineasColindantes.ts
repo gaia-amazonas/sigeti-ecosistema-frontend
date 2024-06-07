@@ -5,7 +5,7 @@ const consultasBigQueryParaLineasColindantes = {
             ST_AsGeoJSON(geo) AS geometry,
             OBJECTID,
         FROM
-            \`sigeti-admin-364713.analysis_units.LineasColindantes\`;`
+            \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\`;`
     ,
     gestionDocumentalLineaColindante: (lineaId: string) => `
         SELECT
