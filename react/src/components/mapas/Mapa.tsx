@@ -99,6 +99,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
     if (linea.variables && linea.variables.id) {
 
+      console.log(linea.variables);
+
       determinaColorLineaColindante(linea);
       
       if (capa && capa.setStyle) {
