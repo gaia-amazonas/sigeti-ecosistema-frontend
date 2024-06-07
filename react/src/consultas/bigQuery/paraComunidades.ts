@@ -2,7 +2,7 @@
 const consultasBigQueryParaComunidades = {
     comunidades: `
         SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
+            ST_AsGeoJSON(geo) AS geometry,
             NOMB_CNIDA AS nomb_cnida,
             ID_CNIDA AS id_cnida
         FROM
