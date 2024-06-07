@@ -17,7 +17,10 @@ const consultasBigQueryParaLineasColindantes = {
             TID.ESCENARIO,
             TID.NOM_ESCENARIO,
             TID.DES_DOC,
-            TID.LINK_DOC
+            TID.LINK_DOC,
+            LC.ACTA_COL,
+            LC.PV_1,
+            LC.PV_2
         FROM
             \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\` AS LC
         JOIN

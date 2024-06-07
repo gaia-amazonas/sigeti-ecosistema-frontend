@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
 import * as turf from '@turf/turf';
 
+import logger from 'utilidades/logger'
+
 import estilos from './Mapa.module.css';
 import { estiloTerritorio, estiloContenedorBotones, estiloBoton, obtieneColorRandom } from './estilos';
 
@@ -12,7 +14,6 @@ import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 import { adjuntarAPopUp, creaCirculoConAnhoDentro, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
-
 import loadingStyles from './LoadingAnimation.module.css'; // Import the loading animation styles
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -84,7 +85,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         setIsLoadingComunidades(false);
 
       } catch (error) {
-        console.error('Error fetching data:', error);
+        logger.error('Error fetching data:', error);
         setIsLoadingLineas(false);
         setIsLoadingTerritorios(false);
         setIsLoadingComunidades(false);
@@ -105,8 +106,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       }
 
       capa.on('click', async () => {
-
-        console.log(linea);
 
         if ( lineaSeleccionada ) {
           devuelveEstiloALineaColindanteSeleccionadaAntes(capa, lineaSeleccionada);
@@ -170,7 +169,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
       return gestionDocumental.rows.length !== 0;
     } catch (error) {
-      console.error('Error checking territory data:', error);
+      logger.error('Error checking territory data:', error);
       return false;
     }
   };
@@ -195,7 +194,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
         )}
-        {!isLoadingTerritorios && (
+        { allDataLoaded && (
           <>
             {mostrarTerritorios && territoriosGeoJson && (
               <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
@@ -233,14 +232,14 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
 export default Mapa;
 
-// Helper Functions
+
 const traeInformacionDocumentalLineaColindante = async (linea: any, modo: string | string[]) => {
   try {
     const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.variables.id), modo);
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows[0];
   } catch (error) {
-    console.error('Error fetching document info for linea colindante:', error);
+    logger.error('Error fetching document info for linea colindante:', error);
     return null;
   }
 };
@@ -288,7 +287,10 @@ const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
   if (info) {
     const texto = `<strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
       <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
-      <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
+      <strong>Resumen:</strong> ${info.DES_DOC}<br/>
+      <strong>Acta de Colindancia:</strong> <a href="${info.ACTA_COL}" target="_blank">Link al Documento</a><br/>
+      <strong>PV 1:</strong> <a href="${info.PV_1}" target="_blank">Link al Documento</a><br/>
+      <strong>PV 2:</strong> <a href="${info.PV_2}" target="_blank">Link al Documento</a><br/>`;
     linea.bindPopup(texto).openPopup();
   }
 };
@@ -329,7 +331,7 @@ const traeInformacionDocumentalTerritorio = async (territorio: any, modo: string
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows;
   } catch (error) {
-    console.error('Error fetching document info for territorio:', error);
+    logger.error('Error fetching document info for territorio:', error);
     return [];
   }
 };
@@ -351,7 +353,7 @@ const traeInformacionComunidad = async (idComunidad: any, modo: string | string[
     const pueblos = await buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo);
     return { sexos, nombre, territorio, familias, pueblos };
   } catch (error) {
-    console.error('Error fetching comunidad info:', error);
+    logger.error('Error fetching comunidad info:', error);
     return { sexos: { rows: [] }, nombre: { rows: [] }, territorio: { rows: [] }, familias: { rows: [] }, pueblos: { rows: [] } };
   }
 };
