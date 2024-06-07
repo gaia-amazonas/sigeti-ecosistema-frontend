@@ -3,10 +3,18 @@ const consultasBigQueryParaComunidades = {
     comunidades: `
         SELECT
             ST_AsGeoJSON(geometry) AS geometry,
-            nomb_cnida,
-            id_cnida
+            NOMB_CNIDA AS nomb_cnida,
+            ID_CNIDA AS id_cnida
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
+    ,
+    nombreComunidad: (comunidadId: string) => `
+        SELECT
+            NOMB_CNIDA
+        FROM
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
+        WHERE
+            ID_CNIDA = '${comunidadId}';`
     ,
     sexo_edad: (comunidadId: string) => `
         SELECT 
@@ -74,11 +82,22 @@ const consultasBigQueryParaComunidades = {
     ,
     territorio: (comunidadId: string) => `
         SELECT
-            ST_AsGeoJSON(t.geometry) as geometry,
-            t.id_ti as id_ti,
-            t.territorio as territorio
+            ST_AsGeoJSON(t.geo) as geometry,
+            t.ID_TI as id_ti,
+            t.NOMBRE_TI as territorio
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` AS c
+        ON
+            t.id_ti = c.id_ti
+        WHERE
+            c.id_cnida = '${comunidadId}';`,
+    nombreTerritorio: (comunidadId: string) => `
+        SELECT
+            t.NOMBRE_TI as nombreTerritorio
+        FROM
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
         JOIN
             \`sigeti.censo_632.comunidades_por_territorio\` AS c
         ON
@@ -93,7 +112,7 @@ const consultasBigQueryParaComunidades = {
         WHERE
             id_cnida = '${comunidadId}'
         GROUP BY
-            id_cnida, sexo, id_ti;`
+            id_cnida, sexo;`
     ,
     familias: (comunidadId: string) => `
         SELECT
@@ -102,6 +121,14 @@ const consultasBigQueryParaComunidades = {
             \`sigeti.censo_632.BD_familias\`
         WHERE
             id_cnida = '${comunidadId}';`
+    ,
+    pueblos: (comunidadId: string) => `
+        SELECT
+            PUEBLO
+        FROM
+            \`sigeti.censo_632.Conteo_Pueblos\`
+        WHERE
+            ID_CNIDA='${comunidadId}';`
 }
 
 export default consultasBigQueryParaComunidades;

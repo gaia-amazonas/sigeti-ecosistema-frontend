@@ -1,11 +1,10 @@
-// .src/pages/api/bigQuery.ts
-
+// src/pages/api/bigQuery.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { BigQuery } from '@google-cloud/bigquery';
 import path from 'path';
 import { config } from 'dotenv';
 import winston from 'winston';
-import esperaRespuestaPostgreSQL from './postgreSQL'
+import esperaRespuestaPostgreSQL from './postgreSQL';
 
 const logger = winston.createLogger({
   level: 'error',
@@ -37,7 +36,6 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
   if (solicitud.method === 'GET') {
     const { query } = solicitud.query;
     try {
-      await esperaRespuestaBigQuery(query, respuesta);
       if (mode === 'online') {
         await esperaRespuestaBigQuery(query, respuesta);
       } else {
@@ -52,12 +50,15 @@ export default async function handler(solicitud: NextApiRequest, respuesta: Next
 }
 
 const esperaRespuestaBigQuery = async (query: string | string[] | undefined, respuesta: NextApiResponse) => {
-  const [job] = await clienteBigQuery.createQueryJob({ query: query as string });
+  if (typeof query !== 'string') {
+    throw new Error('Query is not a string');
+  }
+  const [job] = await clienteBigQuery.createQueryJob({ query });
   const [rows] = await job.getQueryResults();
   respuesta.status(200).json({ rows });
-}
+};
 
 const logRespuestaErroneaBigQuery = (error: unknown, query: string | string[] | undefined, respuesta: NextApiResponse) => {
-  logger.error(`Error ejecutando la query: ${query}`, error);
+  logger.error(`Error ejecutando la query: ${query}`, { error });
   respuesta.status(500).json({ error: 'Error ejecutando query', details: error });
-}
+};

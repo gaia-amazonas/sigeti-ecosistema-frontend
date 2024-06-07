@@ -1,13 +1,13 @@
 // src/consultas/bigQuery/paraLineasColindantes.ts
 const consultasBigQueryParaLineasColindantes = {
-    lineas_geometria: `
+    geometrias: `
         SELECT
             ST_AsGeoJSON(geo) AS geometry,
             OBJECTID,
         FROM
-            \`sigeti-admin-364713.analysis_units.LineasColindantes\`;`
+            \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\`;`
     ,
-    gestion_documental_linea_colindante: (lineaId: string) => `
+    gestionDocumentalLineaColindante: (lineaId: string) => `
         SELECT
             LC.COL_ENTRE,
             TID.ACUERDO,

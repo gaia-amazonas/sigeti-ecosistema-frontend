@@ -48,7 +48,6 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
       />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
-        territoriosGeometry={territoriosGeometryEntrantes}
         territoriosGeoJson={territoriosGeoJsonEntrantes}
         comunidadesGeometries={comunidadesGeometriesEntrantes}
       />

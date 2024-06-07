@@ -1,3 +1,5 @@
+// src/pages/index.tsx
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
@@ -9,7 +11,6 @@ const Home: React.FC = () => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
-
     const updateOnlineStatus = () => {
       const onlineStatus = navigator.onLine;
       setIsOnline(onlineStatus);
@@ -26,19 +27,22 @@ const Home: React.FC = () => {
         window.removeEventListener('offline', updateOnlineStatus);
       };
     }
-    
   }, []);
 
   return (
     <>
       <EstiloGlobal />
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', justifyContent: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          height: '100vh',
+          justifyContent: 'center'
+        }}
+      >
         <Titulo>Bienvenido a SIGETI</Titulo>
-        {!isOnline ? (
-          <p>Offline</p>
-        ) : (
-          <p></p>
-        )}
+        {!isOnline ? <p>Offline</p> : <p></p>}
         <BotonesContenedor>
           <Link href={{ pathname: '/consulta/alfanumerica/inicio', query: { modo } }} passHref>
             <Boton as="span">Seleccionar por Territorio y Comunidad</Boton>

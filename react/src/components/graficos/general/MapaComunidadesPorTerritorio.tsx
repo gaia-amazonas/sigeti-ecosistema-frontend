@@ -12,21 +12,19 @@ import {
 import markerIconPng from 'iconos/marker-icon.png';
 import markerShadowPng from 'iconos/marker-shadow.png';
 
-// Dynamically import react-leaflet components with SSR disabled
+
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaMapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const GeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const Marcador = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 const VentanaEmergente = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 interface MapaImp {
-    territoriosGeometry: any[];
     territoriosGeoJson: FeatureCollection;
     comunidadesGeometries: any[];
 }
 
-const Mapa: React.FC<MapaImp> = ({ territoriosGeometry, territoriosGeoJson, comunidadesGeometries }) => {
+const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeometries }) => {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
