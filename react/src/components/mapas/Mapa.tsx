@@ -1,8 +1,7 @@
-// src/components/mapas/Mapa.tsx
 import React, { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Geometry, Feature } from 'geojson';
 import * as turf from '@turf/turf';
 
 import estilos from './Mapa.module.css';
@@ -19,6 +18,14 @@ const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer)
 const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
+
+interface FeatureWithVariables extends Feature<Geometry> {
+  variables: {
+    nombre: string;
+    id: string;
+    [key: string]: any;
+  };
+}
 
 interface MapaImp {
   modo: string | string[];
@@ -37,45 +44,51 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   useEffect(() => {
     const buscarLineas = async () => {
-      const lineas = (row: any) => ({
-        type: 'Feature',
-        variables: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
-        geometry: JSON.parse(row.geometry)
-      });
-      const geoJson = await (modo === "online"
-        ? buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas)
-        : buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas));
-      establecerLineasColindantesGeoJson(geoJson);
+      try {
+        const lineas = (row: any) => ({
+          type: 'Feature',
+          variables: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
+          geometry: JSON.parse(row.geometry)
+        });
+        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+        establecerLineasColindantesGeoJson(geoJson);
+      } catch (error) {
+        console.error('Error fetching lineas colindantes:', error);
+      }
     };
     buscarLineas();
   }, [modo]);
 
   useEffect(() => {
     const buscarTerritorios = async () => {
-      const territorios = (row: any) => ({
-        type: 'Feature',
-        variables: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
-        geometry: JSON.parse(row.geometry)
-      });
-      const geoJson = await (modo === "online"
-        ? buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios)
-        : buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios));
-      establecerTerritoriosGeoJson(geoJson);
+      try {
+        const territorios = (row: any) => ({
+          type: 'Feature',
+          variables: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
+          geometry: JSON.parse(row.geometry)
+        });
+        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
+        establecerTerritoriosGeoJson(geoJson);
+      } catch (error) {
+        console.error('Error fetching territorios:', error);
+      }
     };
     buscarTerritorios();
   }, [modo]);
 
   useEffect(() => {
     const buscarComunidades = async () => {
-      const comunidades = (row: any) => ({
-        type: 'Feature',
-        variables: { nombre: row.nomb_cnida, id: row.id_cnida },
-        geometry: JSON.parse(row.geometry)
-      });
-      const geoJson = await (modo === "online"
-        ? buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades)
-        : buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades));
-      establecerComunidadesGeoJson(geoJson);
+      try {
+        const comunidades = (row: any) => ({
+          type: 'Feature',
+          variables: { nombre: row.nomb_cnida, id: row.id_cnida },
+          geometry: JSON.parse(row.geometry)
+        });
+        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
+        establecerComunidadesGeoJson(geoJson);
+      } catch (error) {
+        console.error('Error fetching comunidades:', error);
+      }
     };
     buscarComunidades();
   }, [modo]);
@@ -117,7 +130,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   const enCadaComunidad = useCallback(async (id: string, circle: any) => {
     const info = await traeInformacionComunidad(id, modo);
-    const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
+    const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
     const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
     const poblacionTotal = hombres + mujeres;
     const popupContent = `
@@ -133,14 +146,21 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       </div>
     `;
     circle.bindPopup(popupContent).openPopup();
-  }, [modo]); 
+  }, [modo]);
 
   const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
-    const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
-    return gestionDocumental.rows.length !== 0;
+    try {
+      const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
+      return gestionDocumental.rows.length !== 0;
+    } catch (error) {
+      console.error('Error checking territory data:', error);
+      return false;
+    }
   };
 
-  if (!lineasColindantesGeoJson || !territoriosGeoJson || !comunidadesGeoJson) return <div>Cargando el mapa...</div>;
+  if (!lineasColindantesGeoJson || !territoriosGeoJson || !comunidadesGeoJson) {
+    return <div>Cargando el mapa...</div>;
+  }
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
@@ -151,17 +171,21 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         <button onClick={() => establecerMostrarComunidades(!mostrarComunidades)} style={estiloBoton(mostrarComunidades, '#3388FF')}>Comunidades</button>
       </div>
       <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
-        { mostrarOSM &&
+        {mostrarOSM && (
           <CapaOSM
             url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-        }
-        { mostrarTerritorios && territoriosGeoJson && <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />}
-        { mostrarLineasColindantes && lineasColindantesGeoJson && <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />}
-        { mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
+        )}
+        {mostrarTerritorios && territoriosGeoJson && (
+          <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+        )}
+        {mostrarLineasColindantes && lineasColindantesGeoJson && (
+          <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
+        )}
+        {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
           const centroide = turf.centroid(comunidad).geometry.coordinates;
-          const id = comunidad.variables.id;
+          const id = (comunidad as FeatureWithVariables).variables.id;
           return (
             <React.Fragment key={index}>
               <CirculoComunidad
@@ -187,10 +211,16 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
 export default Mapa;
 
+// Helper Functions
 const traeInformacionDocumentalLineaColindante = async (linea: any, modo: string | string[]) => {
-  const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.variables.id), modo);
-  organizaDocumentacionPorFecha(gestionDocumental);
-  return gestionDocumental.rows[0];
+  try {
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.variables.id), modo);
+    organizaDocumentacionPorFecha(gestionDocumental);
+    return gestionDocumental.rows[0];
+  } catch (error) {
+    console.error('Error fetching document info for linea colindante:', error);
+    return null;
+  }
 };
 
 const determinaColorLineaColindante = (linea: any) => {
@@ -231,8 +261,8 @@ const agregaEstiloALineaColindanteSeleccionada = (capa: any) => {
 const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
   if (info) {
     const texto = `<strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
-    <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
-    <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
+      <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
+      <strong>Resumen:</strong> ${info.DES_DOC}<br/>`;
     linea.bindPopup(texto).openPopup();
   }
 };
@@ -260,7 +290,7 @@ const agregaNombreTerritorioAPoligono = async (territorio: any, capa: any) => {
     className: estilos['territorio-nombre'],
     html: `<div>${abreviacionNombre}</div>`,
     iconSize: [abreviacionNombre.length * 6, 20],
-    iconAnchor: [abreviacionNombre.length * 3, 10]
+    iconAnchor: [abreviacionNombre.length * 3, 10],
   });
   const centroid = turf.centroid(territorio).geometry.coordinates;
   const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
@@ -268,9 +298,14 @@ const agregaNombreTerritorioAPoligono = async (territorio: any, capa: any) => {
 };
 
 const traeInformacionDocumentalTerritorio = async (territorio: any, modo: string | string[]) => {
-  const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
-  organizaDocumentacionPorFecha(gestionDocumental);
-  return gestionDocumental.rows;
+  try {
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
+    organizaDocumentacionPorFecha(gestionDocumental);
+    return gestionDocumental.rows;
+  } catch (error) {
+    console.error('Error fetching document info for territorio:', error);
+    return [];
+  }
 };
 
 const htmlParaPopUpDeTerritorio = (territorio: any) => {
@@ -282,10 +317,15 @@ const htmlParaPopUpDeTerritorio = (territorio: any) => {
 };
 
 const traeInformacionComunidad = async (idComunidad: any, modo: string | string[]) => {
-  const sexos = await buscarDatos(consultasBigQueryParaComunidades.sexo(idComunidad), modo);
-  const nombre = await buscarDatos(consultasBigQueryParaComunidades.nombreComunidad(idComunidad), modo);
-  const territorio = await buscarDatos(consultasBigQueryParaComunidades.nombreTerritorio(idComunidad), modo);
-  const familias = await buscarDatos(consultasBigQueryParaComunidades.familias(idComunidad), modo);
-  const pueblos = await buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo);
-  return { sexos, nombre, territorio, familias, pueblos };
+  try {
+    const sexos = await buscarDatos(consultasBigQueryParaComunidades.sexo(idComunidad), modo);
+    const nombre = await buscarDatos(consultasBigQueryParaComunidades.nombreComunidad(idComunidad), modo);
+    const territorio = await buscarDatos(consultasBigQueryParaComunidades.nombreTerritorio(idComunidad), modo);
+    const familias = await buscarDatos(consultasBigQueryParaComunidades.familias(idComunidad), modo);
+    const pueblos = await buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo);
+    return { sexos, nombre, territorio, familias, pueblos };
+  } catch (error) {
+    console.error('Error fetching comunidad info:', error);
+    return { sexos: { rows: [] }, nombre: { rows: [] }, territorio: { rows: [] }, familias: { rows: [] }, pueblos: { rows: [] } };
+  }
 };

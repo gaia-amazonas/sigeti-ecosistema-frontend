@@ -123,7 +123,12 @@ const consultasBigQueryParaComunidades = {
             id_cnida = '${comunidadId}';`
     ,
     pueblos: (comunidadId: string) => `
-        SELECT PUEBLO FROM \`sigeti.censo_632.Conteo_Pueblos\` WHERE ID_CNIDA='${comunidadId}';`
+        SELECT
+            PUEBLO
+        FROM
+            \`sigeti.censo_632.Conteo_Pueblos\`
+        WHERE
+            ID_CNIDA='${comunidadId}';`
 }
 
 export default consultasBigQueryParaComunidades;

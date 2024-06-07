@@ -44,7 +44,7 @@ export const estiloTerritorio = (feature: any) => {
 
 export const estiloContenedorBotones: CSSProperties = {
   position: 'absolute',
-  bottom: '10rem',
+  bottom: '15rem',
   right: 20,
   zIndex: 1000,
   background: 'transparent',
