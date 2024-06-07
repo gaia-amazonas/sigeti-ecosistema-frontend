@@ -13,6 +13,8 @@ import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 import { adjuntarAPopUp, creaCirculoConAnhoDentro, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
 
+import loadingStyles from './LoadingAnimation.module.css'; // Import the loading animation styles
+
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
@@ -41,66 +43,81 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const [mostrarLineasColindantes, establecerMostrarLineas] = useState(true);
   const [mostrarTerritorios, establecerMostrarTerritorios] = useState(true);
   const [mostrarComunidades, establecerMostrarComunidades] = useState(true);
+  const [isLoadingLineas, setIsLoadingLineas] = useState(true);
+  const [isLoadingTerritorios, setIsLoadingTerritorios] = useState(true);
+  const [isLoadingComunidades, setIsLoadingComunidades] = useState(true);
+
+  const allDataLoaded = !isLoadingLineas && !isLoadingTerritorios && !isLoadingComunidades;
 
   useEffect(() => {
-    const buscarLineas = async () => {
+    const fetchData = async () => {
+      setIsLoadingLineas(true);
+      setIsLoadingTerritorios(true);
+      setIsLoadingComunidades(true);
+
       try {
         const lineas = (row: any) => ({
           type: 'Feature',
           variables: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
           geometry: JSON.parse(row.geometry)
         });
-        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
-        establecerLineasColindantesGeoJson(geoJson);
-      } catch (error) {
-        console.error('Error fetching lineas colindantes:', error);
-      }
-    };
-    buscarLineas();
-  }, [modo]);
+        const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+        establecerLineasColindantesGeoJson(geoJsonLineas);
+        setIsLoadingLineas(false);
 
-  useEffect(() => {
-    const buscarTerritorios = async () => {
-      try {
         const territorios = (row: any) => ({
           type: 'Feature',
           variables: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
           geometry: JSON.parse(row.geometry)
         });
-        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
-        establecerTerritoriosGeoJson(geoJson);
-      } catch (error) {
-        console.error('Error fetching territorios:', error);
-      }
-    };
-    buscarTerritorios();
-  }, [modo]);
+        const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
+        establecerTerritoriosGeoJson(geoJsonTerritorios);
+        setIsLoadingTerritorios(false);
 
-  useEffect(() => {
-    const buscarComunidades = async () => {
-      try {
         const comunidades = (row: any) => ({
           type: 'Feature',
           variables: { nombre: row.nomb_cnida, id: row.id_cnida },
           geometry: JSON.parse(row.geometry)
         });
-        const geoJson = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
-        establecerComunidadesGeoJson(geoJson);
+        const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
+        establecerComunidadesGeoJson(geoJsonComunidades);
+        setIsLoadingComunidades(false);
+
       } catch (error) {
-        console.error('Error fetching comunidades:', error);
+        console.error('Error fetching data:', error);
+        setIsLoadingLineas(false);
+        setIsLoadingTerritorios(false);
+        setIsLoadingComunidades(false);
       }
     };
-    buscarComunidades();
+
+    fetchData();
   }, [modo]);
 
   const enCadaLinea = (linea: any, capa: any) => {
+
     if (linea.variables && linea.variables.id) {
+
       determinaColorLineaColindante(linea);
-      agregaEstiloALineaColindante(capa, linea);
+      
+      if (capa && capa.setStyle) {
+        agregaEstiloALineaColindante(capa, linea);
+      }
+
       capa.on('click', async () => {
-        devuelveEstiloALineaColindanteSeleccionadaAntes(capa, lineaSeleccionada);
-        agregaEstiloALineaColindanteSeleccionada(capa);
-        htmlParaPopUpDeLineaColindante(capa, await traeInformacionDocumentalLineaColindante(linea, modo));
+
+        console.log(linea);
+
+        if ( lineaSeleccionada ) {
+          devuelveEstiloALineaColindanteSeleccionadaAntes(capa, lineaSeleccionada);
+        }
+        
+        if (capa.setStyle) {
+          agregaEstiloALineaColindanteSeleccionada(capa);
+        }
+
+        const info = await traeInformacionDocumentalLineaColindante(linea, modo);
+        htmlParaPopUpDeLineaColindante(capa, info);
         lineaSeleccionada = capa;
       });
     }
@@ -158,12 +175,13 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
-  if (!lineasColindantesGeoJson || !territoriosGeoJson || !comunidadesGeoJson) {
-    return <div>Cargando el mapa...</div>;
-  }
-
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+      {isLoadingLineas || isLoadingTerritorios || isLoadingComunidades ? (
+        <div className={loadingStyles['loading-overlay']}>
+          <div className={loadingStyles.spinner}></div>
+        </div>
+      ) : null}
       <div style={estiloContenedorBotones}>
         <button onClick={() => establecerMostrarOSM(!mostrarOSM)} style={estiloBoton(mostrarOSM, 'green')}>OSM</button>
         <button onClick={() => establecerMostrarLineas(!mostrarLineasColindantes)} style={estiloBoton(mostrarLineasColindantes, '#FF0000')}>Lineas</button>
@@ -177,33 +195,37 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
         )}
-        {mostrarTerritorios && territoriosGeoJson && (
-          <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+        {!isLoadingTerritorios && (
+          <>
+            {mostrarTerritorios && territoriosGeoJson && (
+              <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+            )}
+            {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
+              const centroide = turf.centroid(comunidad).geometry.coordinates;
+              const id = (comunidad as GeometriasConVariables).variables.id;
+              return (
+                <React.Fragment key={index}>
+                  <CirculoComunidad
+                    center={[centroide[1], centroide[0]]}
+                    radius={1000}
+                    pathOptions={{ color: 'black', fillOpacity: 0.1 }}
+                    eventHandlers={{
+                      click: (e) => enCadaComunidad(id, e.target)
+                    }}
+                  />
+                  <CirculoComunidad
+                    center={[centroide[1], centroide[0]]}
+                    radius={10}
+                    pathOptions={{ color: 'black', fillOpacity: 1 }}
+                  />
+                </React.Fragment>
+              );
+            })}
+            {mostrarLineasColindantes && lineasColindantesGeoJson && (
+              <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
+            )}
+          </>
         )}
-        {mostrarLineasColindantes && lineasColindantesGeoJson && (
-          <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
-        )}
-        {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
-          const centroide = turf.centroid(comunidad).geometry.coordinates;
-          const id = (comunidad as GeometriasConVariables).variables.id;
-          return (
-            <React.Fragment key={index}>
-              <CirculoComunidad
-                center={[centroide[1], centroide[0]]}
-                radius={1000}
-                pathOptions={{ color: 'black', fillOpacity: 0.1 }}
-                eventHandlers={{
-                  click: (e) => enCadaComunidad(id, e.target)
-                }}
-              />
-              <CirculoComunidad
-                center={[centroide[1], centroide[0]]}
-                radius={10}
-                pathOptions={{ color: 'black', fillOpacity: 1 }}
-              />
-            </React.Fragment>
-          );
-        })}
       </Contenedor>
     </div>
   );
@@ -230,16 +252,18 @@ const determinaColorLineaColindante = (linea: any) => {
 };
 
 const agregaEstiloALineaColindante = (capa: any, linea: any) => {
-  capa.setStyle({
-    color: linea.variables.colorOriginal,
-    weight: 13,
-    opacity: 0.6,
-    zIndex: 10,
-  });
+  if (capa.setStyle) {
+    capa.setStyle({
+      color: linea.variables.colorOriginal,
+      weight: 13,
+      opacity: 0.6,
+      zIndex: 10,
+    });
+  }
 };
 
 const devuelveEstiloALineaColindanteSeleccionadaAntes = (capa: any, lineaSeleccionada: any) => {
-  if (lineaSeleccionada && lineaSeleccionada !== capa) {
+  if (lineaSeleccionada && lineaSeleccionada.setStyle) {
     lineaSeleccionada.setStyle({
       color: lineaSeleccionada.feature.variables.colorOriginal,
       weight: 13,
@@ -250,12 +274,14 @@ const devuelveEstiloALineaColindanteSeleccionadaAntes = (capa: any, lineaSelecci
 };
 
 const agregaEstiloALineaColindanteSeleccionada = (capa: any) => {
-  capa.setStyle({
-    color: 'yellow',
-    weight: 13,
-    opacity: 0.8,
-    zIndex: 10,
-  });
+  if (capa.setStyle) {
+    capa.setStyle({
+      color: 'yellow',
+      weight: 13,
+      opacity: 0.8,
+      zIndex: 10,
+    });
+  }
 };
 
 const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {

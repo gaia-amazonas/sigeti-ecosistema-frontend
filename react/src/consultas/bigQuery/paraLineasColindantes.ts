@@ -19,7 +19,7 @@ const consultasBigQueryParaLineasColindantes = {
             TID.DES_DOC,
             TID.LINK_DOC
         FROM
-            \`sigeti-admin-364713.analysis_units.LineasColindantes\` AS LC
+            \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\` AS LC
         JOIN
             \`sigeti-admin-364713.Gestion_Documental.TablaInventarioDocumentos\` AS TID
         ON
