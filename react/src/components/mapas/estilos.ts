@@ -2,7 +2,7 @@
 
 import { CSSProperties } from 'react';
 
-const colorMapping: { [key: string]: string } = {
+const mapeaColor: { [key: string]: string } = {
   "PN": "#FFE8C2",
   "BC": "#ECA98A",
   "YA": "#98C182",
@@ -28,8 +28,8 @@ export function obtieneColorRandom() {
 }
 
 export const estiloTerritorio = (feature: any) => {
-  const color = feature.variables && colorMapping[feature.variables.id]
-    ? colorMapping[feature.variables.id]
+  const color = feature.variables && mapeaColor[feature.variables.id]
+    ? mapeaColor[feature.variables.id]
     : '#3388FF';
   return {
     color: "#7D7D7D",
@@ -37,7 +37,7 @@ export const estiloTerritorio = (feature: any) => {
     opacity: 0.6,
     fillColor: color,
     fillOpacity: 0.8,
-    zIndex: 5 // Lower zIndex for polygons
+    zIndex: 5
   };
 };
 
