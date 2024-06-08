@@ -170,8 +170,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       `;
       circle.bindPopup(popupContent).openPopup();
     } catch (error) {
-      logger.error('Error fetching comunidad info:', error);
-      circle.bindPopup('<div>Error loading data</div>').openPopup();
+      logger.error('Error buscando información de la comunidad:', error);
+      circle.bindPopup('<div>No hay datos para esta comunidad aún</div>').openPopup();
     }
   }, [modo]);
 
@@ -298,7 +298,8 @@ const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
   if (info) {
     const texto = `<strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
       <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
-      <strong>Resumen:</strong> ${info.DES_DOC}<br/>
+      <strong>Definición:</strong> ${info.DEFINICION}<br/>
+      <strong>Descripción del documento:</strong> ${info.DES_DOC}<br/>
       <strong>Acta de Colindancia:</strong> <a href="${info.ACTA_COL}" target="_blank">Link al Documento</a><br/>
       <strong>PV 1:</strong> <a href="${info.PV_1}" target="_blank">Link al Documento</a><br/>
       <strong>PV 2:</strong> <a href="${info.PV_2}" target="_blank">Link al Documento</a><br/>`;
