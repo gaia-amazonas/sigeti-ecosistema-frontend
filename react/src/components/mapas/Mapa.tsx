@@ -14,7 +14,6 @@ import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 import { adjuntarAPopUp, creaCirculoConAnhoDentro, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
-import loadingStyles from './LoadingAnimation.module.css'; // Import the loading animation styles
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
@@ -147,7 +146,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const enCadaComunidad = useCallback(async (id: string, circle: any) => {
     const loadingContent = `
       <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
-        <div class="${loadingStyles.spinner}"></div>
+        <div class="${estilos.spinner}"></div>
       </div>
     `;
     circle.bindPopup(loadingContent).openPopup();
@@ -189,8 +188,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       {isLoadingLineas || isLoadingTerritorios || isLoadingComunidades ? (
-        <div className={loadingStyles['loading-overlay']}>
-          <div className={loadingStyles.spinner}></div>
+        <div className={estilos['loading-overlay']}>
+          <div className={estilos.spinner}></div>
         </div>
       ) : null}
       <div style={estiloContenedorBotones}>
@@ -202,8 +201,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {mostrarOSM && (
           <CapaOSM
-            url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+            attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
         )}
         { allDataLoaded && (
