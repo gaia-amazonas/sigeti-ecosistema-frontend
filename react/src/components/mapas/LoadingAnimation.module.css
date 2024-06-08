@@ -10,18 +10,17 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: transparent; /* Fully transparent background */
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's on top of everything */
-  pointer-events: none; /* Allow interactions with the map */
-}
+  z-index: 1000;
+  pointer-events: none;
 
 .spinner {
-  width: 80px;
-  height: 80px;
-  border: 16px solid rgba(243, 243, 243, 0.6); /* Slightly transparent border */
+  width: 3rem;
+  height: 3rem;
+  border: 16px solid rgba(243, 243, 243, 0.6);
   border-top: 16px solid #3498db;
   border-radius: 50%;
   animation: spinner 2s linear infinite;

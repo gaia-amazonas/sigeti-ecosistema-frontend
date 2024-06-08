@@ -99,8 +99,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
     if (linea.variables && linea.variables.id) {
 
-      console.log(linea.variables);
-
       determinaColorLineaColindante(linea);
       
       if (capa && capa.setStyle) {
@@ -117,8 +115,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           agregaEstiloALineaColindanteSeleccionada(capa);
         }
 
-        const info = await traeInformacionDocumentalLineaColindante(linea, modo);
-        htmlParaPopUpDeLineaColindante(capa, info);
+        const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
+        htmlParaPopUpDeLineaColindante(capa, informacionDocumental);
         lineaSeleccionada = capa;
       });
     }
@@ -147,23 +145,35 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaComunidad = useCallback(async (id: string, circle: any) => {
-    const info = await traeInformacionComunidad(id, modo);
-    const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
-    const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
-    const poblacionTotal = hombres + mujeres;
-    const popupContent = `
-      <div>
-        <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
-        <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
-        <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
-        <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
-        <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
-        <strong>Sexos:</strong><br/>
-        &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
-        &nbsp;&nbsp;&nbsp;${hombres} hombres
+    const loadingContent = `
+      <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
+        <div class="${loadingStyles.spinner}"></div>
       </div>
     `;
-    circle.bindPopup(popupContent).openPopup();
+    circle.bindPopup(loadingContent).openPopup();
+
+    try {
+      const info = await traeInformacionComunidad(id, modo);
+      const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
+      const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
+      const poblacionTotal = hombres + mujeres;
+      const popupContent = `
+        <div>
+          <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
+          <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
+          <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
+          <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
+          <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
+          <strong>Sexos:</strong><br/>
+          &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
+          &nbsp;&nbsp;&nbsp;${hombres} hombres
+        </div>
+      `;
+      circle.bindPopup(popupContent).openPopup();
+    } catch (error) {
+      logger.error('Error fetching comunidad info:', error);
+      circle.bindPopup('<div>Error loading data</div>').openPopup();
+    }
   }, [modo]);
 
   const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
