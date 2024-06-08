@@ -18,6 +18,7 @@ const consultasBigQueryParaLineasColindantes = {
             TID.NOM_ESCENARIO,
             TID.DES_DOC,
             TID.LINK_DOC,
+            LC.DEFINICION,
             LC.ACTA_COL,
             LC.PV_1,
             LC.PV_2

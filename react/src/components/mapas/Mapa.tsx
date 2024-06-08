@@ -14,7 +14,6 @@ import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 import { adjuntarAPopUp, creaCirculoConAnhoDentro, creaContenedorInformacion, creaContenedorLineaTiempo } from './graficosDinamicos';
-import loadingStyles from './LoadingAnimation.module.css'; // Import the loading animation styles
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
@@ -99,8 +98,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
     if (linea.variables && linea.variables.id) {
 
-      console.log(linea.variables);
-
       determinaColorLineaColindante(linea);
       
       if (capa && capa.setStyle) {
@@ -117,8 +114,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           agregaEstiloALineaColindanteSeleccionada(capa);
         }
 
-        const info = await traeInformacionDocumentalLineaColindante(linea, modo);
-        htmlParaPopUpDeLineaColindante(capa, info);
+        const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
+        htmlParaPopUpDeLineaColindante(capa, informacionDocumental);
         lineaSeleccionada = capa;
       });
     }
@@ -147,23 +144,35 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaComunidad = useCallback(async (id: string, circle: any) => {
-    const info = await traeInformacionComunidad(id, modo);
-    const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
-    const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
-    const poblacionTotal = hombres + mujeres;
-    const popupContent = `
-      <div>
-        <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
-        <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
-        <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
-        <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
-        <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
-        <strong>Sexos:</strong><br/>
-        &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
-        &nbsp;&nbsp;&nbsp;${hombres} hombres
+    const loadingContent = `
+      <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
+        <div class="${estilos.spinner}"></div>
       </div>
     `;
-    circle.bindPopup(popupContent).openPopup();
+    circle.bindPopup(loadingContent).openPopup();
+
+    try {
+      const info = await traeInformacionComunidad(id, modo);
+      const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
+      const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
+      const poblacionTotal = hombres + mujeres;
+      const popupContent = `
+        <div>
+          <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
+          <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
+          <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
+          <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
+          <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
+          <strong>Sexos:</strong><br/>
+          &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
+          &nbsp;&nbsp;&nbsp;${hombres} hombres
+        </div>
+      `;
+      circle.bindPopup(popupContent).openPopup();
+    } catch (error) {
+      logger.error('Error buscando información de la comunidad:', error);
+      circle.bindPopup('<div>No hay datos para esta comunidad aún</div>').openPopup();
+    }
   }, [modo]);
 
   const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
@@ -179,8 +188,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       {isLoadingLineas || isLoadingTerritorios || isLoadingComunidades ? (
-        <div className={loadingStyles['loading-overlay']}>
-          <div className={loadingStyles.spinner}></div>
+        <div className={estilos['loading-overlay']}>
+          <div className={estilos.spinner}></div>
         </div>
       ) : null}
       <div style={estiloContenedorBotones}>
@@ -192,8 +201,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {mostrarOSM && (
           <CapaOSM
-            url={modo === "online" ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+            attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
         )}
         { allDataLoaded && (
@@ -289,7 +298,8 @@ const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
   if (info) {
     const texto = `<strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
       <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
-      <strong>Resumen:</strong> ${info.DES_DOC}<br/>
+      <strong>Definición:</strong> ${info.DEFINICION}<br/>
+      <strong>Descripción del documento:</strong> ${info.DES_DOC}<br/>
       <strong>Acta de Colindancia:</strong> <a href="${info.ACTA_COL}" target="_blank">Link al Documento</a><br/>
       <strong>PV 1:</strong> <a href="${info.PV_1}" target="_blank">Link al Documento</a><br/>
       <strong>PV 2:</strong> <a href="${info.PV_2}" target="_blank">Link al Documento</a><br/>`;
