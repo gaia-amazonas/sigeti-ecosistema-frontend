@@ -16,6 +16,7 @@
   align-items: center;
   z-index: 1000;
   pointer-events: none;
+}
 
 .spinner {
   width: 3rem;
