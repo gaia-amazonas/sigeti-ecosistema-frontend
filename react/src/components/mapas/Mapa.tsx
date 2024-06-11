@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
 import * as turf from '@turf/turf';
 
-import logger from 'utilidades/logger'
+import logger from 'utilidades/logger';
 
 import estilos from './Mapa.module.css';
 import { estiloTerritorio, estiloContenedorBotones, estiloBoton, obtieneColorRandom } from './estilos';
@@ -25,12 +25,59 @@ interface GeometriasConVariables extends Feature<Geometry> {
   variables: {
     nombre: string;
     id: string;
-    [key: string]: any;
+    [key: string]: string | number;
   };
 }
 
 interface MapaImp {
   modo: string | string[];
+}
+
+interface FilaLineas {
+  OBJECTID: number | string;
+  COL_ENTRE: string;
+  geometry: string;
+}
+
+interface FilaTerritorios {
+  NOMBRE_TI: string;
+  ID_TI: string | number;
+  ABREV_TI: string;
+  geometry: string;
+}
+
+interface FilaComunidades {
+  nomb_cnida: string;
+  id_cnida: string;
+  geometry: string;
+}
+
+interface FeatureLineas {
+  type: 'Feature';
+  variables: {
+    id: number | string;
+    col_entre: string;
+  };
+  geometry: string;
+}
+
+interface FeatureTerritorios {
+  type: 'Feature';
+  variables: {
+    nombre: string;
+    id: string | number;
+    abreviacion: string;
+  };
+  geometry: string;
+}
+
+interface FeatureComunidades {
+  type: 'Feature';
+  variables: {
+    nombre: string;
+    id: string;
+  };
+  geometry: string;
 }
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
@@ -49,71 +96,64 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   const allDataLoaded = !isLoadingLineas && !isLoadingTerritorios && !isLoadingComunidades;
 
+  const fetchData = async (modo: string | string[]) => {
+    setIsLoadingLineas(true);
+    setIsLoadingTerritorios(true);
+    setIsLoadingComunidades(true);
+
+    try {
+      const lineas = (fila: FilaLineas): FeatureLineas => ({
+        type: 'Feature',
+        variables: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+      establecerLineasColindantesGeoJson(geoJsonLineas);
+      setIsLoadingLineas(false);
+
+      const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
+        type: 'Feature',
+        variables: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
+      establecerTerritoriosGeoJson(geoJsonTerritorios);
+      setIsLoadingTerritorios(false);
+
+      const comunidades = (fila: FilaComunidades) => ({
+        type: 'Feature',
+        variables: { nombre: fila.nomb_cnida, id: fila.id_cnida },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
+      establecerComunidadesGeoJson(geoJsonComunidades);
+      setIsLoadingComunidades(false);
+
+    } catch (error) {
+      logger.error('Error fetching data:', error);
+      setIsLoadingLineas(false);
+      setIsLoadingTerritorios(false);
+      setIsLoadingComunidades(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoadingLineas(true);
-      setIsLoadingTerritorios(true);
-      setIsLoadingComunidades(true);
-
-      try {
-        const lineas = (row: any) => ({
-          type: 'Feature',
-          variables: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
-          geometry: JSON.parse(row.geometry)
-        });
-        const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
-        establecerLineasColindantesGeoJson(geoJsonLineas);
-        setIsLoadingLineas(false);
-
-        const territorios = (row: any) => ({
-          type: 'Feature',
-          variables: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
-          geometry: JSON.parse(row.geometry)
-        });
-        const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
-        establecerTerritoriosGeoJson(geoJsonTerritorios);
-        setIsLoadingTerritorios(false);
-
-        const comunidades = (row: any) => ({
-          type: 'Feature',
-          variables: { nombre: row.nomb_cnida, id: row.id_cnida },
-          geometry: JSON.parse(row.geometry)
-        });
-        const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
-        establecerComunidadesGeoJson(geoJsonComunidades);
-        setIsLoadingComunidades(false);
-
-      } catch (error) {
-        logger.error('Error fetching data:', error);
-        setIsLoadingLineas(false);
-        setIsLoadingTerritorios(false);
-        setIsLoadingComunidades(false);
-      }
-    };
-
-    fetchData();
+    fetchData(modo);
   }, [modo]);
 
   const enCadaLinea = (linea: any, capa: any) => {
-
     if (linea.variables && linea.variables.id) {
-
       determinaColorLineaColindante(linea);
-      
       if (capa && capa.setStyle) {
         agregaEstiloALineaColindante(capa, linea);
       }
-
       capa.on('click', async () => {
-
-        if ( lineaSeleccionada ) {
+        if (lineaSeleccionada) {
           devuelveEstiloALineaColindanteSeleccionadaAntes(capa, lineaSeleccionada);
         }
-        
         if (capa.setStyle) {
           agregaEstiloALineaColindanteSeleccionada(capa);
         }
-
         const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
         htmlParaPopUpDeLineaColindante(capa, informacionDocumental);
         lineaSeleccionada = capa;
@@ -205,7 +245,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
             attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
         )}
-        { allDataLoaded && (
+        {allDataLoaded && (
           <>
             {mostrarTerritorios && territoriosGeoJson && (
               <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
@@ -242,7 +282,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 };
 
 export default Mapa;
-
 
 const traeInformacionDocumentalLineaColindante = async (linea: any, modo: string | string[]) => {
   try {
