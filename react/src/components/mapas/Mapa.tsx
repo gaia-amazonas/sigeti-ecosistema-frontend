@@ -81,6 +81,7 @@ interface FeatureComunidades {
 }
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
+
   let lineaSeleccionada: { setStyle: (arg0: { color: any; weight: number; opacity: number; zIndex: number; }) => void; feature: { variables: { colorOriginal: any; }; }; } | null = null;
 
   const [lineasColindantesGeoJson, establecerLineasColindantesGeoJson] = useState<FeatureCollection | null>(null);
@@ -90,56 +91,24 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const [mostrarLineasColindantes, establecerMostrarLineas] = useState(true);
   const [mostrarTerritorios, establecerMostrarTerritorios] = useState(true);
   const [mostrarComunidades, establecerMostrarComunidades] = useState(true);
-  const [isLoadingLineas, setIsLoadingLineas] = useState(true);
-  const [isLoadingTerritorios, setIsLoadingTerritorios] = useState(true);
-  const [isLoadingComunidades, setIsLoadingComunidades] = useState(true);
+  const [estaCargandoLineas, establecerEstaCargandoLineas] = useState(true);
+  const [estaCargandoTerritorios, establecerEstaCargandoTerritorios] = useState(true);
+  const [estaCargandoComunidades, establecerEstaCargandoComunidades] = useState(true);
 
-  const allDataLoaded = !isLoadingLineas && !isLoadingTerritorios && !isLoadingComunidades;
-
-  const fetchData = async (modo: string | string[]) => {
-    setIsLoadingLineas(true);
-    setIsLoadingTerritorios(true);
-    setIsLoadingComunidades(true);
-
-    try {
-      const lineas = (fila: FilaLineas): FeatureLineas => ({
-        type: 'Feature',
-        variables: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
-        geometry: JSON.parse(fila.geometry)
-      });
-      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
-      establecerLineasColindantesGeoJson(geoJsonLineas);
-      setIsLoadingLineas(false);
-
-      const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
-        type: 'Feature',
-        variables: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
-        geometry: JSON.parse(fila.geometry)
-      });
-      const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
-      establecerTerritoriosGeoJson(geoJsonTerritorios);
-      setIsLoadingTerritorios(false);
-
-      const comunidades = (fila: FilaComunidades) => ({
-        type: 'Feature',
-        variables: { nombre: fila.nomb_cnida, id: fila.id_cnida },
-        geometry: JSON.parse(fila.geometry)
-      });
-      const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
-      establecerComunidadesGeoJson(geoJsonComunidades);
-      setIsLoadingComunidades(false);
-
-    } catch (error) {
-      logger.error('Error fetching data:', error);
-      setIsLoadingLineas(false);
-      setIsLoadingTerritorios(false);
-      setIsLoadingComunidades(false);
-    }
-  };
+  const allDataLoaded = !estaCargandoLineas && !estaCargandoTerritorios && !estaCargandoComunidades;
 
   useEffect(() => {
-    fetchData(modo);
+    buscarDatosInicialesDeMapa(modo);
   }, [modo]);
+
+  const buscarDatosInicialesDeMapa = async (modo: string | string[]) => {
+    establecerEstaCargandoLineas(true);
+    traerLineasColindantes(modo);
+    establecerEstaCargandoTerritorios(true);
+    traerTerritorios(modo);
+    establecerEstaCargandoComunidades(true);
+    traerComunidades(modo);
+  };
 
   const enCadaLinea = (linea: any, capa: any) => {
     if (linea.variables && linea.variables.id) {
@@ -190,30 +159,13 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       </div>
     `;
     circle.bindPopup(loadingContent).openPopup();
+    const html = await crearHtmlPopUpComunidad(id, modo, circle);
+    console.log(html);
+    circle.bindPopup(html).openPopup();
 
-    try {
-      const info = await traeInformacionComunidad(id, modo);
-      const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
-      const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
-      const poblacionTotal = hombres + mujeres;
-      const popupContent = `
-        <div>
-          <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
-          <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
-          <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
-          <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
-          <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
-          <strong>Sexos:</strong><br/>
-          &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
-          &nbsp;&nbsp;&nbsp;${hombres} hombres
-        </div>
-      `;
-      circle.bindPopup(popupContent).openPopup();
-    } catch (error) {
-      logger.error('Error buscando información de la comunidad:', error);
-      circle.bindPopup('<div>No hay datos para esta comunidad aún</div>').openPopup();
-    }
   }, [modo]);
+
+
 
   const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
     try {
@@ -225,9 +177,57 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
+  const traerLineasColindantes = async (modo: string | string[]) => {
+    try {
+      const lineas = (fila: FilaLineas): FeatureLineas => ({
+        type: 'Feature',
+        variables: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+      establecerLineasColindantesGeoJson(geoJsonLineas);
+      establecerEstaCargandoLineas(false);
+    } catch (error) {
+      logger.error('Error buscando lineas:', error);
+      establecerEstaCargandoLineas(false);
+    }
+  }
+
+  const traerTerritorios = async (modo: string | string[]) => {
+    try {
+      const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
+        type: 'Feature',
+        variables: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
+      establecerTerritoriosGeoJson(geoJsonTerritorios);
+      establecerEstaCargandoTerritorios(false);
+    } catch (error) {
+      logger.error('Error buscando territorios:', error);
+      establecerEstaCargandoTerritorios(false);
+    }
+  }
+
+  const traerComunidades = async (modo: string | string[]) => {
+    try {
+      const comunidades = (fila: FilaComunidades): FeatureComunidades => ({
+        type: 'Feature',
+        variables: { nombre: fila.nomb_cnida, id: fila.id_cnida },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
+      establecerComunidadesGeoJson(geoJsonComunidades);
+      establecerEstaCargandoComunidades(false);
+    } catch (error) {
+      logger.error('Error buscando comunidades:', error);
+      establecerEstaCargandoComunidades(false)
+    }
+  }
+
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      {isLoadingLineas || isLoadingTerritorios || isLoadingComunidades ? (
+      {estaCargandoLineas || estaCargandoTerritorios || estaCargandoComunidades ? (
         <div className={estilos['loading-overlay']}>
           <div className={estilos.spinner}></div>
         </div>
@@ -345,6 +345,34 @@ const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
     linea.bindPopup(texto).openPopup();
   }
 };
+
+const crearHtmlPopUpComunidad = async (id: string, modo: string | string[], circle: any) => {
+  try {
+    return intentaCrearHtmlPopUpComunidad(id, modo);
+  } catch (error) {
+    logger.error('Error buscando información de la comunidad:', error);
+    circle.bindPopup('<div>No hay datos para esta comunidad aún</div>').openPopup();
+  }
+};
+
+const intentaCrearHtmlPopUpComunidad = async (id: string, modo: string | string[]) => {
+  const info = await traeInformacionComunidad(id, modo);
+  const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
+  const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
+  const poblacionTotal = hombres + mujeres;
+  return `
+    <div>
+      <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
+      <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
+      <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
+      <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
+      <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
+      <strong>Sexos:</strong><br/>
+      &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
+      &nbsp;&nbsp;&nbsp;${hombres} hombres
+    </div>
+  `;
+}
 
 const organizaDocumentacionPorFecha = (gestionDocumental: any) => {
   gestionDocumental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
