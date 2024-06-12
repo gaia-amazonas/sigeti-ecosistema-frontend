@@ -1,5 +1,4 @@
 // src/components/mapas/estilos.ts
-
 import { CSSProperties } from 'react';
 
 const mapeaColor: { [key: string]: string } = {
@@ -18,38 +17,29 @@ const mapeaColor: { [key: string]: string } = {
   "MP": "#bbaf7b"
 };
 
-export function obtieneColorRandom() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
 export const estiloTerritorio = (feature: any) => {
-  const color = feature.variables && mapeaColor[feature.variables.id]
-    ? mapeaColor[feature.variables.id]
+  const color = feature.properties && mapeaColor[feature.properties.id]
+    ? mapeaColor[feature.properties.id]
     : '#3388FF';
   return {
     color: "#7D7D7D",
     weight: 2,
-    opacity: 0.6,
+    opacity: 0.8,
     fillColor: color,
-    fillOpacity: 0.8,
+    fillOpacity: 0.6,
     zIndex: 5
   };
 };
 
 export const estiloLineaColindante = (feature: any) => {
-  const color = feature.variables && feature.variables.colorOriginal
-    ? feature.variables.colorOriginal
+  const color = feature.properties && feature.properties.colorOriginal
+    ? feature.properties.colorOriginal
     : '#3388FF';
   return {
     color: color,
     weight: 4,
     opacity: 0.8,
-    zIndex: 10 // Higher zIndex for lines
+    zIndex: 10
   };
 };
 

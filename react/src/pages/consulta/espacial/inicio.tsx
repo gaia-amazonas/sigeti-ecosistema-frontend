@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
-import Mapa from 'components/mapas/Mapa';
+import Mapa from 'components/consultaConMapa/Mapa';
 import BotonReiniciar from 'components/BotonReiniciar';
 
 const Espacial: React.FC = () => {

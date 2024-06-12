@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Contenedor, OpcionComoBoton, Titulo, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, FiltraEntrada, OpcionComoBoton } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
-interface ResguardoIndigenaImp {
+interface AATIImp {
   data: any;
   setData: (data: any) => void;
   nextStep: () => void;
 }
 
-const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, nextStep }) => {
+const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
   const [options, setOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [filter, setFilter] = useState('');
@@ -15,17 +15,10 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, next
   useEffect(() => {
     async function fetchData() {
       const query = `
-        SELECT ID_RI, NOMBRE_RI
-        FROM (
-            SELECT
-                ID_RI,
-                NOMBRE_RI,
-                ROW_NUMBER() OVER (PARTITION BY ID_RI ORDER BY NOMBRE_RI) AS row_num
-            FROM
-                \`sigeti-admin-364713.analysis_units.TE_RI\`
-        ) AS subquery
-        WHERE
-        row_num = 1;`;
+        SELECT
+          ID_AATI, NOMBRE_AAT
+        FROM
+          \`sigeti-admin-364713.analysis_units.TE_AATI\``;
       const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
       const result = await response.json();
       setOptions(result.rows);
@@ -38,13 +31,13 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, next
   useEffect(() => {
     setFilteredOptions(
       options.filter((option: any) =>
-        option.NOMBRE_RI.toLowerCase().includes(filter.toLowerCase())
+        option.NOMBRE_AAT.toLowerCase().includes(filter.toLowerCase())
       )
     );
   }, [filter, options]);
 
-  const handleSelect = (id_ri: string) => {
-    setData({ ...data, resguardo_id: id_ri });
+  const handleSelect = (id_aati: string) => {
+    setData({ ...data, aati_id: id_aati });
     nextStep();
   };
 
@@ -61,12 +54,12 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, next
         onChange={handleFilterChange}
       />
       {filteredOptions.map((option: any) => (
-        <OpcionComoBoton key={option.ID_RI} onClick={() => handleSelect(option.ID_RI)}>
-          {option.NOMBRE_RI}
+        <OpcionComoBoton key={option.ID_AATI} onClick={() => handleSelect(option.ID_AATI)}>
+          {option.NOMBRE_AAT}
         </OpcionComoBoton>
       ))}
     </Contenedor>
   );
 };
 
-export default ResguardoIndigena;
+export default AATI;
