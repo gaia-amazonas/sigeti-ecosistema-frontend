@@ -6,6 +6,7 @@ import { FeatureCollection, Geometry, Feature } from 'geojson';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import logger from 'utilidades/logger';
+import { organizaDocumentacionPorFecha } from 'utilidades/organizadores';
 
 import estilos from './Mapa.module.css';
 import { estiloTerritorio, estiloContenedorBotones, estiloBoton } from './estilos';
@@ -15,7 +16,7 @@ import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 
-import { organizaDocumentacionPorFecha, traeInformacionDocumentalTerritorio } from 'buscadores/paraMapa'
+import { traeInformacionDocumentalTerritorio } from 'buscadores/paraMapa'
 import {
   adjuntarAPopUp,
   creaCirculoConAnhoDentro,

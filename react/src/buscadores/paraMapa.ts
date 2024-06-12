@@ -1,4 +1,5 @@
 import logger from 'utilidades/logger';
+import { organizaDocumentacionPorFecha } from 'utilidades/organizadores'
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
@@ -29,10 +30,6 @@ export const traeInformacionDocumentalLineaColindante = async (linea: FeatureLin
     logger.error('Error buscando documentación para línea colindante:', error);
     return null;
   }
-};
-
-export const organizaDocumentacionPorFecha = (gestionDocumental: GestionDocumental) => {
-  gestionDocumental.rows.sort((row_a: FilaGestionDocumental, row_b: FilaGestionDocumental) => row_a.FECHA_INICIO.value.localeCompare(row_b.FECHA_INICIO.value));
 };
 
 export const traeInformacionDocumentalTerritorio = async (territorio: FeatureTerritorios, modo: string | string[]) => {
