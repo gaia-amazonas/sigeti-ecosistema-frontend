@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { Layer, Path } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FeatureCollection, Geometry, Feature } from 'geojson';
 import * as turf from '@turf/turf';
+import dynamic from 'next/dynamic';
+import { FeatureCollection, Geometry, Feature } from 'geojson';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import logger from 'utilidades/logger';
 
@@ -22,7 +23,7 @@ const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod
 const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
 
 interface GeometriasConVariables extends Feature<Geometry> {
-  variables: {
+  properties: {
     nombre: string;
     id: string;
     [key: string]: string | number;
@@ -54,16 +55,17 @@ interface FilaComunidades {
 
 interface FeatureLineas {
   type: 'Feature';
-  variables: {
+  properties: {
     id: number | string;
     col_entre: string;
+    colorOriginal?: string;
   };
   geometry: string;
 }
 
 interface FeatureTerritorios {
   type: 'Feature';
-  variables: {
+  properties: {
     nombre: string;
     id: string | number;
     abreviacion: string;
@@ -73,7 +75,7 @@ interface FeatureTerritorios {
 
 interface FeatureComunidades {
   type: 'Feature';
-  variables: {
+  properties: {
     nombre: string;
     id: string;
   };
@@ -82,7 +84,7 @@ interface FeatureComunidades {
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
-  let lineaSeleccionada: { setStyle: (arg0: { color: any; weight: number; opacity: number; zIndex: number; }) => void; feature: { variables: { colorOriginal: any; }; }; } | null = null;
+  let lineaSeleccionada: { setStyle: (arg0: { color: any; weight: number; opacity: number; zIndex: number; }) => void; feature: { properties: { colorOriginal: any; }; }; } | null = null;
 
   const [lineasColindantesGeoJson, establecerLineasColindantesGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
@@ -98,10 +100,10 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const allDataLoaded = !estaCargandoLineas && !estaCargandoTerritorios && !estaCargandoComunidades;
 
   useEffect(() => {
-    buscarDatosInicialesDeMapa(modo);
+    traerDatosInicialesDeMapa(modo);
   }, [modo]);
 
-  const buscarDatosInicialesDeMapa = async (modo: string | string[]) => {
+  const traerDatosInicialesDeMapa = async (modo: string | string[]) => {
     establecerEstaCargandoLineas(true);
     traerLineasColindantes(modo);
     establecerEstaCargandoTerritorios(true);
@@ -110,29 +112,31 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     traerComunidades(modo);
   };
 
-  const enCadaLinea = (linea: any, capa: any) => {
-    if (linea.variables && linea.variables.id) {
+  const enCadaLinea = (feature: Feature<Geometry, any>, layer: Layer) => {
+    const linea = feature as unknown as FeatureLineas;
+    if (linea.properties && linea.properties.id) {
       determinaColorLineaColindante(linea);
-      if (capa && capa.setStyle) {
-        agregaEstiloALineaColindante(capa, linea);
+      if ((layer as unknown as Path).setStyle) {
+        agregaEstiloALineaColindante(layer, linea);
       }
-      capa.on('click', async () => {
+      layer.on('click', async () => {
         if (lineaSeleccionada) {
-          devuelveEstiloALineaColindanteSeleccionadaAntes(capa, lineaSeleccionada);
+          devuelveEstiloALineaColindanteSeleccionadaAntes(layer, lineaSeleccionada);
         }
-        if (capa.setStyle) {
-          agregaEstiloALineaColindanteSeleccionada(capa);
+        if ((layer as unknown as Path).setStyle) {
+          agregaEstiloALineaColindanteSeleccionada(layer);
         }
         const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
-        htmlParaPopUpDeLineaColindante(capa, informacionDocumental);
-        lineaSeleccionada = capa;
+        htmlParaPopUpDeLineaColindante(layer, informacionDocumental);
+        lineaSeleccionada = layer;
       });
     }
   };
 
-  const enCadaTerritorio = (territorio: any, capa: any) => {
-    if (territorio.variables && territorio.variables.id) {
-      capa.on('click', async () => {
+  const enCadaTerritorio = (feature: Feature<Geometry, any>, layer: Layer) => {
+    const territorio = feature as unknown as FeatureTerritorios;
+    if (territorio.properties && territorio.properties.id) {
+      layer.on('click', async () => {
         const contenedorLineaTiempo = creaContenedorLineaTiempo();
         const contenedorInformacion = creaContenedorInformacion();
         const gestionDocumental = await traeInformacionDocumentalTerritorio(territorio, modo);
@@ -140,13 +144,13 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
           const circulo = creaCirculoConAnhoDentro(documento, contenedorInformacion);
           contenedorLineaTiempo.appendChild(circulo);
         });
-        capa.bindPopup(htmlParaPopUpDeTerritorio(territorio)).openPopup();
+        layer.bindPopup(htmlParaPopUpDeTerritorio(territorio)).openPopup();
         adjuntarAPopUp(territorio, contenedorLineaTiempo, contenedorInformacion);
       });
-      agregaNombreTerritorioAPoligono(territorio, capa);
+      agregaNombreTerritorioAPoligono(territorio, layer);
       tieneDatosTerritorio(territorio).then((tieneDatos) => {
         if (tieneDatos) {
-          agregarSimboloDocumentacion(capa);
+          agregarSimboloDocumentacion(layer);
         }
       });
     }
@@ -160,16 +164,12 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     `;
     circle.bindPopup(loadingContent).openPopup();
     const html = await crearHtmlPopUpComunidad(id, modo, circle);
-    console.log(html);
     circle.bindPopup(html).openPopup();
-
   }, [modo]);
-
-
 
   const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
     try {
-      const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
+      const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.properties.id), modo);
       return gestionDocumental.rows.length !== 0;
     } catch (error) {
       logger.error('Error checking territory data:', error);
@@ -181,7 +181,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     try {
       const lineas = (fila: FilaLineas): FeatureLineas => ({
         type: 'Feature',
-        variables: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
+        properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
         geometry: JSON.parse(fila.geometry)
       });
       const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
@@ -191,13 +191,13 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       logger.error('Error buscando lineas:', error);
       establecerEstaCargandoLineas(false);
     }
-  }
+  };
 
   const traerTerritorios = async (modo: string | string[]) => {
     try {
       const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
         type: 'Feature',
-        variables: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
+        properties: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
         geometry: JSON.parse(fila.geometry)
       });
       const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
@@ -207,13 +207,13 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       logger.error('Error buscando territorios:', error);
       establecerEstaCargandoTerritorios(false);
     }
-  }
+  };
 
   const traerComunidades = async (modo: string | string[]) => {
     try {
       const comunidades = (fila: FilaComunidades): FeatureComunidades => ({
         type: 'Feature',
-        variables: { nombre: fila.nomb_cnida, id: fila.id_cnida },
+        properties: { nombre: fila.nomb_cnida, id: fila.id_cnida },
         geometry: JSON.parse(fila.geometry)
       });
       const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
@@ -221,9 +221,9 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       establecerEstaCargandoComunidades(false);
     } catch (error) {
       logger.error('Error buscando comunidades:', error);
-      establecerEstaCargandoComunidades(false)
+      establecerEstaCargandoComunidades(false);
     }
-  }
+  };
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
@@ -252,7 +252,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
             )}
             {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
               const centroide = turf.centroid(comunidad).geometry.coordinates;
-              const id = (comunidad as GeometriasConVariables).variables.id;
+              const id = (comunidad as GeometriasConVariables).properties.id;
               return (
                 <React.Fragment key={index}>
                   <CirculoComunidad
@@ -283,9 +283,9 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
 export default Mapa;
 
-const traeInformacionDocumentalLineaColindante = async (linea: any, modo: string | string[]) => {
+const traeInformacionDocumentalLineaColindante = async (linea: FeatureLineas, modo: string | string[]) => {
   try {
-    const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.variables.id), modo);
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.properties.id), modo);
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows[0];
   } catch (error) {
@@ -294,16 +294,16 @@ const traeInformacionDocumentalLineaColindante = async (linea: any, modo: string
   }
 };
 
-const determinaColorLineaColindante = (linea: any) => {
-  if (!linea.variables.colorOriginal) {
-    linea.variables.colorOriginal = obtieneColorRandom();
+const determinaColorLineaColindante = (linea: FeatureLineas) => {
+  if (!linea.properties.colorOriginal) {
+    linea.properties.colorOriginal = obtieneColorRandom();
   }
 };
 
-const agregaEstiloALineaColindante = (capa: any, linea: any) => {
-  if (capa.setStyle) {
-    capa.setStyle({
-      color: linea.variables.colorOriginal,
+const agregaEstiloALineaColindante = (layer: any, linea: FeatureLineas) => {
+  if (layer.setStyle) {
+    layer.setStyle({
+      color: linea.properties.colorOriginal,
       weight: 13,
       opacity: 0.6,
       zIndex: 10,
@@ -311,10 +311,10 @@ const agregaEstiloALineaColindante = (capa: any, linea: any) => {
   }
 };
 
-const devuelveEstiloALineaColindanteSeleccionadaAntes = (capa: any, lineaSeleccionada: any) => {
+const devuelveEstiloALineaColindanteSeleccionadaAntes = (layer: any, lineaSeleccionada: any) => {
   if (lineaSeleccionada && lineaSeleccionada.setStyle) {
     lineaSeleccionada.setStyle({
-      color: lineaSeleccionada.feature.variables.colorOriginal,
+      color: lineaSeleccionada.feature.properties.colorOriginal,
       weight: 13,
       opacity: 0.6,
       zIndex: 10,
@@ -322,9 +322,9 @@ const devuelveEstiloALineaColindanteSeleccionadaAntes = (capa: any, lineaSelecci
   }
 };
 
-const agregaEstiloALineaColindanteSeleccionada = (capa: any) => {
-  if (capa.setStyle) {
-    capa.setStyle({
+const agregaEstiloALineaColindanteSeleccionada = (layer: any) => {
+  if (layer.setStyle) {
+    layer.setStyle({
       color: 'yellow',
       weight: 13,
       opacity: 0.8,
@@ -378,21 +378,21 @@ const organizaDocumentacionPorFecha = (gestionDocumental: any) => {
   gestionDocumental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
 };
 
-const agregarSimboloDocumentacion = async (capa: any) => {
+const agregarSimboloDocumentacion = async (layer: any) => {
   const leaflet = (await import('leaflet')).default;
   const simbolo = leaflet.divIcon({
     className: 'custom-data-icon',
     html: '<div style="font-size: 24px;">📄</div>',
     iconSize: [1, 1],
   });
-  const centroid = turf.centroid(capa.feature).geometry.coordinates;
+  const centroid = turf.centroid(layer.feature).geometry.coordinates;
   const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
-  marker.addTo(capa._map);
+  marker.addTo(layer._map);
 };
 
-const agregaNombreTerritorioAPoligono = async (territorio: any, capa: any) => {
+const agregaNombreTerritorioAPoligono = async (territorio: any, layer: any) => {
   const leaflet = (await import('leaflet')).default;
-  const abreviacionNombre = territorio.variables.abreviacion;
+  const abreviacionNombre = territorio.properties.abreviacion;
   const simbolo = leaflet.divIcon({
     className: estilos['territorio-nombre'],
     html: `<div>${abreviacionNombre}</div>`,
@@ -401,12 +401,12 @@ const agregaNombreTerritorioAPoligono = async (territorio: any, capa: any) => {
   });
   const centroid = turf.centroid(territorio).geometry.coordinates;
   const marker = leaflet.marker([centroid[1], centroid[0]], { icon: simbolo });
-  marker.addTo(capa._map);
+  marker.addTo(layer._map);
 };
 
 const traeInformacionDocumentalTerritorio = async (territorio: any, modo: string | string[]) => {
   try {
-    const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.variables.id), modo);
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.properties.id), modo);
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows;
   } catch (error) {
@@ -417,9 +417,9 @@ const traeInformacionDocumentalTerritorio = async (territorio: any, modo: string
 
 const htmlParaPopUpDeTerritorio = (territorio: any) => {
   return `<div style="width: auto; max-width: 20rem;">
-    <strong>${territorio.variables.nombre}</strong> (${territorio.variables.id})<br/>
-    <div id="timeline-${territorio.variables.id}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
-    <div id="info-${territorio.variables.id}"></div>
+    <strong>${territorio.properties.nombre}</strong> (${territorio.properties.id})<br/>
+    <div id="timeline-${territorio.properties.id}" style="display: flex; flex-wrap: wrap;">Hechos históricos</div>
+    <div id="info-${territorio.properties.id}"></div>
   </div>`;
 };
 

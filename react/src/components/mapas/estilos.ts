@@ -28,8 +28,8 @@ export function obtieneColorRandom() {
 }
 
 export const estiloTerritorio = (feature: any) => {
-  const color = feature.variables && mapeaColor[feature.variables.id]
-    ? mapeaColor[feature.variables.id]
+  const color = feature.properties && mapeaColor[feature.properties.id]
+    ? mapeaColor[feature.properties.id]
     : '#3388FF';
   return {
     color: "#7D7D7D",
@@ -42,8 +42,8 @@ export const estiloTerritorio = (feature: any) => {
 };
 
 export const estiloLineaColindante = (feature: any) => {
-  const color = feature.variables && feature.variables.colorOriginal
-    ? feature.variables.colorOriginal
+  const color = feature.properties && feature.properties.colorOriginal
+    ? feature.properties.colorOriginal
     : '#3388FF';
   return {
     color: color,
