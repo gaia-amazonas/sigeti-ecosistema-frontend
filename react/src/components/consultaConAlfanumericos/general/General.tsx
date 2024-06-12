@@ -22,7 +22,6 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
     sexoDatosEntrantes,
     familiasDatosEntrantes,
     sexoEdadDatosEntrantes,
-    territoriosGeometryEntrantes,
     comunidadesGeometriesEntrantes,
     territoriosGeoJsonEntrantes
   } = extractorDeDatosEntrantes(datos);

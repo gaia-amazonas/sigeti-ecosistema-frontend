@@ -2,7 +2,7 @@
 import { buscarDatosGeoJson } from 'buscadores/datosSQL';
 import { FeatureCollection } from 'geojson';
 
-export const buscarTerritorios = async (consultaTerritorio: string, modo: string): Promise<FeatureCollection | null> => {
+export const buscarTerritorios = async (consultaTerritorio: string, modo: string | string[]): Promise<FeatureCollection | null> => {
   const featuresMapa = (row: any) => {
     let geometry;
     try {
