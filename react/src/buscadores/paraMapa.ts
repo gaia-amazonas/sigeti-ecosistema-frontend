@@ -1,50 +1,47 @@
-const fetchLineas = async (modo: any) => {
-  establecerEstaCargandoLineas(true);
+import logger from 'utilidades/logger';
+import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
+import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
+import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
+import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
+
+import { FeatureLineas, GestionDocumental, FilaGestionDocumental, FeatureTerritorios } from 'components/mapas/tipos'; 
+
+export const traeInformacionComunidad = async (idComunidad: string, modo: string | string[]) => {
   try {
-    const lineas = (row: any) => ({
-      type: 'Feature',
-      variables: { id: row.OBJECTID, col_entre: row.COL_ENTRE },
-      geometry: JSON.parse(row.geometry)
-    });
-    const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
-    establecerLineasColindantesGeoJson(geoJsonLineas);
+    const sexos = await buscarDatos(consultasBigQueryParaComunidades.sexo(idComunidad), modo);
+    const nombre = await buscarDatos(consultasBigQueryParaComunidades.nombreComunidad(idComunidad), modo);
+    const territorio = await buscarDatos(consultasBigQueryParaComunidades.nombreTerritorio(idComunidad), modo);
+    const familias = await buscarDatos(consultasBigQueryParaComunidades.familias(idComunidad), modo);
+    const pueblos = await buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo);
+    return { sexos, nombre, territorio, familias, pueblos };
   } catch (error) {
-    logger.error('Error fetching lineas data:', error);
-  } finally {
-    establecerEstaCargandoLineas(false);
+    logger.error('Error buscando información demográfica por comunidad:', error);
+    return { sexos: { rows: [] }, nombre: { rows: [] }, territorio: { rows: [] }, familias: { rows: [] }, pueblos: { rows: [] } };
   }
 };
 
-const fetchTerritorios = async (modo: any) => {
-  establecerEstaCargandoTerritorios(true);
+export const traeInformacionDocumentalLineaColindante = async (linea: FeatureLineas, modo: string | string[]) => {
   try {
-    const territorios = (row: any) => ({
-      type: 'Feature',
-      variables: { nombre: row.NOMBRE_TI, id: row.ID_TI, abreviacion: row.ABREV_TI },
-      geometry: JSON.parse(row.geometry)
-    });
-    const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
-    establecerTerritoriosGeoJson(geoJsonTerritorios);
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaLineasColindantes.gestionDocumentalLineaColindante(linea.properties.id), modo);
+    organizaDocumentacionPorFecha(gestionDocumental);
+    return gestionDocumental.rows[0];
   } catch (error) {
-    logger.error('Error fetching territorios data:', error);
-  } finally {
-    establecerEstaCargandoTerritorios(false);
+    logger.error('Error buscando documentación para línea colindante:', error);
+    return null;
   }
 };
 
-const fetchComunidades = async (modo: any) => {
-  establecerEstaCargandoComunidades(true);
+export const organizaDocumentacionPorFecha = (gestionDocumental: GestionDocumental) => {
+  gestionDocumental.rows.sort((row_a: FilaGestionDocumental, row_b: FilaGestionDocumental) => row_a.FECHA_INICIO.value.localeCompare(row_b.FECHA_INICIO.value));
+};
+
+export const traeInformacionDocumentalTerritorio = async (territorio: FeatureTerritorios, modo: string | string[]) => {
   try {
-    const comunidades = (row: any) => ({
-      type: 'Feature',
-      variables: { nombre: row.nomb_cnida, id: row.id_cnida },
-      geometry: JSON.parse(row.geometry)
-    });
-    const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
-    establecerComunidadesGeoJson(geoJsonComunidades);
+    const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.properties.id), modo);
+    organizaDocumentacionPorFecha(gestionDocumental);
+    return gestionDocumental.rows;
   } catch (error) {
-    logger.error('Error fetching comunidades data:', error);
-  } finally {
-    establecerEstaCargandoComunidades(false);
+    logger.error('Error buscando información documental para el territorio:', error);
+    return [];
   }
 };
