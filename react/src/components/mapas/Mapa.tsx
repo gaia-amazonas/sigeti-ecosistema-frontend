@@ -82,9 +82,27 @@ interface FeatureComunidades {
   geometry: string;
 }
 
+interface Fecha {
+  value: string;
+}
+
+interface DocumentosPorTerritorio {
+  DES_DOC: string;
+  FECHA_FIN: Fecha;
+  FECHA_INICIO: Fecha;
+  LINK_DOC: string;
+  LUGAR: string;
+  TIPO_DOC: string;
+}
+
+interface LineaSeleccionada {
+  setStyle: (arg0: { color: string; weight: number; opacity: number; zIndex: number; }) => void;
+  properties: { colorOriginal: string; };
+}
+
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
-  let lineaSeleccionada: { setStyle: (arg0: { color: any; weight: number; opacity: number; zIndex: number; }) => void; feature: { properties: { colorOriginal: any; }; }; } | null = null;
+  let lineaSeleccionada: LineaSeleccionada | null = null;
 
   const [lineasColindantesGeoJson, establecerLineasColindantesGeoJson] = useState<FeatureCollection | null>(null);
   const [territoriosGeoJson, establecerTerritoriosGeoJson] = useState<FeatureCollection | null>(null);
@@ -120,15 +138,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         agregaEstiloALineaColindante(layer, linea);
       }
       layer.on('click', async () => {
-        if (lineaSeleccionada) {
-          devuelveEstiloALineaColindanteSeleccionadaAntes(layer, lineaSeleccionada);
-        }
-        if ((layer as unknown as Path).setStyle) {
-          agregaEstiloALineaColindanteSeleccionada(layer);
-        }
-        const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
-        htmlParaPopUpDeLineaColindante(layer, informacionDocumental);
-        lineaSeleccionada = layer;
+        lineaSeleccionada = await enCadaLineaClicada(lineaSeleccionada, linea, layer, modo);
       });
     }
   };
@@ -140,7 +150,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         const contenedorLineaTiempo = creaContenedorLineaTiempo();
         const contenedorInformacion = creaContenedorInformacion();
         const gestionDocumental = await traeInformacionDocumentalTerritorio(territorio, modo);
-        gestionDocumental.forEach((documento: any) => {
+        gestionDocumental.forEach((documento: DocumentosPorTerritorio) => {
           const circulo = creaCirculoConAnhoDentro(documento, contenedorInformacion);
           contenedorLineaTiempo.appendChild(circulo);
         });
@@ -157,6 +167,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaComunidad = useCallback(async (id: string, circle: any) => {
+    console.log(circle);
     const loadingContent = `
       <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
         <div class="${estilos.spinner}"></div>
@@ -310,6 +321,18 @@ const agregaEstiloALineaColindante = (layer: any, linea: FeatureLineas) => {
     });
   }
 };
+
+const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, linea: FeatureLineas, layer: any, modo: string | string[]) => {
+  if (lineaSeleccionada) {
+    devuelveEstiloALineaColindanteSeleccionadaAntes(layer, lineaSeleccionada);
+  }
+  if ((layer as unknown as Path).setStyle) {
+    agregaEstiloALineaColindanteSeleccionada(layer);
+  }
+  const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
+  htmlParaPopUpDeLineaColindante(layer, informacionDocumental);
+  return layer as unknown as LineaSeleccionada;
+}
 
 const devuelveEstiloALineaColindanteSeleccionadaAntes = (layer: any, lineaSeleccionada: any) => {
   if (lineaSeleccionada && lineaSeleccionada.setStyle) {
