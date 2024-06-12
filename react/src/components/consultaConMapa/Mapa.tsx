@@ -11,9 +11,9 @@ import estilos from './Mapa.module.css';
 import { estiloTerritorio, estiloContenedorBotones, estiloBoton } from './estilos';
 
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
-import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
-import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
-import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
+import consultasBigQueryParaTerritorios from 'consultas/bigQuery/mapa/paraTerritorios';
+import consultasBigQueryParaComunidades from 'consultas/bigQuery/mapa/paraComunidades';
+import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/mapa/paraLineasColindantes';
 
 import { traeInformacionDocumentalTerritorio } from 'buscadores/paraMapa'
 import {

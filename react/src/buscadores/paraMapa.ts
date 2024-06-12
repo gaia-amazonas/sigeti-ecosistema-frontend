@@ -1,9 +1,9 @@
 import logger from 'utilidades/logger';
 
 import { buscarDatos } from 'buscadores/datosSQL';
-import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
-import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
-import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
+import consultasBigQueryParaComunidades from 'consultas/bigQuery/mapa/paraComunidades';
+import consultasBigQueryParaTerritorios from 'consultas/bigQuery/mapa/paraTerritorios';
+import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/mapa/paraLineasColindantes';
 
 import { organizaDocumentacionPorFecha } from 'utilidades/organizadores'
 

@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { General } from 'components/consultaConAlfanumericos/general/General';
 import BotonReiniciar from 'components/BotonReiniciar';
 import { buscarDatos } from 'buscadores/datosSQL';
-import consultasGeneralesPorTerritorio from 'consultas/generales/porTerritorios';
-import consultasGeneralesTodosGeoTerritorios from 'consultas/generales/todosGeoTerritorios';
-import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/generales/todasGeoComunidadesPorTerritorio';
+import consultasGeneralesPorTerritorio from 'consultas/bigQuery/alfanumerico/porTerritorios';
+import consultasGeneralesTodosGeoTerritorios from 'consultas/bigQuery/alfanumerico/todosGeoTerritorios';
+import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/bigQuery/alfanumerico/todasGeoComunidadesPorTerritorio';
 import { buscarTerritorios } from 'buscadores/geoJson';
 
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';

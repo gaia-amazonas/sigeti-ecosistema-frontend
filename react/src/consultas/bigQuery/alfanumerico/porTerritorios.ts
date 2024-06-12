@@ -102,20 +102,7 @@ const porTerritorio: Record<string, Query> = {
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         WHERE
-            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`,
-    gestion_documental_territorio: (territorioId: string) => `
-        SELECT
-            LUGAR,
-            TIPO_DOC,
-            ESCENARIO,
-            LINK_DOC,
-            DES_DOC,
-            FECHA_FIN,
-            FECHA_INICIO
-        FROM
-            \`sigeti-admin-364713.Gestion_Documental.TablaInventarioDocumentos\`
-        WHERE
-            TERRITORIO = '${territorioId}';`
+            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`
     };
 
 
