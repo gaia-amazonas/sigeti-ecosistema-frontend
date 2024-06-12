@@ -7,7 +7,7 @@ import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
 
 import {
   estiloTerritorio,
-} from 'estilosMapas';
+} from 'components/consultaConMapa/estilos';
 
 import markerIconPng from 'iconos/marker-icon.png';
 import markerShadowPng from 'iconos/marker-shadow.png';

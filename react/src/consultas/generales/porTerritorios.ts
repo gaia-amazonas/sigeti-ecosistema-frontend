@@ -1,23 +1,25 @@
 // src/components/consultas/generales/porTerritorio.ts
 
-const porTerritorio = {
-    sexo: (comunidadId: string) => `
+type Query = (territoriosId: string[]) => string;
+
+const porTerritorio: Record<string, Query> = {
+    sexo: (comunidadesId: string[]) => `
         SELECT
             SEXO, COUNT(*) 
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            id_cnida = '${comunidadId}'
+            ${haceClausulasWhere(comunidadesId, 'id_cnida')}
         GROUP BY
             id_cnida, sexo, id_ti;`,
-    familias: (comunidadId: string) => `
+    familias: (comunidadesId: string[]) => `
         SELECT
             COUNT(*) as familias
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
-            id_cnida = '${comunidadId}';`,
-    sexo_edad: (comunidadId: string) => `
+            ${haceClausulasWhere(comunidadesId, 'id_cnida')};`,
+    sexo_edad: (comunidadesId: string[]) => `
         SELECT 
             CASE 
                 WHEN edad BETWEEN 0 AND 5 THEN '0-5'
@@ -72,7 +74,7 @@ const porTerritorio = {
         FROM 
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ID_CNIDA = '${comunidadId}'
+            ${haceClausulasWhere(comunidadesId, 'ID_CNIDA')}
         GROUP BY 
             age_group, 
             sexo, 
@@ -80,7 +82,7 @@ const porTerritorio = {
         ORDER BY 
             age_group_order, 
             sexo;`,
-    territorio: (comunidadId: string) => `
+    territorio: (comunidadesId: string[]) => `
         SELECT
             ST_AsGeoJSON(t.geometry) as geometry,
             t.id_ti as id_ti,
@@ -92,15 +94,15 @@ const porTerritorio = {
         ON
             t.id_ti = c.id_ti
         WHERE
-            c.id_cnida = '${comunidadId}';`,
-    comunidades_en_territorio: (comunidadId: string) => `
+            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`,
+    comunidades_en_territorio: (comunidadesId: string[]) => `
         SELECT
             c.geometry,
             c.nomb_cnida
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         WHERE
-            c.id_cnida = '${comunidadId}';`,
+            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`,
     gestion_documental_territorio: (territorioId: string) => `
         SELECT
             LUGAR,
@@ -118,3 +120,7 @@ const porTerritorio = {
 
 
 export default porTerritorio;
+
+const haceClausulasWhere = (comunidadesId: string[], variable: string) => {
+    return comunidadesId.length > 0 ? comunidadesId.map(id => `${variable} = '${id}'`).join(' OR '): `${variable} = '${comunidadesId[0]}'`;
+}

@@ -1,11 +1,10 @@
-// src/components/seleccion_inicial/filtros/Territorio.tsx
 import React, { useState, useEffect } from 'react';
 import logger from 'utilidades/logger';
-import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccion_inicial/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
-interface Datos {
-  territorio_id: string;
-  comunidad_id: string;
+interface DatosParaConsultar {
+  territorios_id: string[];
+  comunidades_id: string[];
 }
 
 interface Opcion {
@@ -14,16 +13,17 @@ interface Opcion {
 }
 
 interface TerritorioImp {
-  datos: Datos;
-  establecerDatos: (datos: Datos) => void;
+  datosParaConsultar: DatosParaConsultar;
+  establecerDatosParaConsultar: (datosParaConsultar: DatosParaConsultar) => void;
   siguientePaso: () => void;
   modo: 'online' | 'offline';
 }
 
-const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguientePaso, modo }) => {
+const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDatosParaConsultar, siguientePaso, modo }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState<string>('');
+  const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.territorios_id);
 
   useEffect(() => {
     async function buscarDatos() {
@@ -38,23 +38,20 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
       const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
       try {
         const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
-        logger.info("Respuesta API", { respuesta: await respuesta.clone().text() });
         const resultado = await respuesta.json();
-        logger.info("Resultado analizado", { resultado });
-
-        if (resultado && resultado.rows) {
+        if (resultado.rows) {
           const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
           establecerOpciones(opcionesConTodos);
           establecerOpcionesFiltradas(opcionesConTodos);
         } else {
-          logger.error("No rows found in response");
+          logger.error("No fueron halladas filas en la consulta");
         }
       } catch (error) {
-        logger.error("Error fetching data", { error });
+        logger.error("Error buscando datos", { error });
       }
     }
-
     buscarDatos();
+
   }, [modo]);
 
   useEffect(() => {
@@ -66,13 +63,23 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
   }, [filtro, opciones]);
 
   const manejarSeleccion = (id_ti: string) => {
-    establecerDatos({ ...datos, territorio_id: id_ti });
-    siguientePaso();
+    if (seleccionados.includes(id_ti)) {
+      establecerSeleccionados(seleccionados.filter(id => id !== id_ti));
+    } else {
+      establecerSeleccionados([...seleccionados, id_ti]);
+    }
   };
 
   const manejarCambioDeFiltro = (event: React.ChangeEvent<HTMLInputElement>) => {
     establecerFiltro(event.target.value);
   };
+
+  useEffect(() => {
+    establecerDatosParaConsultar({ ...datosParaConsultar, territorios_id: seleccionados });
+    if (seleccionados[0] === "Todos") {
+      siguientePaso();
+    }
+  }, [seleccionados]);
 
   return (
     <Contenedor>
@@ -82,8 +89,15 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
+      {seleccionados.length > 0 && (
+        <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>
+      )}
       {opcionesFiltradas.map((opcion) => (
-        <OpcionComoBoton key={opcion.id_ti} onClick={() => manejarSeleccion(opcion.id_ti)}>
+        <OpcionComoBoton
+          key={opcion.id_ti}
+          onClick={() => manejarSeleccion(opcion.id_ti)}
+          seleccionado={seleccionados.includes(opcion.id_ti)}
+        >
           {opcion.territorio}
         </OpcionComoBoton>
       ))}
@@ -92,3 +106,4 @@ const Territorio: React.FC<TerritorioImp> = ({ datos, establecerDatos, siguiente
 };
 
 export default Territorio;
+

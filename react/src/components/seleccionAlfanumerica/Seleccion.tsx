@@ -1,16 +1,18 @@
 // src/componente/seleccion_inicial/Seleccion.tsx
 import React, { useEffect, useState } from 'react';
-import Territorio from './filtros/Territorio';
+
 import Comunidad from './filtros/Comunidad';
+import Territorio from './filtros/Territorio';
 import { Contenedor, ContenedorPaso, Titulo } from './estilos/Seleccion';
 
-interface Datos {
-  territorio_id: string;
-  comunidad_id: string;
+
+interface DatosParaConsultar {
+  territorios_id: string[];
+  comunidades_id: string[];
 }
 
 interface SeleccionImp {
-  alFinalizar: (datos: Datos) => void;
+  alFinalizar: (datosParaConsultar: DatosParaConsultar) => void;
   reiniciar: () => void;
   pasoDinamico: number;
   establecerPasoDinamico: (paso: number) => void;
@@ -19,9 +21,9 @@ interface SeleccionImp {
 
 const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamico, establecerPasoDinamico, modo }) => {
   const [paso, establecerPaso] = useState<number>(1);
-  const [datos, establecerDatos] = useState<Datos>({
-    territorio_id: '',
-    comunidad_id: '',
+  const [datosParaConsultar, establecerDatosParaConsultar] = useState<DatosParaConsultar>({
+    territorios_id: [],
+    comunidades_id: [],
   });
 
   const siguientePaso = () => {
@@ -31,9 +33,9 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
 
   useEffect(() => {
     if (paso > 2) {
-      alFinalizar(datos);
+      alFinalizar(datosParaConsultar);
     }
-  }, [paso, datos, alFinalizar]);
+  }, [paso, datosParaConsultar, alFinalizar]);
 
   useEffect(() => {
     establecerPaso(pasoDinamico);
@@ -41,9 +43,9 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
 
   useEffect(() => {
     if (paso === 1) {
-      establecerDatos({
-        territorio_id: '',
-        comunidad_id: '',
+      establecerDatosParaConsultar({
+        territorios_id: [],
+        comunidades_id: [],
       });
     }
   }, [paso, reiniciar]);
@@ -54,13 +56,13 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
         {paso === 1 && (
           <>
             <Titulo>Territorio</Titulo>
-            <Territorio datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} modo={modo} />
+            <Territorio datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} />
           </>
         )}
         {paso === 2 && (
           <>
             <Titulo>Comunidad</Titulo>
-            <Comunidad datos={datos} establecerDatos={establecerDatos} siguientePaso={siguientePaso} modo={modo} />
+            <Comunidad datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} />
           </>
         )}
       </ContenedorPaso>

@@ -1,19 +1,19 @@
 // src/pages/pestanhas.tsx
 import React from 'react';
 import { useRouter } from 'next/router';
-import Pestanhas from 'components/graficos/Pestanhas';
+import Pestanhas from 'components/consultaConAlfanumericos/Pestanhas';
 import EstiloGlobal from 'estilos_paginas/global';
 
 const PestanhasPage: React.FC = () => {
   const router = useRouter();
-  const datos = router.query.datos;
+  const datosParaConsultar = router.query.datosParaConsultar;
   const modo = router.query.modo;
 
-  let parsedDatos;
+  let datosAnalizados;
   try {
-    parsedDatos = datos ? JSON.parse(datos as string) : {};
+    datosAnalizados = datosParaConsultar ? JSON.parse(datosParaConsultar as string) : {};
   } catch (e) {
-    parsedDatos = {};
+    datosAnalizados = {};
   }
 
   const reiniciarEstado = () => {
@@ -26,7 +26,7 @@ const PestanhasPage: React.FC = () => {
   return (
     <>
       <EstiloGlobal />
-      <Pestanhas datos={parsedDatos} reiniciar={reiniciarEstado} modo={modo as 'online' | 'offline'} />
+      <Pestanhas datosParaConsultar={datosAnalizados} reiniciar={reiniciarEstado} modo={modo as 'online' | 'offline'} />
     </>
   );
 };

@@ -7,7 +7,7 @@ import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLinea
 
 import { organizaDocumentacionPorFecha } from 'utilidades/organizadores'
 
-import { FeatureLineas, FeatureTerritorios } from 'components/mapas/tipos'; 
+import { FeatureLineas, FeatureTerritorios } from 'components/consultaConMapa/tipos'; 
 
 export const traeInformacionComunidad = async (idComunidad: string, modo: string | string[]) => {
   try {

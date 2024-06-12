@@ -1,24 +1,25 @@
 // src/pages/alfanumerica/inicio.tsx
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import BotonReiniciar from 'components/BotonReiniciar';
-import Seleccion from 'components/seleccion_inicial/Seleccion';
+import Seleccion from 'components/seleccionAlfanumerica/Seleccion';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 
-interface SeleccionDatos {
-  // Define the structure of the seleccionaDatos object here
+interface DatosParaSeleccion {
+  territorios_id: string[];
+  comunidades_id: string[];
 }
 
 const Alfanumerica: React.FC = () => {
+
   const [pasoDinamico, establecerPasoDinamico] = useState<number>(1);
   const router = useRouter();
   const { modo } = router.query;
 
-  const direccionaSeleccionFinalizadaAPestanhas = (seleccionaDatos: SeleccionDatos) => {
+  const direccionaSeleccionFinalizadaAPestanhas = (datosParaConsultar: DatosParaSeleccion) => {
     router.push({
       pathname: '/consulta/alfanumerica/pestanhas',
-      query: { datos: JSON.stringify(seleccionaDatos), modo },
+      query: { datosParaConsultar: JSON.stringify(datosParaConsultar), modo },
     });
   };
 
