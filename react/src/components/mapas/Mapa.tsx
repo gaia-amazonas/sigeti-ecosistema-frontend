@@ -1,4 +1,4 @@
-import { Layer, Path } from 'leaflet';
+import { Circle, Layer, Path, PathOptions } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import dynamic from 'next/dynamic';
@@ -35,14 +35,14 @@ interface MapaImp {
 }
 
 interface FilaLineas {
-  OBJECTID: number | string;
+  OBJECTID: string;
   COL_ENTRE: string;
   geometry: string;
 }
 
 interface FilaTerritorios {
   NOMBRE_TI: string;
-  ID_TI: string | number;
+  ID_TI: string;
   ABREV_TI: string;
   geometry: string;
 }
@@ -56,7 +56,7 @@ interface FilaComunidades {
 interface FeatureLineas {
   type: 'Feature';
   properties: {
-    id: number | string;
+    id: string;
     col_entre: string;
     colorOriginal?: string;
   };
@@ -67,7 +67,7 @@ interface FeatureTerritorios {
   type: 'Feature';
   properties: {
     nombre: string;
-    id: string | number;
+    id: string;
     abreviacion: string;
   };
   geometry: string;
@@ -97,7 +97,13 @@ interface DocumentosPorTerritorio {
 
 interface LineaSeleccionada {
   setStyle: (arg0: { color: string; weight: number; opacity: number; zIndex: number; }) => void;
-  properties: { colorOriginal: string; };
+  feature: {properties: { colorOriginal: string; }};
+}
+
+type PathZIndexOptions = PathOptions & { zIndex?: number };
+
+interface PathZIndex extends Path {
+  setStyle(style: PathZIndexOptions): this;
 }
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
@@ -134,8 +140,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     const linea = feature as unknown as FeatureLineas;
     if (linea.properties && linea.properties.id) {
       determinaColorLineaColindante(linea);
-      if ((layer as unknown as Path).setStyle) {
-        agregaEstiloALineaColindante(layer, linea);
+      if ((layer as unknown as PathZIndex).setStyle) {
+        agregaEstiloALineaColindante(layer as unknown as PathZIndex, linea);
       }
       layer.on('click', async () => {
         lineaSeleccionada = await enCadaLineaClicada(lineaSeleccionada, linea, layer, modo);
@@ -166,7 +172,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
-  const enCadaComunidad = useCallback(async (id: string, circle: any) => {
+  const enCadaComunidad = useCallback(async (id: string, circle: Circle) => {
     console.log(circle);
     const loadingContent = `
       <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
@@ -178,7 +184,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     circle.bindPopup(html).openPopup();
   }, [modo]);
 
-  const tieneDatosTerritorio = async (territorio: any): Promise<boolean> => {
+  const tieneDatosTerritorio = async (territorio: FeatureTerritorios): Promise<boolean> => {
     try {
       const gestionDocumental = await buscarDatos(consultasBigQueryParaTerritorios.gestionDocumentalTerritorio(territorio.properties.id), modo);
       return gestionDocumental.rows.length !== 0;
@@ -271,7 +277,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
                     radius={1000}
                     pathOptions={{ color: 'black', fillOpacity: 0.1 }}
                     eventHandlers={{
-                      click: (e) => enCadaComunidad(id, e.target)
+                      click: (e) => enCadaComunidad(id, e.target as Circle)
                     }}
                   />
                   <CirculoComunidad
@@ -311,7 +317,7 @@ const determinaColorLineaColindante = (linea: FeatureLineas) => {
   }
 };
 
-const agregaEstiloALineaColindante = (layer: any, linea: FeatureLineas) => {
+const agregaEstiloALineaColindante = (layer: PathZIndex, linea: FeatureLineas) => {
   if (layer.setStyle) {
     layer.setStyle({
       color: linea.properties.colorOriginal,
@@ -322,9 +328,9 @@ const agregaEstiloALineaColindante = (layer: any, linea: FeatureLineas) => {
   }
 };
 
-const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, linea: FeatureLineas, layer: any, modo: string | string[]) => {
+const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, linea: FeatureLineas, layer: Layer, modo: string | string[]) => {
   if (lineaSeleccionada) {
-    devuelveEstiloALineaColindanteSeleccionadaAntes(layer, lineaSeleccionada);
+    devuelveEstiloALineaColindanteSeleccionadaAntes(lineaSeleccionada);
   }
   if ((layer as unknown as Path).setStyle) {
     agregaEstiloALineaColindanteSeleccionada(layer);
@@ -334,7 +340,7 @@ const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, l
   return layer as unknown as LineaSeleccionada;
 }
 
-const devuelveEstiloALineaColindanteSeleccionadaAntes = (layer: any, lineaSeleccionada: any) => {
+const devuelveEstiloALineaColindanteSeleccionadaAntes = ( lineaSeleccionada: LineaSeleccionada ) => {
   if (lineaSeleccionada && lineaSeleccionada.setStyle) {
     lineaSeleccionada.setStyle({
       color: lineaSeleccionada.feature.properties.colorOriginal,
