@@ -1,12 +1,11 @@
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import dynamic from 'next/dynamic';
-import { Circle, Layer, Path, PathOptions } from 'leaflet';
+import { Circle, Layer } from 'leaflet';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import logger from 'utilidades/logger';
-import { organizaDocumentacionPorFecha } from 'utilidades/organizadores';
 
 import estilos from './Mapa.module.css';
 import { estiloTerritorio, estiloContenedorBotones, estiloBoton } from './estilos';
@@ -32,11 +31,6 @@ import {
  } from './graficosDinamicos';
 
 import { 
-  FilaGestionDocumental, 
-  GestionDocumental, 
-  SexoComunidad, 
-  PuebloComunidad, 
-  InformacionLineaColindante, 
   PathZIndex, 
   LineaSeleccionada, 
   DocumentosPorTerritorio, 
@@ -47,8 +41,7 @@ import {
   FilaTerritorios, 
   FilaLineas, 
   MapaImp, 
-  GeometriasConVariables, 
-  Fecha 
+  GeometriasConVariables
 } from './tipos';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -86,6 +79,54 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     traerTerritorios(modo);
     establecerEstaCargandoComunidades(true);
     traerComunidades(modo);
+  };
+
+    const traerLineasColindantes = async (modo: string | string[]) => {
+    try {
+      const lineas = (fila: FilaLineas): FeatureLineas => ({
+        type: 'Feature',
+        properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
+        geometry: JSON.parse(fila.geometry),
+      });
+      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+      establecerLineasColindantesGeoJson(geoJsonLineas);
+      establecerEstaCargandoLineas(false);
+    } catch (error) {
+      logger.error('Error buscando lineas:', error);
+      establecerEstaCargandoLineas(false);
+    }
+  };
+
+  const traerTerritorios = async (modo: string | string[]) => {
+    try {
+      const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
+        type: 'Feature',
+        properties: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
+      establecerTerritoriosGeoJson(geoJsonTerritorios);
+      establecerEstaCargandoTerritorios(false);
+    } catch (error) {
+      logger.error('Error buscando territorios:', error);
+      establecerEstaCargandoTerritorios(false);
+    }
+  };
+
+  const traerComunidades = async (modo: string | string[]) => {
+    try {
+      const comunidades = (fila: FilaComunidades): FeatureComunidades => ({
+        type: 'Feature',
+        properties: { nombre: fila.nomb_cnida, id: fila.id_cnida },
+        geometry: JSON.parse(fila.geometry)
+      });
+      const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
+      establecerComunidadesGeoJson(geoJsonComunidades);
+      establecerEstaCargandoComunidades(false);
+    } catch (error) {
+      logger.error('Error buscando comunidades:', error);
+      establecerEstaCargandoComunidades(false);
+    }
   };
 
   const enCadaLinea = (feature: Feature<Geometry, any>, layer: Layer) => {
@@ -141,54 +182,6 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     } catch (error) {
       logger.error('Error checando datos documentales por territorio:', error);
       return false;
-    }
-  };
-
-  const traerLineasColindantes = async (modo: string | string[]) => {
-    try {
-      const lineas = (fila: FilaLineas): FeatureLineas => ({
-        type: 'Feature',
-        properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
-        geometry: JSON.parse(fila.geometry),
-      });
-      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
-      establecerLineasColindantesGeoJson(geoJsonLineas);
-      establecerEstaCargandoLineas(false);
-    } catch (error) {
-      logger.error('Error buscando lineas:', error);
-      establecerEstaCargandoLineas(false);
-    }
-  };
-
-  const traerTerritorios = async (modo: string | string[]) => {
-    try {
-      const territorios = (fila: FilaTerritorios): FeatureTerritorios => ({
-        type: 'Feature',
-        properties: { nombre: fila.NOMBRE_TI, id: fila.ID_TI, abreviacion: fila.ABREV_TI },
-        geometry: JSON.parse(fila.geometry)
-      });
-      const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
-      establecerTerritoriosGeoJson(geoJsonTerritorios);
-      establecerEstaCargandoTerritorios(false);
-    } catch (error) {
-      logger.error('Error buscando territorios:', error);
-      establecerEstaCargandoTerritorios(false);
-    }
-  };
-
-  const traerComunidades = async (modo: string | string[]) => {
-    try {
-      const comunidades = (fila: FilaComunidades): FeatureComunidades => ({
-        type: 'Feature',
-        properties: { nombre: fila.nomb_cnida, id: fila.id_cnida },
-        geometry: JSON.parse(fila.geometry)
-      });
-      const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
-      establecerComunidadesGeoJson(geoJsonComunidades);
-      establecerEstaCargandoComunidades(false);
-    } catch (error) {
-      logger.error('Error buscando comunidades:', error);
-      establecerEstaCargandoComunidades(false);
     }
   };
 

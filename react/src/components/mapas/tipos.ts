@@ -1,3 +1,4 @@
+// src/componrnts/mapas/tipos.ts
 import { Geometry, Feature } from 'geojson';
 import { Path, PathOptions } from 'leaflet';
 

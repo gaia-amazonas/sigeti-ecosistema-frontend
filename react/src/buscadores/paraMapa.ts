@@ -1,11 +1,13 @@
 import logger from 'utilidades/logger';
-import { organizaDocumentacionPorFecha } from 'utilidades/organizadores'
-import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
+
+import { buscarDatos } from 'buscadores/datosSQL';
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/paraComunidades';
 import consultasBigQueryParaTerritorios from 'consultas/bigQuery/paraTerritorios';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/paraLineasColindantes';
 
-import { FeatureLineas, GestionDocumental, FilaGestionDocumental, FeatureTerritorios } from 'components/mapas/tipos'; 
+import { organizaDocumentacionPorFecha } from 'utilidades/organizadores'
+
+import { FeatureLineas, FeatureTerritorios } from 'components/mapas/tipos'; 
 
 export const traeInformacionComunidad = async (idComunidad: string, modo: string | string[]) => {
   try {
