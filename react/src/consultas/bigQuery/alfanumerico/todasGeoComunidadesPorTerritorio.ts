@@ -1,26 +1,30 @@
 // src/components/consultas/generales/todasGeoComunidadesPorTerritorio.ts
 
-const todasGeoComunidadesPorTerritorio = {
-    sexo: (territorioId: string) => `
-        SELECT
+type Query = (territoriosId: string[]) => string;
+
+const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
+    sexo: (territoriosId: string[]) => {
+        return `SELECT
             SEXO, COUNT(*) 
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            id_ti = '${territorioId}'
+            ${haceClausulasWhere(territoriosId)}
         GROUP BY
             sexo;`
+    }
     ,
-    familias: (territorioId: string) => `
-        SELECT
+    familias: (territoriosId: string[]) => {
+        return `SELECT
             COUNT(*) as familias
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
-            id_ti = '${territorioId}';`
+            ${haceClausulasWhere(territoriosId)};`
+    }
     ,
-    sexo_edad: (territorioId: string) => `
-        SELECT 
+    sexo_edad: (territoriosId: string[]) => {
+        return `SELECT 
             CASE 
                 WHEN edad BETWEEN 0 AND 5 THEN '0-5'
                 WHEN edad BETWEEN 6 AND 10 THEN '6-10'
@@ -74,7 +78,7 @@ const todasGeoComunidadesPorTerritorio = {
         FROM 
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            id_ti = '${territorioId}'
+            ${haceClausulasWhere(territoriosId)}
         GROUP BY 
             age_group, 
             sexo, 
@@ -82,19 +86,21 @@ const todasGeoComunidadesPorTerritorio = {
         ORDER BY 
             age_group_order, 
             sexo;`
+    }
     ,
-    territorio: (territorioId: string) => `
-        SELECT
+    territorio: (territoriosId: string[]) => {
+        return `SELECT
             ST_AsGeoJSON(geometry) AS geometry,
             id_ti,
             territorio
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
-            id_ti = '${territorioId}';`
+            ${haceClausulasWhere(territoriosId)};`
+    }
     ,
-    comunidades_en_territorio: (territorioId: string) => `
-        SELECT
+    comunidades_en_territorio: (territoriosId: string[]) => {
+        return `SELECT
             g.geometry,
             g.nomb_cnida
         FROM
@@ -104,8 +110,12 @@ const todasGeoComunidadesPorTerritorio = {
         ON
             a.id_cnida = g.id_cnida
         WHERE
-            a.id_ti = '${territorioId}';`
+            ${haceClausulasWhere(territoriosId)};`
+    }
 };
 
-
 export default todasGeoComunidadesPorTerritorio;
+
+const haceClausulasWhere = (territoriosId: string[]) => {
+    return territoriosId.length > 0 ? territoriosId.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territoriosId[0]}'`;
+}

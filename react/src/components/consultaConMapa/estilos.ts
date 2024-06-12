@@ -1,5 +1,4 @@
 // src/components/mapas/estilos.ts
-
 import { CSSProperties } from 'react';
 
 const mapeaColor: { [key: string]: string } = {

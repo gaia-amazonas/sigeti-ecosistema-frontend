@@ -5,24 +5,15 @@ import { traeInformacionComunidad, traeInformacionDocumentalLineaColindante } fr
 
 import estilos from './Mapa.module.css';
 import { estiloContenedorLineaTiempo, estiloContenedorInformacion, estiloCirculo, estiloTextoEnCirculo } from './estilos';
-import { 
-  FilaGestionDocumental, 
-  GestionDocumental, 
+
+import {
   SexoComunidad, 
   PuebloComunidad, 
   InformacionLineaColindante, 
   PathZIndex, 
   LineaSeleccionada, 
-  DocumentosPorTerritorio, 
-  FeatureComunidades, 
   FeatureTerritorios, 
-  FeatureLineas, 
-  FilaComunidades, 
-  FilaTerritorios, 
-  FilaLineas, 
-  MapaImp, 
-  GeometriasConVariables, 
-  Fecha 
+  FeatureLineas
 } from './tipos';
 
 import logger from 'utilidades/logger';

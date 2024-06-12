@@ -38,9 +38,9 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <ContenedorGrafico>
-        <Mujer contador={mujerContador} />
-        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={familiasDatosEntrantes} />
         <Hombre contador={hombreContador} />
+        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={familiasDatosEntrantes} />
+        <Mujer contador={mujerContador} />
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
       <SexoEdad
