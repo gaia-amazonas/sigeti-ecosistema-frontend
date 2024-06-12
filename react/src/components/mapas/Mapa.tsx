@@ -106,6 +106,52 @@ interface PathZIndex extends Path {
   setStyle(style: PathZIndexOptions): this;
 }
 
+interface InformacionLineaColindante {
+  ACTA_COL: string;
+  ACUERDO: string;
+  COL_ENTRE: string;
+  DEFINICION: string;
+  DES_DOC: string;
+  ESCENARIO: string;
+  FECHA_INICIO: Fecha;
+  LINK_DOC: string;
+  LUGAR: string;
+  NOM_ESCENARIO: string;
+  PV_1: string;
+  PV_2: string
+  TIPO_DOC: string;
+}
+
+interface PuebloComunidad {
+  PUEBLO: string;
+}
+
+interface SexoComunidad {
+  SEXO: string;
+  f0_: number;
+}
+
+interface FilaGestionDocumental {
+  LUGAR: string;
+  TIPO_DOC: string;
+  ESCENARIO: string;
+  COL_ENTRE?: string;
+  ACUERDO?: string;
+  ACTA_COL?: string;
+  DEFINICION?: string;
+  DES_DOC?: string;
+  FECHA_INICIO?: { value: string };
+  LINK_DOC?: string;
+  NOM_ESCENARIO?: string;
+  PV_1?: string;
+  PV_2?: string;
+}
+
+interface GestionDocumental {
+  rows: FilaGestionDocumental[];
+}
+
+
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   let lineaSeleccionada: LineaSeleccionada | null = null;
@@ -173,13 +219,12 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   };
 
   const enCadaComunidad = useCallback(async (id: string, circle: Circle) => {
-    console.log(circle);
-    const loadingContent = `
+    const animacionCargando = `
       <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
         <div class="${estilos.spinner}"></div>
       </div>
     `;
-    circle.bindPopup(loadingContent).openPopup();
+    circle.bindPopup(animacionCargando).openPopup();
     const html = await crearHtmlPopUpComunidad(id, modo, circle);
     circle.bindPopup(html).openPopup();
   }, [modo]);
@@ -199,7 +244,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       const lineas = (fila: FilaLineas): FeatureLineas => ({
         type: 'Feature',
         properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
-        geometry: JSON.parse(fila.geometry)
+        geometry: JSON.parse(fila.geometry),
       });
       const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
       establecerLineasColindantesGeoJson(geoJsonLineas);
@@ -306,7 +351,7 @@ const traeInformacionDocumentalLineaColindante = async (linea: FeatureLineas, mo
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows[0];
   } catch (error) {
-    logger.error('Error fetching document info for linea colindante:', error);
+    logger.error('Error fetching document informacion for linea colindante:', error);
     return null;
   }
 };
@@ -328,16 +373,16 @@ const agregaEstiloALineaColindante = (layer: PathZIndex, linea: FeatureLineas) =
   }
 };
 
-const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, linea: FeatureLineas, layer: Layer, modo: string | string[]) => {
+const enCadaLineaClicada = async (lineaSeleccionada: LineaSeleccionada | null, linea: FeatureLineas, capa: Layer, modo: string | string[]) => {
   if (lineaSeleccionada) {
     devuelveEstiloALineaColindanteSeleccionadaAntes(lineaSeleccionada);
   }
-  if ((layer as unknown as Path).setStyle) {
-    agregaEstiloALineaColindanteSeleccionada(layer);
+  if ((capa as unknown as Path).setStyle) {
+    agregaEstiloALineaColindanteSeleccionada(capa as unknown as PathZIndex);
   }
   const informacionDocumental = await traeInformacionDocumentalLineaColindante(linea, modo);
-  htmlParaPopUpDeLineaColindante(layer, informacionDocumental);
-  return layer as unknown as LineaSeleccionada;
+  htmlParaPopUpDeLineaColindante(capa as unknown as PathZIndex, informacionDocumental);
+  return capa as unknown as LineaSeleccionada;
 }
 
 const devuelveEstiloALineaColindanteSeleccionadaAntes = ( lineaSeleccionada: LineaSeleccionada ) => {
@@ -351,9 +396,9 @@ const devuelveEstiloALineaColindanteSeleccionadaAntes = ( lineaSeleccionada: Lin
   }
 };
 
-const agregaEstiloALineaColindanteSeleccionada = (layer: any) => {
-  if (layer.setStyle) {
-    layer.setStyle({
+const agregaEstiloALineaColindanteSeleccionada = (capa: PathZIndex) => {
+  if (capa.setStyle) {
+    capa.setStyle({
       color: 'yellow',
       weight: 13,
       opacity: 0.8,
@@ -362,20 +407,20 @@ const agregaEstiloALineaColindanteSeleccionada = (layer: any) => {
   }
 };
 
-const htmlParaPopUpDeLineaColindante = (linea: any, info: any) => {
-  if (info) {
-    const texto = `<strong>Acuerdo entre:</strong> ${info.COL_ENTRE}<br/>
-      <strong><a href="${info.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
-      <strong>Definición:</strong> ${info.DEFINICION}<br/>
-      <strong>Descripción del documento:</strong> ${info.DES_DOC}<br/>
-      <strong>Acta de Colindancia:</strong> <a href="${info.ACTA_COL}" target="_blank">Link al Documento</a><br/>
-      <strong>PV 1:</strong> <a href="${info.PV_1}" target="_blank">Link al Documento</a><br/>
-      <strong>PV 2:</strong> <a href="${info.PV_2}" target="_blank">Link al Documento</a><br/>`;
-    linea.bindPopup(texto).openPopup();
+const htmlParaPopUpDeLineaColindante = (capa: PathZIndex, informacion: InformacionLineaColindante) => {
+  if (informacion) {
+    const texto = `<strong>Acuerdo entre:</strong> ${informacion.COL_ENTRE}<br/>
+      <strong><a href="${informacion.LINK_DOC}" target="_blank">Link al Documento</a></strong><br/>
+      <strong>Definición:</strong> ${informacion.DEFINICION}<br/>
+      <strong>Descripción del documento:</strong> ${informacion.DES_DOC}<br/>
+      <strong>Acta de Colindancia:</strong> <a href="${informacion.ACTA_COL}" target="_blank">Link al Documento</a><br/>
+      <strong>PV 1:</strong> <a href="${informacion.PV_1}" target="_blank">Link al Documento</a><br/>
+      <strong>PV 2:</strong> <a href="${informacion.PV_2}" target="_blank">Link al Documento</a><br/>`;
+    capa.bindPopup(texto).openPopup();
   }
 };
 
-const crearHtmlPopUpComunidad = async (id: string, modo: string | string[], circle: any) => {
+const crearHtmlPopUpComunidad = async (id: string, modo: string | string[], circle: Circle) => {
   try {
     return intentaCrearHtmlPopUpComunidad(id, modo);
   } catch (error) {
@@ -384,18 +429,19 @@ const crearHtmlPopUpComunidad = async (id: string, modo: string | string[], circ
   }
 };
 
+
 const intentaCrearHtmlPopUpComunidad = async (id: string, modo: string | string[]) => {
-  const info = await traeInformacionComunidad(id, modo);
-  const hombres = info.sexos.rows.find((s: any) => s.SEXO === 'Hombre')?.f0_ || 0;
-  const mujeres = info.sexos.rows.find((s: any) => s.SEXO === 'Mujer')?.f0_ || 0;
+  const informacion = await traeInformacionComunidad(id, modo);
+  const hombres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
+  const mujeres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
   const poblacionTotal = hombres + mujeres;
   return `
     <div>
-      <strong>Nombre:</strong> ${info.nombre.rows[0].NOMB_CNIDA}<br/>
-      <strong>Territorio:</strong> ${info.territorio.rows[0].nombreTerritorio}<br/>
+      <strong>Nombre:</strong> ${informacion.nombre.rows[0].NOMB_CNIDA}<br/>
+      <strong>Territorio:</strong> ${informacion.territorio.rows[0].nombreTerritorio}<br/>
       <strong>Población:</strong> ${poblacionTotal} habitantes<br/>
-      <strong>Familias:</strong> ${info.familias.rows[0].familias}<br/>
-      <strong>Pueblos:</strong> ${info.pueblos.rows.map((p: any) => p.PUEBLO).join(', ')}<br/>
+      <strong>Familias:</strong> ${informacion.familias.rows[0].familias}<br/>
+      <strong>Pueblos:</strong> ${informacion.pueblos.rows.map((p: PuebloComunidad) => p.PUEBLO).join(', ')}<br/>
       <strong>Sexos:</strong><br/>
       &nbsp;&nbsp;&nbsp;${mujeres} mujeres<br/>
       &nbsp;&nbsp;&nbsp;${hombres} hombres
@@ -403,8 +449,8 @@ const intentaCrearHtmlPopUpComunidad = async (id: string, modo: string | string[
   `;
 }
 
-const organizaDocumentacionPorFecha = (gestionDocumental: any) => {
-  gestionDocumental.rows.sort((a: any, b: any) => a.FECHA_INICIO.value.localeCompare(b.FECHA_INICIO.value));
+const organizaDocumentacionPorFecha = (gestionDocumental: GestionDocumental) => {
+  gestionDocumental.rows.sort((row_a: any, row_b: any) => row_a.FECHA_INICIO.value.localeCompare(row_b.FECHA_INICIO.value));
 };
 
 const agregarSimboloDocumentacion = async (layer: any) => {
@@ -439,7 +485,7 @@ const traeInformacionDocumentalTerritorio = async (territorio: any, modo: string
     organizaDocumentacionPorFecha(gestionDocumental);
     return gestionDocumental.rows;
   } catch (error) {
-    logger.error('Error fetching document info for territorio:', error);
+    logger.error('Error buscando información documental para el territorio:', error);
     return [];
   }
 };
