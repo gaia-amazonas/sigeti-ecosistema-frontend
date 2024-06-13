@@ -20,7 +20,7 @@ const Marcador = dynamic(() => import('react-leaflet').then(mod => mod.Marker), 
 const VentanaEmergente = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
 
 interface MapaImp {
-    territoriosGeoJson: FeatureCollection;
+    territoriosGeoJson: FeatureCollection | null;
     comunidadesGeometries: any[];
 }
 

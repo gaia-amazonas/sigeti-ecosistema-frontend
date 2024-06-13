@@ -1,5 +1,7 @@
 // components/graficos/general/General.tsx
-import React, { use, useEffect } from 'react';
+import React from 'react';
+import { FeatureCollection } from 'geojson';
+
 import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
@@ -7,14 +9,22 @@ import TotalYFamilias from './TotalYFamilias';
 import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
-interface GeneralImp {
-  datos: any[];
+interface General {
+  sexo: string;
+  familias: string;
+  sexo_edad: string;
+  territorio: string;
+  comunidades_en_territorio: string;
+  territoriosGeoJson: FeatureCollection | null;
 }
 
-export const General: React.FC<GeneralImp> = ({ datos }) => {
+interface GeneralImp {
+  datosGenerales: General[];
+}
 
-  // aseguraEntradaCompletadeDatosParaPestanha
-  if (!datos || datos.length < 6 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows || !datos[5].features) {
+export const General: React.FC<GeneralImp> = ({ datosGenerales }) => {
+
+  if (!datosGenerales || datosGenerales.length < 6 || !datosGenerales[0] || !datosGenerales[1] || !datosGenerales[2] || !datosGenerales[3] || !datosGenerales[4] || !datosGenerales[5] ) {
     return <div>Cargando...</div>;
   }
 
@@ -24,7 +34,7 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
     sexoEdadDatosEntrantes,
     comunidadesGeometriesEntrantes,
     territoriosGeoJsonEntrantes
-  } = extractorDeDatosEntrantes(datos);
+  } = extractorDeDatosEntrantes(datosGenerales);
 
   const {
     mujerContador,

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
+
 import { General } from 'components/consultaConAlfanumericos/general/General';
+
+import DatosConsultados from 'tipos/datosConsultados';
+
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
 import { buscarDatosPorTerritorioYComunidad, buscarDatosParaTodosTerritoriosYComunidades, buscarDatosPorTerritorio } from 'buscadores/paraAlfanumerica';
@@ -16,40 +19,23 @@ interface PestanhasImp {
   modo: string;
 }
 
-interface General {
-  sexo: string;
-  familias: string;
-  sexo_edad: string;
-  territorio: string;
-  comunidades_en_territorio: string;
-  territoriosGeoJson: FeatureCollection | null;
-}
-
 interface DatosPorPestanhaImp {
-  general: General[];
+  general: any[];
   cultural: any[];
   educacion: any[];
 }
 
-interface DatosConsultados {
-  sexo: any;
-  familias: any;
-  sexo_edad: any;
-  territorio: any;
-  comunidades_en_territorio: any;
-  territoriosGeoJson: FeatureCollection | null;
-}
-
 const initialDatosConsultados: DatosConsultados = {
-  sexo: '',
-  familias: '',
-  sexo_edad: '',
-  territorio: '',
-  comunidades_en_territorio: '',
+  sexo: null,
+  familias: null,
+  sexo_edad: null,
+  territorio: null,
+  comunidades_en_territorio: null,
   territoriosGeoJson: null,
 };
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
+
   const [activo, establecerActivo] = useState('pestanha_general');
   const [datosConsultados, establecerDatosConsultados] = useState<DatosConsultados>(initialDatosConsultados);
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
@@ -99,7 +85,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha active={activo === 'pestanha_educacional'} onClick={() => establecerActivo('pestanha_educacional')}>Educación</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
-        {activo === 'pestanha_general' && <General datos={datosPorPestanha.general} />}
+        {activo === 'pestanha_general' && <General datosGenerales={datosPorPestanha.general} />}
         {activo === 'pestanha_cultural' && <div>en desarrollo...</div>}
         {activo === 'pestanha_educacional' && <div>en desarrollo...</div>}
       </PanelPestanhas>

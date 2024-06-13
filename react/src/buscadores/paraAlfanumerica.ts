@@ -1,25 +1,17 @@
 // src/buscadores/paraAlfanumerica.ts
-import { FeatureCollection } from 'geojson';
+import DatosConsultados from 'tipos/datosConsultados';
 
 import { buscarDatos } from 'buscadores/datosSQL';
+import { buscarTerritorios } from 'buscadores/geoJson';
 import consultasGeneralesPorTerritorio from 'consultas/bigQuery/alfanumerico/porTerritorios';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/bigQuery/alfanumerico/todosGeoTerritorios';
 import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/bigQuery/alfanumerico/todasGeoComunidadesPorTerritorio';
-import { buscarTerritorios } from 'buscadores/geoJson';
 
 interface DatosParaConsultar {
   territorios_id: string[];
   comunidades_id: string[];
 }
 
-interface DatosConsultados {
-  sexo: string;
-  familias: string;
-  sexo_edad: string;
-  territorio: string;
-  comunidades_en_territorio: string;
-  territoriosGeoJson: FeatureCollection | null;
-}
 
 export const buscarDatosPorTerritorioYComunidad = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<DatosConsultados> => {
 

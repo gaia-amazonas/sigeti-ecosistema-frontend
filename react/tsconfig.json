@@ -27,7 +27,8 @@
       "bases_de_datos/*": ["./src/bases_de_datos/*"],
       "buscadores/*": ["./src/buscadores/*"],
       "estilosMapas": ["./src/components/consultaConMapa/estilos.ts"],
-      "utilidades/*": ["./src/utilidades/*"]
+      "utilidades/*": ["./src/utilidades/*"],
+      "tipos/*": ["./src/tipos/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
