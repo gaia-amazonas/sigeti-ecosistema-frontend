@@ -1,9 +1,9 @@
-// src/components/graficos/general/Mapa.tsx
+// src/components/graficos/general/MapaComunidadesPorTerritorio.tsx
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { stringPostGISAGeoJson } from 'transformadores/stringPostGISAGeoJson';
-import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
+import { Feature, FeatureCollection, Point, Geometry, GeoJsonProperties } from 'geojson';
 
 import {
   estiloTerritorio,
@@ -55,7 +55,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeometries }) 
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-            <TerritoriosGeoJson data={territoriosGeoJson} style={estiloTerritorio} />
+            <TerritoriosGeoJson data={territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
             {comunidadesGeoJson.features.map((feature, idx) => {
                 const pointFeature = feature as Feature<Point>;
                 const { coordinates } = pointFeature.geometry;

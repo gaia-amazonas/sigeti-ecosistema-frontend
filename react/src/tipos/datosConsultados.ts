@@ -1,3 +1,4 @@
+// src/tipos/datosConsultados.ts
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 interface GeometryData {
