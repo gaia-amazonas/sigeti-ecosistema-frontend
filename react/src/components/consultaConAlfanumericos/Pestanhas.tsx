@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { General } from 'components/consultaConAlfanumericos/general/General';
 import BotonReiniciar from 'components/BotonReiniciar';
-
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
 import { buscarDatosPorTerritorioYComunidad, buscarDatosParaTodosTerritoriosYComunidades, buscarDatosPorTerritorio } from 'buscadores/paraAlfanumerica';
-
 
 interface DatosParaConsultar {
   territorios_id: string[];
@@ -18,8 +16,17 @@ interface PestanhasImp {
   modo: string;
 }
 
+interface General {
+  sexo: string;
+  familias: string;
+  sexo_edad: string;
+  territorio: string;
+  comunidades_en_territorio: string;
+  territoriosGeoJson: FeatureCollection | null;
+}
+
 interface DatosPorPestanhaImp {
-  general: any[];
+  general: General[];
   cultural: any[];
   educacion: any[];
 }
@@ -30,7 +37,7 @@ interface DatosConsultados {
   sexo_edad: any;
   territorio: any;
   comunidades_en_territorio: any;
-  territoriosGeoJson: any;
+  territoriosGeoJson: FeatureCollection | null;
 }
 
 const initialDatosConsultados: DatosConsultados = {
@@ -39,7 +46,7 @@ const initialDatosConsultados: DatosConsultados = {
   sexo_edad: '',
   territorio: '',
   comunidades_en_territorio: '',
-  territoriosGeoJson: '',
+  territoriosGeoJson: null,
 };
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
@@ -52,21 +59,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   });
 
   useEffect(() => {
+    buscarDatosParaPestanha();
+  }, [datosParaConsultar, modo]);
 
-    const buscarDatosParaPestanha = async () => {
-      if (datosParaConsultar.comunidades_id && datosParaConsultar.comunidades_id[0] !== 'Todas') {
-        establecerDatosConsultados(await buscarDatosPorTerritorioYComunidad(datosParaConsultar, modo));
-      } else if (datosParaConsultar.territorios_id[0] === 'Todos' && datosParaConsultar.comunidades_id[0] === 'Todas') {
-        establecerDatosConsultados(await buscarDatosParaTodosTerritoriosYComunidades(modo));
-      } else if (datosParaConsultar.comunidades_id[0] === 'Todas') {
-        establecerDatosConsultados(await buscarDatosPorTerritorio(datosParaConsultar, modo));
-      } else {
-        throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidades_id}, territorio: ${datosParaConsultar.territorios_id})`);
-      }
-    };
-
-    establecerDatosPorPestanha(datosPrevios => ({
-      ...datosPrevios,
+  useEffect(() => {
+    establecerDatosPorPestanha({
       general: [
         datosConsultados.sexo,
         datosConsultados.familias,
@@ -75,11 +72,22 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         datosConsultados.comunidades_en_territorio,
         datosConsultados.territoriosGeoJson
       ],
-    }));
+      cultural: [], 
+      educacion: []
+    });
+  }, [datosConsultados])
 
-    buscarDatosParaPestanha();
-    
-  }, [datosParaConsultar, modo]);
+  const buscarDatosParaPestanha = async () => {
+    if (datosParaConsultar.comunidades_id && datosParaConsultar.comunidades_id[0] !== 'Todas') {
+      establecerDatosConsultados(await buscarDatosPorTerritorioYComunidad(datosParaConsultar, modo));
+    } else if (datosParaConsultar.territorios_id[0] === 'Todos' && datosParaConsultar.comunidades_id[0] === 'Todas') {
+      establecerDatosConsultados(await buscarDatosParaTodosTerritoriosYComunidades(modo));
+    } else if (datosParaConsultar.comunidades_id[0] === 'Todas') {
+      establecerDatosConsultados(await buscarDatosPorTerritorio(datosParaConsultar, modo));
+    } else {
+      throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidades_id}, territorio: ${datosParaConsultar.territorios_id})`);
+    }
+  };
 
   return (
     <Contenedor>

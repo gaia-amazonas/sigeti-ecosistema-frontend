@@ -1,5 +1,5 @@
 // components/graficos/general/General.tsx
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
