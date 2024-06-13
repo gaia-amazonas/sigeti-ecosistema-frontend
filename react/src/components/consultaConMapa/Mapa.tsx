@@ -1,3 +1,4 @@
+// src/components/consultaConMapa/Mapa.tsx
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import dynamic from 'next/dynamic';
