@@ -3,7 +3,15 @@ const consultasBigQueryParaLineasColindantes = {
     geometrias: `
         SELECT
             ST_AsGeoJSON(geo) AS geometry,
+            OBJECTID
+        FROM
+            \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\`;`
+    ,
+    geometriasYColindanciaEntre: `
+        SELECT
+            ST_AsGeoJSON(geo) AS geometry,
             OBJECTID,
+            COL_ENTRE
         FROM
             \`sigeti-admin-364713.analysis_units.LineasColindantes_Vista\`;`
     ,

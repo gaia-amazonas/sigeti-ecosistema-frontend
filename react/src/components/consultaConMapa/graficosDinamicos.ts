@@ -18,6 +18,8 @@ import {
 
 import logger from 'utilidades/logger';
 
+const colorParaLineasColindantes: { [key: string]: string } = {};
+
 export function obtieneColorRandom() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -77,9 +79,11 @@ export const adjuntarAPopUp = (territorio: any, contenedorLineaTiempo: HTMLEleme
 };
 
 export const determinaColorLineaColindante = (linea: FeatureLineas) => {
-  if (!linea.properties.colorOriginal) {
-    linea.properties.colorOriginal = obtieneColorRandom();
+  const colEntre = linea.properties.col_entre;
+  if (!colorParaLineasColindantes[colEntre]) {
+    colorParaLineasColindantes[colEntre] = obtieneColorRandom();
   }
+  linea.properties.colorOriginal = colorParaLineasColindantes[colEntre];
 };
 
 export const agregaEstiloALineaColindante = (layer: PathZIndex, linea: FeatureLineas) => {
