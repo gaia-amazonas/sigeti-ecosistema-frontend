@@ -21,13 +21,14 @@
       "components/*": ["./src/components/*"],
       "logos/*": ["./public/logos/*"],
       "iconos/*": ["./public/iconos/*"],
-      "transformadores/*": ["./src/transformadores/*"],
       "consultas/*": ["./src/consultas/*"],
       "estilos_paginas/*": ["./src/pages/estilos/*"],
       "bases_de_datos/*": ["./src/bases_de_datos/*"],
       "buscadores/*": ["./src/buscadores/*"],
-      "estilosMapas": ["./src/components/consultaConMapa/estilos.ts"],
-      "utilidades/*": ["./src/utilidades/*"]
+      "estilosParaConsultaConMapas/*": ["./src/components/consultaConMapa/estilos.ts"],
+      "utilidades/*": ["./src/utilidades/*"],
+      "tipos/*": ["./src/tipos/*"],
+      "estilosParaMapas/*": ["./src/estilos/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

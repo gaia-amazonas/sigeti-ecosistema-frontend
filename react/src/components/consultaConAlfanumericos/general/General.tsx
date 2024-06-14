@@ -1,5 +1,7 @@
 // components/graficos/general/General.tsx
 import React from 'react';
+import { FeatureCollection } from 'geojson';
+
 import Mujer from './Mujer';
 import Hombre from './Hombre';
 import SexoEdad from './SexoEdad';
@@ -7,14 +9,23 @@ import TotalYFamilias from './TotalYFamilias';
 import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
-interface GeneralImp {
-  datos: any[];
+interface General {
+  sexo: string;
+  familias: string;
+  sexo_edad: string;
+  territorio: string;
+  comunidadesGeoJson: FeatureCollection | null;
+  territoriosGeoJson: FeatureCollection | null;
 }
 
-export const General: React.FC<GeneralImp> = ({ datos }) => {
+interface GeneralImp {
+  datosGenerales: General[];
+  modo: string | string[];
+}
 
-  // aseguraEntradaCompletadeDatosParaPestanha
-  if (!datos || datos.length < 6 || !datos[0].rows || !datos[1].rows || !datos[2].rows || !datos[3].rows || !datos[4].rows || !datos[5].features) {
+export const General: React.FC<GeneralImp> = ({ datosGenerales, modo }) => {
+
+  if (!datosGenerales || datosGenerales.length < 5 || !datosGenerales[0] || !datosGenerales[1] || !datosGenerales[2] || !datosGenerales[3] || !datosGenerales[4] ) {
     return <div>Cargando...</div>;
   }
 
@@ -22,9 +33,9 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
     sexoDatosEntrantes,
     familiasDatosEntrantes,
     sexoEdadDatosEntrantes,
-    comunidadesGeometriesEntrantes,
+    comunidadesGeoJsonEntrantes,
     territoriosGeoJsonEntrantes
-  } = extractorDeDatosEntrantes(datos);
+  } = extractorDeDatosEntrantes(datosGenerales);
 
   const {
     mujerContador,
@@ -48,7 +59,8 @@ export const General: React.FC<GeneralImp> = ({ datos }) => {
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={territoriosGeoJsonEntrantes}
-        comunidadesGeometries={comunidadesGeometriesEntrantes}
+        comunidadesGeoJson={comunidadesGeoJsonEntrantes}
+        modo={modo}
       />
     </div>
   );
@@ -60,9 +72,8 @@ const extractorDeDatosEntrantes = (datos: any[]) => {
     sexoDatosEntrantes: datos[0].rows,
     familiasDatosEntrantes: datos[1].rows[0].familias,
     sexoEdadDatosEntrantes: datos[2].rows,
-    territoriosGeometryEntrantes: datos[3].rows,
-    comunidadesGeometriesEntrantes: datos[4].rows.map((row: any) => row.geometry),
-    territoriosGeoJsonEntrantes: datos[5]
+    comunidadesGeoJsonEntrantes: datos[3],
+    territoriosGeoJsonEntrantes: datos[4]
   }
 
 }

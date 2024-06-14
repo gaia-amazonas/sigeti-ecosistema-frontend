@@ -79,15 +79,16 @@ const todosGeoTerritorios = {
     territorio: `
         SELECT
             ST_AsGeoJSON(geometry) AS geometry,
-            id_ti,
-            territorio
+            id_ti AS id,
+            territorio AS nombre
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\`;`
     ,
     comunidades_en_territorio: `
         SELECT
-            geometry,
-            nomb_cnida
+            ST_AsGeoJSON(geometry) AS geometry,
+            nomb_cnida AS nombre,
+            id_cnida AS id
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\`;`
 };
