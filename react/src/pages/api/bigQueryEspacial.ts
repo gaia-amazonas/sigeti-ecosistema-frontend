@@ -11,7 +11,7 @@ const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
   ? '.ambiente.produccion'
   : process.env.AMBIENTE === 'desarrollo'
   ? '.ambiente.desarrollo'
-  : '.ambiente.local';
+  : '.ambiente.escritorio';
 
 const direccionAmbiente = path.resolve(process.cwd(), archivoVariablesAmbiente);
 config({ path: direccionAmbiente });
