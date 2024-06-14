@@ -89,7 +89,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
         geometry: JSON.parse(fila.geometry),
       });
-      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometriasYColindanciaEntre, modo, lineas);
       establecerLineasColindantesGeoJson(geoJsonLineas);
       establecerEstaCargandoLineas(false);
     } catch (error) {
