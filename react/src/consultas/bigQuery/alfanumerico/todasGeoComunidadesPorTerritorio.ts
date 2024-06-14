@@ -91,8 +91,8 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
     territorio: (territoriosId: string[]) => {
         return `SELECT
             ST_AsGeoJSON(geometry) AS geometry,
-            id_ti,
-            territorio
+            id_ti AS id,
+            territorio AS nombre
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
@@ -101,8 +101,9 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
     ,
     comunidades_en_territorio: (territoriosId: string[]) => {
         return `SELECT
-            g.geometry,
-            g.nomb_cnida
+            ST_AsGeoJSON(g.geometry) AS geometry,
+            g.nomb_cnida AS nombre,
+            g.id_cnida AS id
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` g
         JOIN

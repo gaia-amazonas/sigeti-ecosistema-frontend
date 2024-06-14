@@ -29,8 +29,7 @@ const initialDatosConsultados: DatosConsultados = {
   sexo: null,
   familias: null,
   sexo_edad: null,
-  territorio: null,
-  comunidades_en_territorio: null,
+  comunidadesGeoJson: null,
   territoriosGeoJson: null,
 };
 
@@ -54,8 +53,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         datosConsultados.sexo,
         datosConsultados.familias,
         datosConsultados.sexo_edad,
-        datosConsultados.territorio,
-        datosConsultados.comunidades_en_territorio,
+        datosConsultados.comunidadesGeoJson,
         datosConsultados.territoriosGeoJson
       ],
       cultural: [], 
@@ -85,7 +83,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha active={activo === 'pestanha_educacional'} onClick={() => establecerActivo('pestanha_educacional')}>Educación</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
-        {activo === 'pestanha_general' && <General datosGenerales={datosPorPestanha.general} />}
+        {activo === 'pestanha_general' && <General datosGenerales={datosPorPestanha.general} modo={modo} />}
         {activo === 'pestanha_cultural' && <div>en desarrollo...</div>}
         {activo === 'pestanha_educacional' && <div>en desarrollo...</div>}
       </PanelPestanhas>
