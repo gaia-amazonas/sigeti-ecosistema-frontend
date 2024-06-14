@@ -23,6 +23,9 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
 
     const centroMapa = [0.969793, -70.830454];
 
+    console.log("TERRITORIOSSSSSSSSSS", territoriosGeoJson);
+    console.log("COMUNIDADESSSSSSSSSS", comunidadesGeoJson);
+
     return (
         <Contenedor center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%' }}>
             <CapaMapaOSM
