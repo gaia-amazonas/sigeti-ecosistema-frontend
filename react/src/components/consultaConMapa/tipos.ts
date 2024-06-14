@@ -2,13 +2,6 @@
 import { Geometry, Feature } from 'geojson';
 import { Path, PathOptions } from 'leaflet';
 
-export interface GeometriasConVariables extends Feature<Geometry> {
-  properties: {
-    nombre: string;
-    id: string;
-    [key: string]: string | number;
-  };
-}
 
 export interface MapaImp {
   modo: string | string[];
@@ -24,12 +17,6 @@ export interface FilaTerritorios {
   NOMBRE_TI: string;
   ID_TI: string;
   ABREV_TI: string;
-  geometry: string;
-}
-
-export interface FilaComunidades {
-  nomb_cnida: string;
-  id_cnida: string;
   geometry: string;
 }
 
@@ -51,15 +38,6 @@ export interface FeatureTerritorios extends Feature<Geometry, any> {
     abreviacion: string;
   };
   geometry: Geometry;
-}
-
-export interface FeatureComunidades {
-  type: 'Feature';
-  properties: {
-    nombre: string;
-    id: string;
-  };
-  geometry: string;
 }
 
 export interface Fecha {

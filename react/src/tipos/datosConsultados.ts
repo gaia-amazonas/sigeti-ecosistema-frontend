@@ -42,24 +42,14 @@ interface SexoEdad {
   rows: SexoEdadRow[];
 }
 
-interface TerritorioRow {
-  geometry: string;
-  id_ti: string;
-  territorio: string;
-}
-
-interface Territorio {
-  rows: TerritorioRow[];
-}
-
 interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
+interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 
 interface DatosConsultados {
   sexo: Sexo | null;
   familias: Familias | null;
   sexo_edad: SexoEdad | null;
-  territorio: Territorio | null;
-  comunidades_en_territorio: Comunidades | null;
+  comunidadesGeoJson: ComunidadesGeoJson | null;
   territoriosGeoJson: TerritoriosGeoJson | null;
 }
 

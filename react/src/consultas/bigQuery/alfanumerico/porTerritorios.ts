@@ -85,8 +85,8 @@ const porTerritorio: Record<string, Query> = {
     territorio: (comunidadesId: string[]) => `
         SELECT
             ST_AsGeoJSON(t.geometry) as geometry,
-            t.id_ti as id_ti,
-            t.territorio as territorio
+            t.id_ti as id,
+            t.territorio as nombre
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
         JOIN
@@ -97,8 +97,9 @@ const porTerritorio: Record<string, Query> = {
             ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`,
     comunidades_en_territorio: (comunidadesId: string[]) => `
         SELECT
-            c.geometry,
-            c.nomb_cnida
+            ST_AsGeoJSON(c.geometry) AS geometry,
+            c.id_cnida AS id,
+            c.nomb_cnida AS nombre
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         WHERE

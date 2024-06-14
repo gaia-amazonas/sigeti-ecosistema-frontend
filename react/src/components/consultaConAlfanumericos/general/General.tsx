@@ -14,17 +14,18 @@ interface General {
   familias: string;
   sexo_edad: string;
   territorio: string;
-  comunidades_en_territorio: string;
+  comunidadesGeoJson: FeatureCollection | null;
   territoriosGeoJson: FeatureCollection | null;
 }
 
 interface GeneralImp {
   datosGenerales: General[];
+  modo: string | string[];
 }
 
-export const General: React.FC<GeneralImp> = ({ datosGenerales }) => {
+export const General: React.FC<GeneralImp> = ({ datosGenerales, modo }) => {
 
-  if (!datosGenerales || datosGenerales.length < 6 || !datosGenerales[0] || !datosGenerales[1] || !datosGenerales[2] || !datosGenerales[3] || !datosGenerales[4] || !datosGenerales[5] ) {
+  if (!datosGenerales || datosGenerales.length < 5 || !datosGenerales[0] || !datosGenerales[1] || !datosGenerales[2] || !datosGenerales[3] || !datosGenerales[4] ) {
     return <div>Cargando...</div>;
   }
 
@@ -32,7 +33,7 @@ export const General: React.FC<GeneralImp> = ({ datosGenerales }) => {
     sexoDatosEntrantes,
     familiasDatosEntrantes,
     sexoEdadDatosEntrantes,
-    comunidadesGeometriesEntrantes,
+    comunidadesGeoJsonEntrantes,
     territoriosGeoJsonEntrantes
   } = extractorDeDatosEntrantes(datosGenerales);
 
@@ -58,7 +59,8 @@ export const General: React.FC<GeneralImp> = ({ datosGenerales }) => {
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={territoriosGeoJsonEntrantes}
-        comunidadesGeometries={comunidadesGeometriesEntrantes}
+        comunidadesGeoJson={comunidadesGeoJsonEntrantes}
+        modo={modo}
       />
     </div>
   );
@@ -70,9 +72,8 @@ const extractorDeDatosEntrantes = (datos: any[]) => {
     sexoDatosEntrantes: datos[0].rows,
     familiasDatosEntrantes: datos[1].rows[0].familias,
     sexoEdadDatosEntrantes: datos[2].rows,
-    territoriosGeometryEntrantes: datos[3].rows,
-    comunidadesGeometriesEntrantes: datos[4].rows.map((row: any) => row.geometry),
-    territoriosGeoJsonEntrantes: datos[5]
+    comunidadesGeoJsonEntrantes: datos[3],
+    territoriosGeoJsonEntrantes: datos[4]
   }
 
 }
