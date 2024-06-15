@@ -1,6 +1,6 @@
 // components/graficos/general/General.tsx
 import React from 'react';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import Mujer from './Mujer';
 import Hombre from './Hombre';
@@ -10,6 +10,7 @@ import MapaComunidadesPorTerritorio from './MapaComunidadesPorTerritorio';
 import { ContenedorGrafico, CajaTitulo } from '../estilos';
 
 interface General {
+  rows: any;
   sexo: string;
   familias: string;
   sexo_edad: string;
@@ -21,6 +22,18 @@ interface General {
 interface GeneralImp {
   datosGenerales: General[];
   modo: string | string[];
+}
+
+interface SexoEdadDatos {
+  age_group: string;
+  age_group_order: number;
+  count: number;
+  sexo: string;
+}
+
+interface SexoDatos {
+  SEXO: string;
+  f0_: number;
 }
 
 export const General: React.FC<GeneralImp> = ({ datosGenerales, modo }) => {
@@ -58,15 +71,15 @@ export const General: React.FC<GeneralImp> = ({ datosGenerales, modo }) => {
       />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
-        territoriosGeoJson={territoriosGeoJsonEntrantes}
-        comunidadesGeoJson={comunidadesGeoJsonEntrantes}
+        territoriosGeoJson={territoriosGeoJsonEntrantes as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        comunidadesGeoJson={comunidadesGeoJsonEntrantes as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
     </div>
   );
 };
 
-const extractorDeDatosEntrantes = (datos: any[]) => {
+const extractorDeDatosEntrantes = (datos: General[]) => {
 
   return {
     sexoDatosEntrantes: datos[0].rows,
@@ -78,14 +91,14 @@ const extractorDeDatosEntrantes = (datos: any[]) => {
 
 }
 
-const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: any[]) => {
+const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdadDatos[]) => {
   return sexoEdadDatos.map((item: any) => ({
     ageGroup: item.age_group,
     [item.sexo]: item.count * (item.sexo === 'Hombre' ? -1 : 1),
   }));
 }
 
-const calculadorDeSexosPorEdades = (sexoDatos: any[]) => {
+const calculadorDeSexosPorEdades = (sexoDatos: SexoDatos[]) => {
   const mujerContador = sexoDatos.find((row: any) => row.SEXO === 'Mujer')?.f0_ || 0;
   const hombreContador = sexoDatos.find((row: any) => row.SEXO === 'Hombre')?.f0_ || 0;
   return {
