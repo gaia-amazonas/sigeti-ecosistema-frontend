@@ -1,4 +1,5 @@
 // src/components/consultas/generales/todasGeoComunidadesPorTerritorio.ts
+import haceClausulasWhere from "./clausulas";
 
 type Query = (territoriosId: string[]) => string;
 
@@ -116,7 +117,3 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
 };
 
 export default todasGeoComunidadesPorTerritorio;
-
-const haceClausulasWhere = (territoriosId: string[]) => {
-    return territoriosId.length > 0 ? territoriosId.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territoriosId[0]}'`;
-}

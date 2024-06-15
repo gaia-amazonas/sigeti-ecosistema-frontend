@@ -31,7 +31,7 @@ export const buscarDatosPorTerritorioYComunidad = async (datosParaConsultar: Dat
 };
 
 export const buscarDatosParaTodosTerritoriosYComunidades = async (modo: string | string[]) => {
-
+  
   const sexo = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo, modo);
   const familias = await buscarDatos(consultasGeneralesTodosGeoTerritorios.familias, modo);
   const sexo_edad = await buscarDatos(consultasGeneralesTodosGeoTerritorios.sexo_edad, modo);
@@ -48,7 +48,7 @@ export const buscarDatosParaTodosTerritoriosYComunidades = async (modo: string |
 };
 
 export const buscarDatosPorTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]) => {
-
+  console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCC");
   const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datosParaConsultar.territorios_id), modo);
   const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datosParaConsultar.territorios_id), modo);
   const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datosParaConsultar.territorios_id), modo);

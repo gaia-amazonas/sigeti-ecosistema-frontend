@@ -1,4 +1,5 @@
 // src/components/consultas/generales/porTerritorio.ts
+import haceClausulasWhere from "./clausulas";
 
 type Query = (territoriosId: string[]) => string;
 
@@ -108,7 +109,3 @@ const porTerritorio: Record<string, Query> = {
 
 
 export default porTerritorio;
-
-const haceClausulasWhere = (comunidadesId: string[], variable: string) => {
-    return comunidadesId.length > 0 ? comunidadesId.map(id => `${variable} = '${id}'`).join(' OR '): `${variable} = '${comunidadesId[0]}'`;
-}
