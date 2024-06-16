@@ -3,8 +3,8 @@ import logger from 'utilidades/logger';
 import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface DatosParaConsultar {
-  territorios_id: string[];
-  comunidades_id: string[];
+  territoriosId: string[];
+  comunidadesId: string[];
 }
 
 interface Opcion {
@@ -23,7 +23,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState<string>('');
-  const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.territorios_id);
+  const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.territoriosId);
 
   useEffect(() => {
     async function buscarDatos() {
@@ -75,7 +75,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
   };
 
   useEffect(() => {
-    establecerDatosParaConsultar({ ...datosParaConsultar, territorios_id: seleccionados });
+    establecerDatosParaConsultar({ ...datosParaConsultar, territoriosId: seleccionados });
     if (seleccionados[0] === "Todos") {
       siguientePaso();
     }

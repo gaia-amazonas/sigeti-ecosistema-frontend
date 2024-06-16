@@ -1,29 +1,39 @@
 // src/buscadores/paraAlfanumerica.ts
 import DatosConsultados from 'tipos/datosConsultados';
+import ComunidadesEnTerritorioDatosConsultados from 'tipos/comunidadesEnTerritorioDatosConsultados';
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
-import consultasGeneralesPorTerritorio from 'consultas/bigQuery/alfanumerico/porTerritorios';
+import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/porComunidadesEnTerritorio';
 import consultasGeneralesTodosGeoTerritorios from 'consultas/bigQuery/alfanumerico/todosGeoTerritorios';
 import consultasGeneralesTodasGeoComunidadesPorTerritorio from 'consultas/bigQuery/alfanumerico/todasGeoComunidadesPorTerritorio';
 
 interface DatosParaConsultar {
-  territorios_id: string[];
-  comunidades_id: string[];
+  territoriosId: string[];
+  comunidadesId: string[];
+}
+
+interface BuscarDatosPorComunidadesEnTerritorioImp {
+  datosParaConsultar: DatosParaConsultar;
+  modo: string | string[];
 }
 
 
-export const buscarDatosPorTerritorioYComunidad = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<DatosConsultados> => {
-
-  const sexo = await buscarDatos(consultasGeneralesPorTerritorio.sexo(datosParaConsultar.comunidades_id), modo);
-  const familias = await buscarDatos(consultasGeneralesPorTerritorio.familias(datosParaConsultar.comunidades_id), modo);
-  const sexo_edad = await buscarDatos(consultasGeneralesPorTerritorio.sexo_edad(datosParaConsultar.comunidades_id), modo);
-  const comunidadesGeoJson = await buscarComunidades(consultasGeneralesPorTerritorio.comunidades_en_territorio(datosParaConsultar.comunidades_id), modo);
-  const territoriosGeoJson = await buscarTerritorios(consultasGeneralesPorTerritorio.territorio(datosParaConsultar.comunidades_id), modo);
+export const buscarDatosPorComunidadesEnTerritorio = async ({datosParaConsultar, modo}: BuscarDatosPorComunidadesEnTerritorioImp): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+  console.log("DATOSPORTERRITORIOYCOMUNIDAD", datosParaConsultar);
+  const sexo = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexo(datosParaConsultar.comunidadesId), modo);
+  const familias = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.familias(datosParaConsultar.comunidadesId), modo);
+  const sexoEdad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexoEdad(datosParaConsultar.comunidadesId), modo);
+  const familiasPorComunidad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.familiasPorComunidad(datosParaConsultar.comunidadesId), modo);
+  const sexoEdadPorComunidad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexoEdadPorComunidad(datosParaConsultar.comunidadesId), modo);
+  const comunidadesGeoJson = await buscarComunidades(consultasGeneralesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar.comunidadesId), modo);
+  const territoriosGeoJson = await buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorio.territorio(datosParaConsultar.comunidadesId), modo);
   return {
     sexo: sexo,
     familias: familias,
-    sexo_edad: sexo_edad,
+    sexoEdad: sexoEdad,
+    familiasPorComunidad: familiasPorComunidad,
+    sexoEdadPorComunidad: sexoEdadPorComunidad,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territoriosGeoJson
   }
@@ -48,12 +58,12 @@ export const buscarDatosParaTodosTerritoriosYComunidades = async (modo: string |
 };
 
 export const buscarDatosPorTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]) => {
-  console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-  const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datosParaConsultar.territorios_id), modo);
-  const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datosParaConsultar.territorios_id), modo);
-  const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datosParaConsultar.territorios_id), modo);
-  const comunidadesGeoJson = await buscarComunidades(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datosParaConsultar.territorios_id), modo);
-  const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datosParaConsultar.territorios_id), modo);
+  
+  const sexo = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo(datosParaConsultar.territoriosId), modo);
+  const familias = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.familias(datosParaConsultar.territoriosId), modo);
+  const sexo_edad = await buscarDatos(consultasGeneralesTodasGeoComunidadesPorTerritorio.sexo_edad(datosParaConsultar.territoriosId), modo);
+  const comunidadesGeoJson = await buscarComunidades(consultasGeneralesTodasGeoComunidadesPorTerritorio.comunidades_en_territorio(datosParaConsultar.territoriosId), modo);
+  const territoriosGeoJson = await buscarTerritorios(consultasGeneralesTodasGeoComunidadesPorTerritorio.territorio(datosParaConsultar.territoriosId), modo);
   return {
     sexo: sexo,
     familias: familias,

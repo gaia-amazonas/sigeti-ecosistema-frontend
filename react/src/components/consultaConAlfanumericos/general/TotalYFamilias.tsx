@@ -2,12 +2,12 @@
 import React from 'react';
 import { ContenedorTotal, CajaReductor, CajaTitulo, RectanguloAmarillo } from '../estilos';
 
-interface TotalComponentProps {
+interface ComponenteTotalImp {
   contadorTotal: number;
   contadorFamilias: number;
 }
 
-const TotalComponent: React.FC<TotalComponentProps> = ({ contadorTotal, contadorFamilias }) => {
+const ComponenteTotal: React.FC<ComponenteTotalImp> = ({ contadorTotal, contadorFamilias }) => {
   return (
     <ContenedorTotal>
       <CajaTitulo>POBLACIÓN TOTAL</CajaTitulo>
@@ -19,4 +19,4 @@ const TotalComponent: React.FC<TotalComponentProps> = ({ contadorTotal, contador
   );
 };
 
-export default TotalComponent;
+export default ComponenteTotal;

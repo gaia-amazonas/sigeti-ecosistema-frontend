@@ -5,16 +5,16 @@ interface FamiliasFila {
   familias: number;
 }
 
-interface FamiliasPorComunidadFila extends FamiliasFila{
+interface FamiliasPorComunidadFila extends FamiliasFila {
   comunidad: string;
 }
 
 interface Familias {
-  filas: FamiliasFila[];
+  rows: FamiliasFila[];
 }
 
 interface FamiliasPorComunidad {
-  filas: FamiliasPorComunidadFila[];
+  rows: FamiliasPorComunidadFila[];
 }
 
 interface SexoFila {
@@ -27,11 +27,11 @@ interface SexoPorComunidadFila extends SexoFila {
 }
 
 interface Sexo {
-  filas: SexoFila[];
+  rows: SexoFila[];
 }
 
 interface SexosPorComunidad {
-  filas: SexoPorComunidadFila[];
+  rows: SexoPorComunidadFila[];
 }
 
 interface SexoEdadFila {
@@ -48,7 +48,7 @@ interface SexoEdad {
 interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 
-interface DatosConsultados {
+interface ComunidadesEnTerritorioDatosConsultados {
   sexo: Sexo | null;
   familias: Familias | null;
   sexoEdad: SexoEdad | null;
@@ -58,4 +58,4 @@ interface DatosConsultados {
   territoriosGeoJson: TerritoriosGeoJson | null;
 }
 
-export default DatosConsultados;
+export default ComunidadesEnTerritorioDatosConsultados;
