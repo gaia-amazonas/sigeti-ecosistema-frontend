@@ -1,4 +1,4 @@
-// src/tipos/datosConsultados.ts
+// src/tipos/datosConsultados/comunidadesEnTerritorio.ts
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 interface FamiliasFila {
@@ -45,8 +45,8 @@ export interface SexoEdad {
   rows: SexoEdadFila[];
 }
 
-interface TerritorioGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
-interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
+export interface TerritorioGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
+export interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 
 interface ComunidadesEnTerritorioDatosConsultados {
   sexo: Sexo | null;

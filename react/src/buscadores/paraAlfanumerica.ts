@@ -1,6 +1,5 @@
 // src/buscadores/paraAlfanumerica.ts
-import DatosConsultados from 'tipos/datosConsultados';
-import ComunidadesEnTerritorioDatosConsultados from 'tipos/comunidadesEnTerritorioDatosConsultados';
+import ComunidadesEnTerritorioDatosConsultados from 'tipos/datosConsultados/comunidadesEnTerritorio';
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
@@ -20,7 +19,6 @@ interface BuscarDatosPorComunidadesEnTerritorioImp {
 
 
 export const buscarDatosPorComunidadesEnTerritorio = async ({datosParaConsultar, modo}: BuscarDatosPorComunidadesEnTerritorioImp): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  console.log("DATOSPORTERRITORIOYCOMUNIDAD", datosParaConsultar);
   const sexo = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexo(datosParaConsultar.comunidadesId), modo);
   const familias = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.familias(datosParaConsultar.comunidadesId), modo);
   const sexoEdad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexoEdad(datosParaConsultar.comunidadesId), modo);
@@ -37,7 +35,6 @@ export const buscarDatosPorComunidadesEnTerritorio = async ({datosParaConsultar,
     comunidadesGeoJson: comunidadesGeoJson,
     territorioGeoJson: territorioGeoJson
   }
-
 };
 
 export const buscarDatosParaTodosTerritoriosYComunidades = async (modo: string | string[]) => {

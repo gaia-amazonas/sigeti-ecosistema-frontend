@@ -19,24 +19,20 @@ export const buscarDatos = async (consulta: string, modo: string | string[] | un
 export const buscarDatosGeoJson = async (
     consulta: string,
     modo: string | string[] | undefined,
-    featuresMapa: (row: any) => any
-): Promise<FeatureCollection> => {
-
-    try {
-        const datos = await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
-        return datos;
-    } catch (error) {
-        logger.error("Error convirtiendo datos a GeoJson", { error });
-        throw error;
-    }
-
-};
+    featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
+        try {
+            const datos = await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
+            return datos;
+        } catch (error) {
+            logger.error("Error convirtiendo datos a GeoJson", { error });
+            throw error;
+        }
+    };
 
 const intentaBuscarDatosGeoJson = async (
     consulta: string,
     modo: string | string[] | undefined,
     featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
-
         const json = await buscarDatos(consulta, modo);
         const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
         const featureCollection: FeatureCollection = {
@@ -44,5 +40,4 @@ const intentaBuscarDatosGeoJson = async (
             features: features,
         };
         return featureCollection;
-
     };

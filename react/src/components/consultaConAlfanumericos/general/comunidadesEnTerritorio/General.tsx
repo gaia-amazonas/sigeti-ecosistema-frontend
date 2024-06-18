@@ -1,16 +1,21 @@
-// components/graficos/general/General.tsx
+// General.tsx
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import ComunidadesEnTerritorioDatosConsultados, { Sexo, SexoEdad, SexoEdadFila } from 'tipos/comunidadesEnTerritorioDatosConsultados';
+import ComunidadesEnTerritorioDatosConsultados,
+  { Sexo,
+    SexoEdad,
+    SexoEdadFila,
+    ComunidadesGeoJson,
+    TerritorioGeoJson } from 'tipos/datosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../Mujer';
 import Hombre from '../Hombre';
 import ComponenteSexoEdad from '../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
+import QueEstoyViendo from '../QueEstoyViendo';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
-
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
   datosGenerales: ComunidadesEnTerritorioDatosConsultados;
@@ -23,34 +28,41 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
     return <div>Cargando...</div>;
   }
 
-  const datosExtraidos = extractorDeDatosEntrantes(datosGenerales);
-
-  console.log("DATOS EXTRAIDOS", datosExtraidos);
-
+  const datosExtraidos = extraerDatosEntrantes(datosGenerales);
+  const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
+  const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
+  
   const {
     mujerContador,
     hombreContador,
     totalContador
-  } = calculadorDeSexosPorEdades(datosExtraidos.sexo);
+  } = calcularSexosPorEdades(datosExtraidos.sexo);
 
-  const datosPiramidalesSexoEdad = segmentaPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
+  const datosPiramidalesSexoEdad = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <ContenedorGrafico>
         <Hombre contador={hombreContador} />
-        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={datosExtraidos.familias} />
+        <TotalYFamilias
+          contadorTotal={totalContador}
+          contadorFamilias={datosExtraidos.familias}
+          comunidades={comunidades}
+          territorios={territorio}
+        />
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
-      <ComponenteSexoEdad
-        datosPiramidalesSexoEdad={datosPiramidalesSexoEdad}
-      />
+      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
+      />
+      <QueEstoyViendo
+        comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
       />
     </div>
   );
@@ -58,7 +70,7 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 
 export default ComponenteGeneralComponentesEnTerritorio;
 
-const extractorDeDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
+const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
 
   const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
@@ -72,7 +84,20 @@ const extractorDeDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosC
   }
 }
 
-const calculadorDeSexosPorEdades = (sexoDatos: Sexo | null) => {
+const extraerComunidades = (comunidadesGeoJson: ComunidadesGeoJson | null): string[] | null => {
+  if (comunidadesGeoJson) {
+    return comunidadesGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null);
+  }
+  return null;
+}
+
+const extraerTerritorio = (territorioGeoJson: TerritorioGeoJson | null): string[] | null => {
+  if (territorioGeoJson) {
+    return territorioGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null)
+  }
+}
+
+const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {
   const mujerContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Mujer').map(row => row.cantidad)[0];
   const hombreContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Hombre').map(row => row.cantidad)[0];
   let totalContador: number | null = null;
@@ -87,7 +112,7 @@ const calculadorDeSexosPorEdades = (sexoDatos: Sexo | null) => {
 
 }
 
-const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null) => {
+const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null) => {
   if (!sexoEdadDatos) {
     return null;
   }
