@@ -29,7 +29,8 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
     async function buscarDatos() {
       const consulta = `
         SELECT
-          id_ti, territorio
+          id_ti,
+          REGEXP_EXTRACT(territorio, 'Territorio Indígena (.*)') as territorio
         FROM
           ${modo === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
         ORDER BY
