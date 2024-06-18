@@ -25,12 +25,14 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
   const [filtro, establecerFiltro] = useState<string>('');
   const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.territoriosId);
 
+  // REGEXP_EXTRACT(territorio, 'Territorio Indígena (.*)') as territorio: cuando estén mejor los nombres por territorio
+
   useEffect(() => {
     async function buscarDatos() {
       const consulta = `
         SELECT
           id_ti,
-          REGEXP_EXTRACT(territorio, 'Territorio Indígena (.*)') as territorio
+          territorio
         FROM
           ${modo === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
         ORDER BY

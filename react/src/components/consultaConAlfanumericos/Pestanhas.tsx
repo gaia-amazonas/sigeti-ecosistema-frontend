@@ -35,7 +35,7 @@ const comunidadesEnTerritorioDatosIniciales: ComunidadesEnTerritorioDatosConsult
   familiasPorComunidad: null,
   sexoEdadPorComunidad: null,
   comunidadesGeoJson: null,
-  territoriosGeoJson: null
+  territorioGeoJson: null
 };
 
 
@@ -44,7 +44,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [activo, establecerActivo] = useState('pestanha_general');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
-    general: [],
+    general: comunidadesEnTerritorioDatosIniciales,
     cultural: [],
     educacion: []
   });
@@ -55,15 +55,15 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 
   useEffect(() => {
     establecerDatosPorPestanha({
-      general: [
-        comunidadesEnTerritorioDatosConsultados.sexo,
-        comunidadesEnTerritorioDatosConsultados.familias,
-        comunidadesEnTerritorioDatosConsultados.sexoEdad,
-        comunidadesEnTerritorioDatosConsultados.familiasPorComunidad,
-        comunidadesEnTerritorioDatosConsultados.sexoEdadPorComunidad,
-        comunidadesEnTerritorioDatosConsultados.comunidadesGeoJson,
-        comunidadesEnTerritorioDatosConsultados.territoriosGeoJson
-      ],
+      general: {
+        sexo: comunidadesEnTerritorioDatosConsultados.sexo,
+        familias: comunidadesEnTerritorioDatosConsultados.familias,
+        sexoEdad: comunidadesEnTerritorioDatosConsultados.sexoEdad,
+        familiasPorComunidad: comunidadesEnTerritorioDatosConsultados.familiasPorComunidad,
+        sexoEdadPorComunidad: comunidadesEnTerritorioDatosConsultados.sexoEdadPorComunidad,
+        comunidadesGeoJson: comunidadesEnTerritorioDatosConsultados.comunidadesGeoJson,
+        territorioGeoJson: comunidadesEnTerritorioDatosConsultados.territorioGeoJson
+      },
       cultural: [],
       educacion: []
     });

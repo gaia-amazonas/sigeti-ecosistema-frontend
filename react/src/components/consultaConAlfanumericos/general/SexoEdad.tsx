@@ -3,18 +3,17 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
 interface SexoEdadImp {
-  datosPiramidalesSexoEdad: any[];
+  datosPiramidalesSexoEdad: { [x: string]: string | number; grupoPorEdad: string; }[] | null;
 }
 
 const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidalesSexoEdad }) => {
 
-  const mujeresDatosPiramidales = datosPiramidalesSexoEdad
-    .filter((item: { Mujer: any }) => item.Mujer)
-    .map((item: { Mujer: any }) => item.Mujer);
+  console.log()
 
-  const hombresDatosPiramidales = datosPiramidalesSexoEdad
-    .filter((item: {Hombre: any}) => item.Hombre)
-    .map((item: {Hombre: any}) => item.Hombre);
+  const mujeresDatosPiramidales = datosPiramidalesSexoEdad?
+    .filter((item: { Mujer: any }) => item.Mujer).map((item: { Mujer: any }) => item.Mujer);
+
+  const hombresDatosPiramidales = datosPiramidalesSexoEdad?.filter((item: {Hombre: any}) => item.Hombre).map((item: {Hombre: any}) => item.Hombre);
   
   const mujeresEdadMaxima = Math.max(...mujeresDatosPiramidales);
   const hombresEdadMaxima = Math.abs(Math.min(...hombresDatosPiramidales));

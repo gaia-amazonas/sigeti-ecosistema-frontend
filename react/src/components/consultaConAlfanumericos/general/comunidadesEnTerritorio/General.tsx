@@ -19,27 +19,27 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
-  console.log("DATOS GENERALES: ", datosGenerales);
-
-  if (!datosGenerales || !datosGenerales.comunidadesGeoJson ) {
+  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.sexoEdadPorComunidad || !datosGenerales.territorioGeoJson ) {
     return <div>Cargando...</div>;
   }
 
   const datosExtraidos = extractorDeDatosEntrantes(datosGenerales);
 
+  console.log("DATOS EXTRAIDOS", datosExtraidos);
+
   const {
     mujerContador,
     hombreContador,
     totalContador
-  } = calculadorDeSexosPorEdades(datosExtraidos.sexoDatosEntrantes);
+  } = calculadorDeSexosPorEdades(datosExtraidos.sexo);
 
-  const datosPiramidalesSexoEdad = segmentaPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdadDatosEntrantes);
+  const datosPiramidalesSexoEdad = segmentaPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <ContenedorGrafico>
         <Hombre contador={hombreContador} />
-        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={datosExtraidos.familiasDatosEntrantes?.familias} />
+        <TotalYFamilias contadorTotal={totalContador} contadorFamilias={datosExtraidos.familias} />
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
@@ -48,8 +48,8 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
       />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
-        territoriosGeoJson={datosExtraidos?.territoriosGeoJsonEntrantes as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        comunidadesGeoJson={datosExtraidos?.comunidadesGeoJsonEntrantes as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
     </div>
@@ -59,30 +59,40 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 export default ComponenteGeneralComponentesEnTerritorio;
 
 const extractorDeDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
+
+  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
-    sexoDatosEntrantes: datosGenerales.sexo,
-    familiasDatosEntrantes: datosGenerales.familias?.rows,
-    sexoEdadDatosEntrantes: datosGenerales.sexoEdad,
-    familiasPorComunidadDatosEntrantes: datosGenerales.familiasPorComunidad,
-    sexoEdadPorComunidadDatosEntrantes: datosGenerales.sexoEdadPorComunidad,
-    comunidadesGeoJsonEntrantes: datosGenerales.comunidadesGeoJson,
-    territoriosGeoJsonEntrantes: datosGenerales.comunidadesGeoJson
+    sexo: datosGenerales.sexo,
+    familias: familias === undefined? null : familias,
+    sexoEdad: datosGenerales.sexoEdad,
+    familiasPorComunidad: datosGenerales.familiasPorComunidad,
+    sexoEdadPorComunidad: datosGenerales.sexoEdadPorComunidad,
+    comunidadesGeoJson: datosGenerales.comunidadesGeoJson,
+    territorioGeoJson: datosGenerales.territorioGeoJson
   }
 }
 
 const calculadorDeSexosPorEdades = (sexoDatos: Sexo | null) => {
-  const mujerContador = sexoDatos?.rows.filter(row => row.sexo === 'Mujer').map(row => row.cantidad)[0] || 0;
-  const hombreContador = sexoDatos?.rows.filter(row => row.sexo === 'Hombre').map(row => row.cantidad)[0] || 0;
+  const mujerContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Mujer').map(row => row.cantidad)[0];
+  const hombreContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Hombre').map(row => row.cantidad)[0];
+  let totalContador: number | null = null;
+  if (mujerContador && hombreContador) {
+    totalContador = hombreContador + mujerContador;
+  }
   return {
     mujerContador,
     hombreContador,
-    totalContador: mujerContador + hombreContador,
+    totalContador
   }
+
 }
 
 const segmentaPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null) => {
-  return sexoEdadDatos?.rows.map((item: SexoEdadFila) => ({
+  if (!sexoEdadDatos) {
+    return null;
+  }
+  return sexoEdadDatos.rows.map((item: SexoEdadFila) => ({
     grupoPorEdad: item.grupoPorEdad,
     [item.sexo]: item.contador * (item.sexo === 'Hombre' ? -1 : 1)
   }));
-}
+};
