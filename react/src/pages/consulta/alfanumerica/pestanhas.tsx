@@ -13,7 +13,7 @@ const PestanhasPage: React.FC = () => {
   try {
     datosAnalizados = datosParaConsultar ? JSON.parse(datosParaConsultar as string) : {};
   } catch (e) {
-    datosAnalizados = {};
+    throw new Error("Datos no analizados, error: ", e);
   }
 
   const reiniciarEstado = () => {

@@ -2,7 +2,7 @@
 import { FeatureCollection } from 'geojson';
 import logger from 'utilidades/logger';
 
-export const buscarDatos = async (consulta: string, modo: string | string[] | undefined) => {
+export const buscarDatos = async (consulta: string, modo: string | string[] ) => {
     const puntoFinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
     try {
         const respuesta = await fetch(`${puntoFinal}?query=${encodeURIComponent(consulta)}`);
@@ -18,7 +18,7 @@ export const buscarDatos = async (consulta: string, modo: string | string[] | un
 
 export const buscarDatosGeoJson = async (
     consulta: string,
-    modo: string | string[] | undefined,
+    modo: string | string[],
     featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
         try {
             const datos = await intentaBuscarDatosGeoJson(consulta, modo, featuresMapa);
@@ -31,7 +31,7 @@ export const buscarDatosGeoJson = async (
 
 const intentaBuscarDatosGeoJson = async (
     consulta: string,
-    modo: string | string[] | undefined,
+    modo: string | string[],
     featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
         const json = await buscarDatos(consulta, modo);
         const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);

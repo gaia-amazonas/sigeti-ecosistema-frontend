@@ -16,6 +16,7 @@ import ComponenteSexoEdad from '../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import QueEstoyViendo from '../QueEstoyViendo';
+import FamiliasYPoblacion from '../FamiliasYPoblacion';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
@@ -25,7 +26,7 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
-  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.sexoEdadPorComunidad || !datosGenerales.territorioGeoJson ) {
+  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.poblacionPorComunidad || !datosGenerales.territorioGeoJson ) {
     return <div>Cargando...</div>;
   }
 
@@ -65,6 +66,11 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
         comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
       />
+      <CajaTitulo>FAMILIAS Y POBLACIÓN</CajaTitulo>
+      <FamiliasYPoblacion
+        familiasPorComunidad={datosExtraidos.familiasPorComunidad}
+        poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+      />
     </div>
   );
 };
@@ -72,14 +78,13 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 export default ComponenteGeneralComponentesEnTerritorio;
 
 const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
-
   const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
     sexo: datosGenerales.sexo,
-    familias: familias === undefined? null : familias,
+    familias: familias === undefined ? null : familias,
     sexoEdad: datosGenerales.sexoEdad,
     familiasPorComunidad: datosGenerales.familiasPorComunidad,
-    sexoEdadPorComunidad: datosGenerales.sexoEdadPorComunidad,
+    poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
     comunidadesGeoJson: datosGenerales.comunidadesGeoJson,
     territorioGeoJson: datosGenerales.territorioGeoJson
   }
@@ -96,6 +101,7 @@ const extraerTerritorio = (territorioGeoJson: TerritorioGeoJson | null): string[
   if (territorioGeoJson) {
     return territorioGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null)
   }
+  return null;
 }
 
 const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {

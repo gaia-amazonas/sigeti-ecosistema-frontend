@@ -6,14 +6,14 @@ interface FamiliasFila {
 }
 
 interface FamiliasPorComunidadFila extends FamiliasFila {
-  comunidad: string;
+  comunidadNombre: string;
 }
 
 interface Familias {
   rows: FamiliasFila[];
 }
 
-interface FamiliasPorComunidad {
+export interface FamiliasPorComunidad {
   rows: FamiliasPorComunidadFila[];
 }
 
@@ -22,16 +22,8 @@ interface SexoFila {
   cantidad: number;
 }
 
-interface SexoPorComunidadFila extends SexoFila {
-  comunidad: string;
-}
-
 export interface Sexo {
   rows: SexoFila[];
-}
-
-interface SexosPorComunidad {
-  rows: SexoPorComunidadFila[];
 }
 
 export interface SexoEdadFila {
@@ -51,6 +43,15 @@ export type DatosPiramidalesItem = {
     Mujer?: number;
 };
 
+export interface PoblacionTotalPorComunidadFila {
+  comunidadId: string;
+  comunidadNombre: string;
+  poblacionTotal: number;
+}
+
+export interface PoblacionTotalPorComunidad {
+  rows: PoblacionTotalPorComunidadFila[];
+}
 
 export interface TerritorioGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 export interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
@@ -60,7 +61,7 @@ interface ComunidadesEnTerritorioDatosConsultados {
   familias: Familias | null;
   sexoEdad: SexoEdad | null;
   familiasPorComunidad: FamiliasPorComunidad | null;
-  sexoEdadPorComunidad: SexosPorComunidad | null;
+  poblacionPorComunidad: PoblacionTotalPorComunidad | null;
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territorioGeoJson: TerritorioGeoJson | null;
 }

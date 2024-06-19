@@ -72,6 +72,7 @@ export const ContenedorTotal = styled.div`
 
 export const CajaTitulo = styled.div`
   display: flex;
+  margin-top: 2rem;
   align-items: center;
   justify-content: center;
   text-align: center;

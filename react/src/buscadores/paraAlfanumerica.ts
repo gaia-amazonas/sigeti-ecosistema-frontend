@@ -19,22 +19,25 @@ interface BuscarDatosPorComunidadesEnTerritorioImp {
 
 
 export const buscarDatosPorComunidadesEnTerritorio = async ({datosParaConsultar, modo}: BuscarDatosPorComunidadesEnTerritorioImp): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+  
   const sexo = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexo(datosParaConsultar.comunidadesId), modo);
   const familias = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.familias(datosParaConsultar.comunidadesId), modo);
   const sexoEdad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexoEdad(datosParaConsultar.comunidadesId), modo);
   const familiasPorComunidad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.familiasPorComunidad(datosParaConsultar.comunidadesId), modo);
-  const sexoEdadPorComunidad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexoEdadPorComunidad(datosParaConsultar.comunidadesId), modo);
+  const poblacionPorComunidad = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.poblacionPorComunidad(datosParaConsultar.comunidadesId), modo);
   const comunidadesGeoJson = await buscarComunidades(consultasGeneralesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar.comunidadesId), modo);
   const territorioGeoJson = await buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorio.territorio(datosParaConsultar.comunidadesId), modo);
+
   return {
     sexo: sexo,
     familias: familias,
     sexoEdad: sexoEdad,
     familiasPorComunidad: familiasPorComunidad,
-    sexoEdadPorComunidad: sexoEdadPorComunidad,
+    poblacionPorComunidad: poblacionPorComunidad,
     comunidadesGeoJson: comunidadesGeoJson,
     territorioGeoJson: territorioGeoJson
   }
+
 };
 
 export const buscarDatosParaTodosTerritoriosYComunidades = async (modo: string | string[]) => {
