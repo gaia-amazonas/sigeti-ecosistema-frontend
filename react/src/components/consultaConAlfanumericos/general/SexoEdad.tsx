@@ -2,18 +2,26 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
+import { DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+
 interface SexoEdadImp {
-  datosPiramidalesSexoEdad: { [x: string]: string | number; grupoPorEdad: string; }[] | null;
+  datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null;
 }
 
 const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidalesSexoEdad }) => {
 
-  console.log()
+  if (!datosPiramidalesSexoEdad) {
+    return [];
+  }
 
-  const mujeresDatosPiramidales = datosPiramidalesSexoEdad?
-    .filter((item: { Mujer: any }) => item.Mujer).map((item: { Mujer: any }) => item.Mujer);
-
-  const hombresDatosPiramidales = datosPiramidalesSexoEdad?.filter((item: {Hombre: any}) => item.Hombre).map((item: {Hombre: any}) => item.Hombre);
+  const mujeresDatosPiramidales = datosPiramidalesSexoEdad
+    .filter((item) => 'Mujer' in item)
+    .map((item) => item.Mujer)
+    .filter((value): value is number => value !== undefined);
+  const hombresDatosPiramidales = datosPiramidalesSexoEdad.
+    filter((item) => 'Hombre' in item)
+    .map((item) => item.Hombre)
+    .filter((value): value is number => value !== undefined);
   
   const mujeresEdadMaxima = Math.max(...mujeresDatosPiramidales);
   const hombresEdadMaxima = Math.abs(Math.min(...hombresDatosPiramidales));

@@ -7,7 +7,8 @@ import ComunidadesEnTerritorioDatosConsultados,
     SexoEdad,
     SexoEdadFila,
     ComunidadesGeoJson,
-    TerritorioGeoJson } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+    TerritorioGeoJson,
+    DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../Mujer';
 import Hombre from '../Hombre';
@@ -38,7 +39,7 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
     totalContador
   } = calcularSexosPorEdades(datosExtraidos.sexo);
 
-  const datosPiramidalesSexoEdad = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
+  const datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>

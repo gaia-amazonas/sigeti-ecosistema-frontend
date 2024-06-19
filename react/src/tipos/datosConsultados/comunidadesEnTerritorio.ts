@@ -45,6 +45,13 @@ export interface SexoEdad {
   rows: SexoEdadFila[];
 }
 
+export type DatosPiramidalesItem = {
+    grupoPorEdad: string;
+    Hombre?: number;
+    Mujer?: number;
+};
+
+
 export interface TerritorioGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 export interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 
