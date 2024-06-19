@@ -1,4 +1,5 @@
 // src/components/consultas/generales/todasGeoComunidadesPorTerritorio.ts
+import haceClausulasWhere from "./clausulas";
 
 type Query = (territoriosId: string[]) => string;
 
@@ -9,7 +10,7 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere(territoriosId)}
+            ${haceClausulasWhere(territoriosId, 'id_ti')}
         GROUP BY
             sexo;`
     }
@@ -20,7 +21,7 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
-            ${haceClausulasWhere(territoriosId)};`
+            ${haceClausulasWhere(territoriosId, 'id_ti')};`
     }
     ,
     sexo_edad: (territoriosId: string[]) => {
@@ -78,7 +79,7 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
         FROM 
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere(territoriosId)}
+            ${haceClausulasWhere(territoriosId, 'id_ti')}
         GROUP BY 
             age_group, 
             sexo, 
@@ -96,7 +97,7 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
-            ${haceClausulasWhere(territoriosId)};`
+            ${haceClausulasWhere(territoriosId, 'id_ti')};`
     }
     ,
     comunidades_en_territorio: (territoriosId: string[]) => {
@@ -111,12 +112,8 @@ const todasGeoComunidadesPorTerritorio: Record<string, Query> = {
         ON
             a.id_cnida = g.id_cnida
         WHERE
-            ${haceClausulasWhere(territoriosId)};`
+            ${haceClausulasWhere(territoriosId, 'id_ti')};`
     }
 };
 
 export default todasGeoComunidadesPorTerritorio;
-
-const haceClausulasWhere = (territoriosId: string[]) => {
-    return territoriosId.length > 0 ? territoriosId.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territoriosId[0]}'`;
-}

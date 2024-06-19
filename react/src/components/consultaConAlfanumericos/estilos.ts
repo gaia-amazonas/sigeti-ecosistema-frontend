@@ -1,4 +1,4 @@
-// src/components/graficos/estilos.tsx
+// src/components/graficos/estilos.ts
 import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`
@@ -36,6 +36,16 @@ export const Imagen = styled.img`
   margin-bottom: 1rem;
 `;
 
+export const TextoIndicativo = styled.div`
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: red;
+  font-size: 1rem;
+  z-index: 2;
+`;
+
 export const RectanguloAmarillo = styled.div`
   background-color: #F3D090;
   font-size: 1rem;
@@ -62,6 +72,7 @@ export const ContenedorTotal = styled.div`
 
 export const CajaTitulo = styled.div`
   display: flex;
+  margin-top: 2rem;
   align-items: center;
   justify-content: center;
   text-align: center;
