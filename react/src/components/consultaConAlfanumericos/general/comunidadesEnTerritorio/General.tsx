@@ -16,7 +16,7 @@ import ComponenteSexoEdad from '../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import QueEstoyViendo from '../QueEstoyViendo';
-import FamiliasYPoblacion from '../FamiliasYPoblacion';
+import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
@@ -26,10 +26,10 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
-  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.poblacionPorComunidad || !datosGenerales.territorioGeoJson ) {
+  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.poblacionPorComunidad || !datosGenerales.familiasConElectricidadPorComunidad || !datosGenerales.territorioGeoJson ) {
     return <div>Cargando...</div>;
   }
-
+  
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
@@ -44,6 +44,10 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
+      <QueEstoyViendo
+        comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+      />
       <ContenedorGrafico>
         <Hombre contador={hombreContador} />
         <TotalYFamilias
@@ -62,14 +66,11 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
-      <QueEstoyViendo
-        comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-      />
       <CajaTitulo>FAMILIAS Y POBLACIÓN</CajaTitulo>
-      <FamiliasYPoblacion
+      <FamiliasYPoblacionYElectricidad
         familiasPorComunidad={datosExtraidos.familiasPorComunidad}
         poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+        familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
       />
     </div>
   );
@@ -78,13 +79,14 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 export default ComponenteGeneralComponentesEnTerritorio;
 
 const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
-  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
+  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familiasCantidad;
   return {
     sexo: datosGenerales.sexo,
     familias: familias === undefined ? null : familias,
     sexoEdad: datosGenerales.sexoEdad,
     familiasPorComunidad: datosGenerales.familiasPorComunidad,
     poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
+    familiasConElectricidadPorComunidad: datosGenerales.familiasConElectricidadPorComunidad,
     comunidadesGeoJson: datosGenerales.comunidadesGeoJson,
     territorioGeoJson: datosGenerales.territorioGeoJson
   }

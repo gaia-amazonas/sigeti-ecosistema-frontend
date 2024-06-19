@@ -9,15 +9,25 @@ interface ComponenteTotalImp {
   territorios: string[] | null;
 }
 
+// Utility function to format array items
+const formatList = (items: string[] | null): string => {
+  if (!items || items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  return `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}`;
+};
+
 const ComponenteTotal: React.FC<ComponenteTotalImp> = ({ contadorTotal, contadorFamilias, comunidades, territorios }) => {
+
+  const formattedComunidades = formatList(comunidades);
+  const formattedTerritorios = formatList(territorios);
 
   return (
     <ContenedorTotal>
       <CajaTitulo>POBLACIÓN TOTAL</CajaTitulo>
-      <CajaReductor style={{ background: 'transparent', color: 'black' }}>{contadorTotal === null? '-' : contadorTotal}</CajaReductor>
+      <CajaReductor style={{ background: 'transparent', color: 'black' }}>{contadorTotal === null ? '-' : contadorTotal}</CajaReductor>
       <TextoIndicativo>
-        <div>En {!comunidades ? '' : comunidades.length > 1 ? 'las comunidades': 'la comunidad'} <strong>{comunidades}</strong></div>
-        <div>dentro de{!territorios ? '' : territorios.length > 1 ? '': 'l '} <strong>{territorios}</strong></div>
+        <div>En {!comunidades ? '' : comunidades.length > 1 ? 'las comunidades' : 'la comunidad'} <strong>{formattedComunidades}</strong></div>
+        <div>dentro de {!territorios ? '' : territorios.length > 1 ? '' : 'l '} <strong>{formattedTerritorios}</strong></div>
       </TextoIndicativo>
       <RectanguloAmarillo>
         <div>FAMILIAS<br />{contadorFamilias === null ? '-' : contadorFamilias}</div> 

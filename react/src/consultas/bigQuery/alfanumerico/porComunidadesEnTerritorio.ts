@@ -37,7 +37,7 @@ const porComunidades: Record<string, Query> = {
     ,
     familiasPorComunidad: (comunidadesId: string[]) => `
         SELECT
-            COUNT(*) AS familias,
+            COUNT(*) AS familiasCantidad,
             c.id_cnida as comunidadId,
             c.comunidad AS comunidadNombre
         FROM
@@ -50,6 +50,18 @@ const porComunidades: Record<string, Query> = {
             ${haceClausulasWhere(comunidadesId, 'f.id_cnida')}
         GROUP BY
             c.comunidad, c.id_cnida;`
+    ,
+    familiasConElectricidadPorComunidad: (comunidadesId: string[]) => `
+        SELECT
+            COUNT(*) AS familiasCantidad,
+            f.id_cnida AS comunidadId
+        FROM
+            \`sigeti.censo_632.BD_familias\` f
+        WHERE
+            ${haceClausulasWhere(comunidadesId, 'f.id_cnida')} AND 
+            LOWER(f.vv_elect) IN ('sí', 'si')
+        GROUP BY
+            f.id_cnida;`
     ,
     sexoEdad: (comunidadesId: string[]) => `
         SELECT 

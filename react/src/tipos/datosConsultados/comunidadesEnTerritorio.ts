@@ -2,19 +2,29 @@
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 interface FamiliasFila {
-  familias: number;
-}
-
-interface FamiliasPorComunidadFila extends FamiliasFila {
-  comunidadNombre: string;
+  familiasCantidad: number;
 }
 
 interface Familias {
   rows: FamiliasFila[];
 }
 
+interface FamiliasPorComunidadFila extends FamiliasFila {
+  comunidadNombre: string;
+  comunidadId: string;
+}
+
 export interface FamiliasPorComunidad {
   rows: FamiliasPorComunidadFila[];
+}
+
+interface FamiliasConElectricidadPorComunidadFila extends FamiliasFila {
+  comunidadNombre: string;
+  comunidadId: string;
+}
+
+export interface FamiliasConElectricidadPorComunidad {
+  rows: FamiliasConElectricidadPorComunidadFila[];
 }
 
 interface SexoFila {
@@ -62,6 +72,7 @@ interface ComunidadesEnTerritorioDatosConsultados {
   sexoEdad: SexoEdad | null;
   familiasPorComunidad: FamiliasPorComunidad | null;
   poblacionPorComunidad: PoblacionTotalPorComunidad | null;
+  familiasConElectricidadPorComunidad: FamiliasConElectricidadPorComunidad | null;
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territorioGeoJson: TerritorioGeoJson | null;
 }

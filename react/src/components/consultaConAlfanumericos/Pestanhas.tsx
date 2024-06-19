@@ -34,6 +34,7 @@ const comunidadesEnTerritorioDatosIniciales: ComunidadesEnTerritorioDatosConsult
   sexoEdad: null,
   familiasPorComunidad: null,
   poblacionPorComunidad: null,
+  familiasConElectricidadPorComunidad: null,
   comunidadesGeoJson: null,
   territorioGeoJson: null
 };
@@ -61,6 +62,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         sexoEdad: comunidadesEnTerritorioDatosConsultados.sexoEdad,
         familiasPorComunidad: comunidadesEnTerritorioDatosConsultados.familiasPorComunidad,
         poblacionPorComunidad: comunidadesEnTerritorioDatosConsultados.poblacionPorComunidad,
+        familiasConElectricidadPorComunidad: comunidadesEnTerritorioDatosConsultados.familiasConElectricidadPorComunidad,
         comunidadesGeoJson: comunidadesEnTerritorioDatosConsultados.comunidadesGeoJson,
         territorioGeoJson: comunidadesEnTerritorioDatosConsultados.territorioGeoJson
       },
