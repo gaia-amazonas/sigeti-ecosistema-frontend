@@ -26,14 +26,14 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
-  if (!datosGenerales || !datosGenerales.comunidadesGeoJson || !datosGenerales.familias || !datosGenerales.familiasPorComunidad || !datosGenerales.sexo || !datosGenerales.sexoEdad || !datosGenerales.poblacionPorComunidad || !datosGenerales.familiasConElectricidadPorComunidad || !datosGenerales.territorioGeoJson ) {
+  if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
   
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
-  
+
   const {
     mujerContador,
     hombreContador,
@@ -77,6 +77,17 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
 };
 
 export default ComponenteGeneralComponentesEnTerritorio;
+
+const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
+  return !datosGenerales.comunidadesGeoJson ||
+  !datosGenerales.familias ||
+  !datosGenerales.familiasPorComunidad ||
+  !datosGenerales.sexo ||
+  !datosGenerales.sexoEdad ||
+  !datosGenerales.poblacionPorComunidad ||
+  !datosGenerales.familiasConElectricidadPorComunidad ||
+  !datosGenerales.territorioGeoJson
+}
 
 const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
   const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familiasCantidad;

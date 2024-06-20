@@ -29,7 +29,7 @@ const porComunidades: Record<string, Query> = {
     ,
     familias: (comunidadesId: string[]) => `
         SELECT
-            COUNT(*) AS familias
+            COUNT(*) AS familiasCantidad
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE

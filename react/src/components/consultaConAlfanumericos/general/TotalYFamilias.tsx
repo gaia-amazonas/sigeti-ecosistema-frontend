@@ -10,7 +10,7 @@ interface ComponenteTotalImp {
 }
 
 const ComponenteTotal: React.FC<ComponenteTotalImp> = ({ contadorTotal, contadorFamilias, comunidades, territorios }) => {
-
+  
   const comunidadesFormateadas = formateaLista(comunidades);
   const territoriosFormateados = formateaLista(territorios);
   return (
