@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import { estiloTerritorio }from 'estilosParaMapas/paraMapas';
+import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -20,8 +20,6 @@ interface MapaImp {
 }
 
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
-
-  console.log(comunidadesGeoJson);
   
   const centroMapa = [0.969793, -70.830454];
   

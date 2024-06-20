@@ -29,14 +29,10 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
-
-  console.log("111111111111112", datosGenerales);
   
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
-
-  console.log("11111111111111", datosExtraidos);
 
   const {
     mujerContador,
@@ -133,7 +129,6 @@ const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {
     hombreContador,
     totalContador
   }
-
 }
 
 const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null) => {

@@ -1,4 +1,5 @@
 // src/components/consultaConMapa/Mapa.tsx
+
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import dynamic from 'next/dynamic';
@@ -10,7 +11,7 @@ import logger from 'utilidades/logger';
 
 import estilos from './Mapa.module.css';
 import { estiloContenedorBotones, estiloBoton } from './estilos';
-import { estiloTerritorio }from 'estilosParaMapas/paraMapas';
+import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
 import consultasBigQueryParaTerritorios from 'consultas/bigQuery/mapa/paraTerritorios';
@@ -32,7 +33,7 @@ import {
   htmlParaPopUpDeTerritorio
 } from './graficosDinamicos';
 
-import { GeometriasConVariables, FeatureComunidades, FilaComunidades } from 'tipos/paraMapas';
+import { FeatureComunidades, FilaComunidades } from 'tipos/paraMapas';
 import { 
   PathZIndex, 
   LineaSeleccionada, 
@@ -44,13 +45,12 @@ import {
   MapaImp
 } from './tipos';
 
+import Comunidades from '../Comunidades';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
 const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
-const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
-
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
@@ -82,7 +82,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     traerComunidades(modo);
   };
 
-    const traerLineasColindantes = async (modo: string | string[]) => {
+  const traerLineasColindantes = async (modo: string | string[]) => {
     try {
       const lineas = (fila: FilaLineas): FeatureLineas => ({
         type: 'Feature',
@@ -211,27 +211,9 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
             {mostrarTerritorios && territoriosGeoJson && (
               <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
             )}
-            {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
-              const centroide = turf.centroid(comunidad).geometry.coordinates;
-              const id = (comunidad as GeometriasConVariables).properties.id;
-              return (
-                <React.Fragment key={index}>
-                  <CirculoComunidad
-                    center={[centroide[1], centroide[0]]}
-                    radius={1000}
-                    pathOptions={{ color: 'black', fillOpacity: 0.1 }}
-                    eventHandlers={{
-                      click: (e) => enCadaComunidad(id, e.target as Circle)
-                    }}
-                  />
-                  <CirculoComunidad
-                    center={[centroide[1], centroide[0]]}
-                    radius={10}
-                    pathOptions={{ color: 'black', fillOpacity: 1 }}
-                  />
-                </React.Fragment>
-              );
-            })}
+            {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson && (
+              <Comunidades comunidadesGeoJson={comunidadesGeoJson} enCadaComunidad={enCadaComunidad} />
+            )}
             {mostrarLineasColindantes && lineasColindantesGeoJson && (
               <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
             )}
