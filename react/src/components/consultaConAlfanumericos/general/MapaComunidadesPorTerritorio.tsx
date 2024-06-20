@@ -20,6 +20,8 @@ interface MapaImp {
 }
 
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
+
+  console.log(comunidadesGeoJson);
   
   const centroMapa = [0.969793, -70.830454];
   

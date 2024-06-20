@@ -19,7 +19,7 @@ const ComponenteTotal: React.FC<ComponenteTotalImp> = ({ contadorTotal, contador
       <CajaReductor style={{ background: 'transparent', color: 'black' }}>{contadorTotal === null ? '-' : contadorTotal}</CajaReductor>
       <TextoIndicativo>
         <div>En {!comunidades ? '' : comunidades.length > 1 ? 'las comunidades' : 'la comunidad'} <strong>{comunidadesFormateadas}</strong></div>
-        <div>dentro de {!territorios ? '' : territorios.length > 1 ? '' : 'l '} <strong>{territoriosFormateados}</strong></div>
+        <div>dentro de{!territorios ? '' : territorios.length > 1 ? '' : 'l '} <strong>{territoriosFormateados}</strong></div>
       </TextoIndicativo>
       <RectanguloAmarillo>
         <div>FAMILIAS<br />{contadorFamilias === null ? '-' : contadorFamilias}</div> 

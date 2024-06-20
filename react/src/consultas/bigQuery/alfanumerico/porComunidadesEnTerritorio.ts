@@ -198,7 +198,7 @@ const porComunidades: Record<string, Query> = {
             sexo;`
     ,
     territorio: (comunidadesId: string[]) => `
-        SELECT
+        SELECT DISTINCT
             ST_AsGeoJSON(t.geometry) AS geometry,
             t.id_ti AS id,
             t.territorio AS nombre

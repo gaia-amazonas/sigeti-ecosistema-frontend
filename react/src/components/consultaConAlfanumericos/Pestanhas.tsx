@@ -7,7 +7,7 @@ import ComunidadesEnTerritorioDatosConsultados from 'tipos/datosConsultados/comu
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
 
-import { buscarDatosPorComunidadesEnTerritorio, buscarDatosParaTodosTerritoriosYComunidades, buscarDatosPorTerritorio } from 'buscadores/paraAlfanumerica';
+import { buscarDatosPorComunidadesEnTerritorio, buscarDatosParaTodosTerritoriosYTodasComunidades, buscarDatosPorTerritorio } from 'buscadores/paraAlfanumerica';
 
 
 interface DatosParaConsultar {
@@ -72,7 +72,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   }, [comunidadesEnTerritorioDatosConsultados]);
 
   const buscarDatosParaPestanha = async () => {
-    if (datosParaConsultar.comunidadesId && datosParaConsultar.comunidadesId[0] !== 'Todas') {
+    if (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.comunidadesId[0] !== 'Todas') {
       establecerComunidadesEnTerritorioDatosConsultados(await buscarDatosPorComunidadesEnTerritorio({ datosParaConsultar, modo }));
       establecerTipoConsulta('consultaComunidadesEnTerritorio');
     } else if (datosParaConsultar.territoriosId[0] === 'Todos' && datosParaConsultar.comunidadesId[0] === 'Todas') {
