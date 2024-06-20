@@ -1,5 +1,4 @@
 import logger from 'utilidades/logger';
-import dynamic from 'next/dynamic';
 
 import * as turf from '@turf/turf';
 import { Circle, Layer, Path } from 'leaflet';
