@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useMap, useMapEvents } from 'react-leaflet';
-import estilos from 'components/consultaConMapa/Mapa.module.css';
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 
 import SexosPorComunidadGraficoTorta from './SexosPorComunidadGraficoTorta';
 
-const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, number], datos: { hombres: number, mujeres: number }, isCargando: boolean }> = ({ posicion, datos, isCargando }) => {
+const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, number], datos: { hombres: number, mujeres: number }, estaCargando: boolean }> = ({ posicion, datos, estaCargando }) => {
     const mapa = useMap();
     const [posicionDePixel, establecerPosicionDePixel] = useState<[number, number] | null>(null);
     const [nivelDeZoom, establecerNivelDeZoom] = useState(mapa.getZoom());
@@ -45,8 +45,8 @@ const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, nu
                 zIndex: 2000,
             }}
         >
-            {isCargando ? (
-                <div className={estilos.spinner2}></div>
+            {estaCargando ? (
+                <div className={estilos.spinnerMinimalista}></div>
             ) : (
                 <SexosPorComunidadGraficoTorta hombres={datos.hombres} mujeres={datos.mujeres} />
             )}

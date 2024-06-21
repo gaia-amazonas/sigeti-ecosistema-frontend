@@ -5,7 +5,7 @@ import { Circle, Layer, Path } from 'leaflet';
 
 import { traeInformacionComunidad, traeInformacionDocumentalLineaColindante } from 'buscadores/paraMapa';
 
-import estilos from './Mapa.module.css';
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { estiloContenedorLineaTiempo, estiloContenedorInformacion, estiloCirculo, estiloTextoEnCirculo } from './estilos';
 
 import {
@@ -180,19 +180,16 @@ export const agregarSimboloDocumentacion = async (territorio: FeatureTerritorios
     html: '<div style="font-size: 24px;">📄</div>',
     iconSize: [1, 1],
   });
-
   const centroide = turf.centroid(territorio).geometry.coordinates;
   const marcador = leaflet.marker([centroide[1], centroide[0]], { icon: simbolo });
-
   marcador.addTo((capa as any)._map);
-
 };
 
 export const agregaNombreTerritorioAPoligono = async (territorio: FeatureTerritorios, capa: Layer) => {
   const leaflet = (await import('leaflet')).default;
   const abreviacionNombre = territorio.properties.abreviacion;
   const simbolo = leaflet.divIcon({
-    className: estilos['territorio-nombre'],
+    className: estilos['territorioNombre'],
     html: `<div>${abreviacionNombre}</div>`,
     iconSize: [abreviacionNombre.length * 6, 20],
     iconAnchor: [abreviacionNombre.length * 3, 10],

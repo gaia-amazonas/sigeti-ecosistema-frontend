@@ -23,7 +23,7 @@ const textoEnTrozo: Plugin<'pie'> = {
       meta.data.forEach((elemento, index) => {
         const puntoCentral = elemento.tooltipPosition(true);
         const valor = dataset.data[index] as number;
-        const label = chart.data.labels && chart.data.labels[index] === 'Hombres' ? `H: ${valor}` : `M: ${valor}`;
+        const label = chart.data.labels && chart.data.labels[index] === 'Hombres' ? `H ${valor}` : `M: ${valor}`;
         ctx.fillStyle = 'black';
         ctx.font = 'bold 12px Arial';
         ctx.textAlign = 'center';
