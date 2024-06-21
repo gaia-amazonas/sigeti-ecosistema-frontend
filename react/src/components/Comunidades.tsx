@@ -11,7 +11,7 @@ const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.C
 
 interface ComunidadesImp {
   comunidadesGeoJson: FeatureCollection;
-  enCadaComunidad: (id: string, circle: Circle) => void;
+  enCadaComunidad?: (id: string, circle: Circle) => void;
 }
 
 const Comunidades: React.FC<ComunidadesImp> = ({ comunidadesGeoJson, enCadaComunidad }) => {
@@ -27,7 +27,7 @@ const Comunidades: React.FC<ComunidadesImp> = ({ comunidadesGeoJson, enCadaComun
               radius={1000}
               pathOptions={{ color: 'black', fillOpacity: 0.1, pane: 'overlayPane' }}
               eventHandlers={{
-                click: (e) => enCadaComunidad(id, e.target as Circle)
+                click: (e) => enCadaComunidad ? enCadaComunidad(id, e.target as Circle) : undefined
               }}
             />
             <CirculoComunidad

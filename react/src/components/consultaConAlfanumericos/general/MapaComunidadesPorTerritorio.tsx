@@ -10,7 +10,8 @@ import { useMap, useMapEvents } from 'react-leaflet';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { traeInformacionComunidad } from 'buscadores/paraMapa';
 import Comunidades from '../../Comunidades';
-import PieChart from './PieChart';
+import SexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/SexosPorComunidadGraficoTorta';
+import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 import { SexoComunidad } from 'components/consultaConMapa/tipos';
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
@@ -25,21 +26,21 @@ interface MapaImp {
 
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
     const centroMapa = [0.969793, -70.830454];
-    const [comunidadesData, setComunidadesData] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
+    const [sexosPorComunidad, establecerSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
 
     useEffect(() => {
         const fetchData = async () => {
-            const data: { [id: string]: { hombres: number, mujeres: number } } = {};
+            const datos: { [id: string]: { hombres: number, mujeres: number } } = {};
             for (const comunidad of comunidadesGeoJson.features) {
                 const id = comunidad.properties?.id;
                 if (id) {
                     const info = await traeInformacionComunidad(id, 'online');
                     const hombres = info.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
                     const mujeres = info.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
-                    data[id] = { hombres, mujeres };
+                    datos[id] = { hombres, mujeres };
                 }
             }
-            setComunidadesData(data);
+            establecerSexosPorComunidad(datos);
         };
         fetchData();
     }, [comunidadesGeoJson]);
@@ -55,17 +56,17 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
             )}
             {comunidadesGeoJson && (
                 <>
-                    <Comunidades comunidadesGeoJson={comunidadesGeoJson} enCadaComunidad={enCadaComunidad} />
+                    <Comunidades comunidadesGeoJson={comunidadesGeoJson} />
                     {comunidadesGeoJson.features.map((comunidad, index) => {
                         const centroide = turf.centroid(comunidad).geometry.coordinates;
                         const id = comunidad.properties?.id;
-                        const data = comunidadesData[id] || { hombres: 0, mujeres: 0 };
+                        const datos = sexosPorComunidad[id] || { hombres: 0, mujeres: 0 };
 
                         return (
-                            <MarkerWithPieChart
+                            <MarcadorConSexosPorComunidadGraficoTorta
                                 key={index}
-                                position={[centroide[1], centroide[0]]}
-                                data={data}
+                                posicion={[centroide[1], centroide[0]]}
+                                datos={datos}
                             />
                         );
                     })}
@@ -75,69 +76,4 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     );
 };
 
-const MarkerWithPieChart: React.FC<{ position: [number, number], data: { hombres: number, mujeres: number } }> = ({ position, data }) => {
-    const map = useMap();
-    const [positionPixel, setPositionPixel] = useState<[number, number] | null>(null);
-    const [zoomLevel, setZoomLevel] = useState(map.getZoom());
-
-    const updatePositionPixel = () => {
-        if (map) {
-            const point = map.latLngToContainerPoint(position);
-            setPositionPixel([point.x, point.y]);
-        }
-    };
-
-    useMapEvents({
-        move: () => {
-            updatePositionPixel();
-        },
-        zoom: () => {
-            setZoomLevel(map.getZoom());
-            updatePositionPixel();
-        }
-    });
-
-    useEffect(() => {
-        updatePositionPixel();
-    }, [map, position]);
-
-    if (!positionPixel || zoomLevel <= 9) return null;
-
-    return (
-        <div
-            style={{
-                position: 'absolute',
-                width: `${zoomLevel / 2}rem`,
-                left: `${positionPixel[0] - 4 * zoomLevel}px`,
-                top: `${positionPixel[1] - 6 * zoomLevel}px`,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 2000,
-            }}
-        >
-            <PieChart hombres={data.hombres} mujeres={data.mujeres} />
-        </div>
-    );
-};
-
 export default Mapa;
-
-const enCadaComunidad = async (id: string) => {
-    const graficoTortaParaSexosPorComunidad = await graficarTortaParaSexosPorComunidad(id);
-    return graficoTortaParaSexosPorComunidad;
-};
-
-const graficarTortaParaSexosPorComunidad = (id: string) => {
-    try {
-        return intentaGraficarTortaParaSexosPorComunidad(id);
-    } catch (error) {
-        logger.error('Error buscando información de la comunidad:', error);
-        return '<div>No hay datos para esta comunidad aún</div>';
-    }
-}
-
-export const intentaGraficarTortaParaSexosPorComunidad = async (id: string) => {
-    const informacion = await traeInformacionComunidad(id, 'online');
-    const hombres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
-    const mujeres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
-    return <PieChart hombres={hombres} mujeres={mujeres} />;
-};
