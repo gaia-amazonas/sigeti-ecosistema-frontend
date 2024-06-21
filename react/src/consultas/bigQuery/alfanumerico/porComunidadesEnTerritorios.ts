@@ -19,9 +19,13 @@ const funciones: Record<string, Query> = {
         SELECT
             id_cnida AS comunidadId,
             comunidad AS comunidadNombre,
+            id_ti AS territorioId,
+            territorio AS territorioNombre,
             COUNT(*) AS poblacionTotal
         FROM
             \`sigeti.censo_632.BD_personas\`
+        ON
+
         WHERE
             ${haceClausulasWhere(comunidadesId, 'id_cnida')}
         GROUP BY

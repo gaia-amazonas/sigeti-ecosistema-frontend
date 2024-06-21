@@ -3,7 +3,7 @@ import haceClausulasWhere from "./clausulas";
 
 type Query = (territorioId: string[]) => string;
 
-const porTodasComunidadesEnTerritorio: Record<string, Query> = {
+const funciones: Record<string, Query> = {
     sexo: (territorioId: string[]) => `
         SELECT
             SEXO AS sexo,
@@ -227,4 +227,4 @@ const porTodasComunidadesEnTerritorio: Record<string, Query> = {
     
 };
 
-export default porTodasComunidadesEnTerritorio;
+export default funciones;
