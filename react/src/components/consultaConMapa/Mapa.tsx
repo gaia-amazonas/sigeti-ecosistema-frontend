@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import logger from 'utilidades/logger';
 
-import estilos from './Mapa.module.css';
+import estilos from 'estilosParaMapas/paraMapas.module.css';
 import { estiloContenedorBotones, estiloBoton } from './estilos';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
