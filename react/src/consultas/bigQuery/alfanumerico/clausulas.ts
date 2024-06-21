@@ -1,5 +1,5 @@
-const haceClausulasWhere = (comunidadesId: string[], variable: string) => {
-    return comunidadesId.length > 0 ? comunidadesId.map(id => `${variable} = '${id}'`).join(' OR '): `${variable} = '${comunidadesId[0]}'`;
+const haceClausulasWhere = (variableId: string[], nombreVariable: string) => {
+    return variableId.length > 0 ? variableId.map(id => `${nombreVariable} = '${id}'`).join(' OR '): `${nombreVariable} = '${variableId[0]}'`;
 }
 
 export default haceClausulasWhere;

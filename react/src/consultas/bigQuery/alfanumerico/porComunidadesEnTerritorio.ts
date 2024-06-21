@@ -29,7 +29,7 @@ const porComunidades: Record<string, Query> = {
     ,
     familias: (comunidadesId: string[]) => `
         SELECT
-            COUNT(*) AS familiasCantidad
+            COUNT(*) AS familias
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
@@ -37,7 +37,7 @@ const porComunidades: Record<string, Query> = {
     ,
     familiasPorComunidad: (comunidadesId: string[]) => `
         SELECT
-            COUNT(*) AS familiasCantidad,
+            COUNT(*) AS familias,
             c.id_cnida as comunidadId,
             c.comunidad AS comunidadNombre
         FROM
@@ -53,7 +53,7 @@ const porComunidades: Record<string, Query> = {
     ,
     familiasConElectricidadPorComunidad: (comunidadesId: string[]) => `
         SELECT
-            COUNT(*) AS familiasCantidad,
+            COUNT(*) AS familias,
             f.id_cnida AS comunidadId
         FROM
             \`sigeti.censo_632.BD_familias\` f
@@ -209,7 +209,8 @@ const porComunidades: Record<string, Query> = {
         ON
             t.id_ti = c.id_ti
         WHERE
-            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`,
+            ${haceClausulasWhere(comunidadesId, 'c.id_cnida')};`
+    ,
     comunidadesEnTerritorio: (comunidadesId: string[]) => `
         SELECT
             ST_AsGeoJSON(c.geometry) AS geometry,

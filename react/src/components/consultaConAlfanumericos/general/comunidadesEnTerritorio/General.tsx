@@ -1,4 +1,4 @@
-// General.tsx
+// src/components/consultaConAlfanumericos/general/comunindadesEnTerritorio/General.tsx
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
@@ -29,7 +29,7 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
-  
+
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
@@ -90,7 +90,7 @@ const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritorioDatosCon
 }
 
 const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
-  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familiasCantidad;
+  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
     sexo: datosGenerales.sexo,
     familias: familias === undefined ? null : familias,

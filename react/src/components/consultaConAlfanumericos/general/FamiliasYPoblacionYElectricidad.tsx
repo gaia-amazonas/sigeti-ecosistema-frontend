@@ -37,11 +37,11 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionImp> = ({ fami
   if (!familiasPorComunidad || !poblacionPorComunidad || !familiasConElectricidadPorComunidad) {
     return <div>Cargando...</div>;
   }
-
+  console.log("((((((((((((////////////", familiasConElectricidadPorComunidad);
   const comunidades = familiasPorComunidad.rows.map(row => row.comunidadNombre);
-  const familias = familiasPorComunidad.rows.map(row => row.familiasCantidad);
+  const familias = familiasPorComunidad.rows.map(row => row.familias);
   const poblacionTotal = poblacionPorComunidad.rows.map(row => row.poblacionTotal);
-  const familiasConElectricidad = familiasConElectricidadPorComunidad.rows.map(row => row.familiasCantidad);
+  const familiasConElectricidad = familiasConElectricidadPorComunidad.rows.map(row => row.familias);
 
   const datos: ChartData<'bar'> = {
     labels: comunidades,

@@ -2,7 +2,7 @@
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 interface FamiliasFila {
-  familiasCantidad: number;
+  familias: number;
 }
 
 interface Familias {

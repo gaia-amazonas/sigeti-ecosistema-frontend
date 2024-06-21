@@ -74,7 +74,8 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const buscarDatosParaPestanha = async () => {
     if (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.comunidadesId[0] !== 'Todas') {
       establecerComunidadesEnTerritorioDatosConsultados(await buscarDatosPorComunidadesEnTerritorio({ datosParaConsultar, modo }));
-      establecerTipoConsulta('consultaComunidadesEnTerritorio');
+    } else if (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.comunidadesId[0] === 'Todas') {
+      establecerComunidadesEnTerritorioDatosConsultados(await buscarDatosPorTerritorio({ datosParaConsultar, modo }));
     } else if (datosParaConsultar.territoriosId[0] === 'Todos' && datosParaConsultar.comunidadesId[0] === 'Todas') {
       establecerDatosConsultados(await buscarDatosParaTodosTerritoriosYComunidades(modo));
     } else if (datosParaConsultar.comunidadesId[0] === 'Todas') {
