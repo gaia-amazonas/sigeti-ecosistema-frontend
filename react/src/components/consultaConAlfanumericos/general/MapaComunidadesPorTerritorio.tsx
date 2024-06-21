@@ -1,18 +1,19 @@
 // src/components/graficos/general/MapaComunidadesPorTerritorio.tsx
-import React, { useEffect, useState } from 'react';
+
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import logger from 'utilidades/logger';
 import * as turf from '@turf/turf';
+import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
-import { useMap, useMapEvents } from 'react-leaflet';
 
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
+
 import { traeInformacionComunidad } from 'buscadores/paraMapa';
+
 import Comunidades from '../../Comunidades';
-import SexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/SexosPorComunidadGraficoTorta';
-import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 import { SexoComunidad } from 'components/consultaConMapa/tipos';
+import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
+
 
 const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const CapaMapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });

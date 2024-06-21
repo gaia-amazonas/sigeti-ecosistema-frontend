@@ -19,11 +19,11 @@ export const ListaPestanhas = styled.div`
   display: flex;
   justify-content: center;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);  // Shadow for a better visual separation
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
-export const EstiloPestanha = styled.button<{ active: boolean }>`
-  background-color: ${({ active }) => (active ? '#228B22' : '#8B4513')}; /* Amazonian Green or Earth Brown */
+export const EstiloPestanha = styled.button<{ $activo: boolean }>`
+  background-color: ${({ $activo }) => ($activo ? '#228B22' : '#8B4513')};
   color: white;
   padding: 1rem;
   border: none;
@@ -31,7 +31,7 @@ export const EstiloPestanha = styled.button<{ active: boolean }>`
   flex: 1;
   text-align: center;
   &:hover {
-    background-color: #4682B4; /* Sky Blue */
+    background-color: #4682B4;
   }
 `;
 

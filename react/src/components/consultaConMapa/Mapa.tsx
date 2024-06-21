@@ -1,7 +1,6 @@
 // src/components/consultaConMapa/Mapa.tsx
 
 import 'leaflet/dist/leaflet.css';
-import * as turf from '@turf/turf';
 import dynamic from 'next/dynamic';
 import { Circle, Layer } from 'leaflet';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
