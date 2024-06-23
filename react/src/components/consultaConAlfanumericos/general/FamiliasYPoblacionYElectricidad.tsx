@@ -40,6 +40,10 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionImp> = ({ fami
   const familias = familiasPorComunidad.rows.map(row => row.familias);
   const poblacionTotal = poblacionPorComunidad.rows.map(row => row.poblacionTotal);
   const familiasConElectricidad = familiasConElectricidadPorComunidad.rows.map(row => row.familias);
+  console.log("COMUNIDADES", comunidades);
+  console.log("FAMILIAS", familias);
+  console.log("POBLACION TOTAL", poblacionTotal);
+  console.log("FAMILIAS CON ELECTRICIDAD", familiasConElectricidad);
 
   const datos: ChartData<'bar'> = {
     labels: comunidades,

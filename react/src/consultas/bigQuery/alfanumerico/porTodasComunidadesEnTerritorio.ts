@@ -15,7 +15,7 @@ const funciones: Record<string, Query> = {
         GROUP BY
             id_cnida, sexo;`
     ,
-    poblacionPorComunidad: ({comunidadesId}) => `
+    poblacionPorComunidad: ({territoriosId}) => `
         SELECT
             id_cnida AS comunidadId,
             comunidad AS comunidadNombre,
@@ -23,7 +23,7 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
             id_cnida, comunidad;`
     ,
@@ -62,7 +62,7 @@ const funciones: Record<string, Query> = {
         ON
             f.id_cnida = c.id_cnida
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'c.id_ti')} AND 
+            ${haceClausulasWhere({territoriosId}, 'f.id_ti')} AND 
             LOWER(f.vv_elect) IN ('sí', 'si')
         GROUP BY
             f.id_cnida;`

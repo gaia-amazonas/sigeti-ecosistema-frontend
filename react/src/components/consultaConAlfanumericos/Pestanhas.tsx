@@ -59,7 +59,6 @@ const comunidadesEnTerritoriosDatosIniciales: ComunidadesEnTerritoriosDatosConsu
 
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
-  console.log("??????????????????", datosParaConsultar);
   const [activo, establecerActivo] = useState('pestanha_general');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [comunidadesEnTerritoriosDatosConsultados, establecerComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
@@ -90,26 +89,8 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     });
   }, [comunidadesEnTerritorioDatosConsultados]);
 
-  useEffect(() => {
-    establecerDatosPorPestanha({
-      general: {
-        sexo: comunidadesEnTerritorioDatosConsultados.sexo,
-        familias: comunidadesEnTerritorioDatosConsultados.familias,
-        sexoEdad: comunidadesEnTerritorioDatosConsultados.sexoEdad,
-        familiasPorComunidad: comunidadesEnTerritorioDatosConsultados.familiasPorComunidad,
-        poblacionPorComunidad: comunidadesEnTerritorioDatosConsultados.poblacionPorComunidad,
-        familiasConElectricidadPorComunidad: comunidadesEnTerritorioDatosConsultados.familiasConElectricidadPorComunidad,
-        comunidadesGeoJson: comunidadesEnTerritorioDatosConsultados.comunidadesGeoJson,
-        territorioGeoJson: comunidadesEnTerritorioDatosConsultados.territorioGeoJson
-      },
-      cultural: [],
-      educacion: []
-    });
-  }, [comunidadesEnTerritoriosDatosConsultados]);
-
   const buscarDatosParaPestanha = async () => {
     let consultaValida: boolean = false;
-    console.log("fffffffffffffffffff", datosParaConsultar);
     if (datosParaConsultar.territoriosId.length === 1) {
       if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
         establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorio(datosParaConsultar, modo));

@@ -29,19 +29,16 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
-
-  console.log("DG", datosGenerales);
+  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", datosGenerales);
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
-  console.log("DE", datosExtraidos);
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", datosExtraidos);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
-
   const {
     mujerContador,
     hombreContador,
     totalContador
   } = calcularSexosPorEdades(datosExtraidos.sexo);
-
   const datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
