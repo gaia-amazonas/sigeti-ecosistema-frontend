@@ -2,13 +2,13 @@
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import ComunidadesEnTerritorioDatosConsultados,
-  { Sexo,
-    SexoEdad,
-    SexoEdadFila,
-    ComunidadesGeoJson,
-    TerritorioGeoJson,
-    DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+import { ComunidadesEnTerritorioDatosConsultados,
+  Sexo,
+  SexoEdad,
+  SexoEdadFila,
+  ComunidadesGeoJson,
+  TerritorioGeoJson,
+  DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../Mujer';
 import Hombre from '../Hombre';
@@ -30,7 +30,9 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
     return <div>Cargando...</div>;
   }
 
+  console.log("DG", datosGenerales);
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
+  console.log("DE", datosExtraidos);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
 

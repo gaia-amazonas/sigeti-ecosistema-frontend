@@ -76,7 +76,3 @@ export interface ComunidadesEnTerritorioDatosConsultados {
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territorioGeoJson: TerritorioGeoJson | null;
 }
-
-export interface TodasComunidadesEnTerritorioDatosConsultados extends ComunidadesEnTerritorioDatosConsultados {
-
-};

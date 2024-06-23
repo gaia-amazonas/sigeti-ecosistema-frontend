@@ -1,21 +1,21 @@
 // src/consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorio.ts
 import haceClausulasWhere from "./clausulas";
 
-type Query = (territorioId: string[]) => string;
+type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
 const funciones: Record<string, Query> = {
-    sexo: (territorioId: string[]) => `
+    sexo: ({territoriosId}) => `
         SELECT
             SEXO AS sexo,
             COUNT(*) AS cantidad
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere(territorioId, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
             id_cnida, sexo;`
     ,
-    poblacionPorComunidad: (comunidadesId: string[]) => `
+    poblacionPorComunidad: ({comunidadesId}) => `
         SELECT
             id_cnida AS comunidadId,
             comunidad AS comunidadNombre,
@@ -23,19 +23,19 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere(comunidadesId, 'id_ti')}
+            ${haceClausulasWhere({comunidadesId}, 'id_ti')}
         GROUP BY
             id_cnida, comunidad;`
     ,
-    familias: (territorioId: string[]) => `
+    familias: ({territoriosId}) => `
         SELECT
             COUNT(*) AS familias
         FROM
             \`sigeti.censo_632.BD_familias\`
         WHERE
-            ${haceClausulasWhere(territorioId, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
     ,
-    familiasPorComunidad: (territorioId: string[]) => `
+    familiasPorComunidad: ({territoriosId}) => `
         SELECT
             COUNT(*) AS familias,
             c.id_cnida as comunidadId,
@@ -47,11 +47,11 @@ const funciones: Record<string, Query> = {
         ON
             f.id_cnida = c.id_cnida
         WHERE
-            ${haceClausulasWhere(territorioId, 'c.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'c.id_ti')}
         GROUP BY
             c.comunidad, c.id_cnida;`
     ,
-    familiasConElectricidadPorComunidad: (territorioId: string[]) => `
+    familiasConElectricidadPorComunidad: ({territoriosId}) => `
         SELECT
             COUNT(*) AS familias,
             f.id_cnida AS comunidadId
@@ -62,12 +62,12 @@ const funciones: Record<string, Query> = {
         ON
             f.id_cnida = c.id_cnida
         WHERE
-            ${haceClausulasWhere(territorioId, 'c.id_ti')} AND 
+            ${haceClausulasWhere({territoriosId}, 'c.id_ti')} AND 
             LOWER(f.vv_elect) IN ('sí', 'si')
         GROUP BY
             f.id_cnida;`
     ,
-    sexoEdad: (territorioId: string[]) => `
+    sexoEdad: ({territoriosId}) => `
         SELECT 
             CASE 
                 WHEN edad BETWEEN 0 AND 5 THEN '0 a 5 años'
@@ -122,7 +122,7 @@ const funciones: Record<string, Query> = {
         FROM 
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere(territorioId, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY 
             grupoPorEdad,
             sexo, 
@@ -131,7 +131,7 @@ const funciones: Record<string, Query> = {
             ordenGrupoPorEdad,
             sexo;`
     ,
-    sexoEdadPorComunidad: (territorioId: string[]) => `
+    sexoEdadPorComunidad: ({territoriosId}) => `
         SELECT
             c.comunidad AS nombreComunidad,
             CASE 
@@ -191,7 +191,7 @@ const funciones: Record<string, Query> = {
         ON
             p.id_cnida = c.id_cnida
         WHERE
-            ${haceClausulasWhere(territorioId, 'c.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'c.id_ti')}
         GROUP BY 
             grupoPorEdad,
             sexo, 
@@ -201,7 +201,7 @@ const funciones: Record<string, Query> = {
             ordenGrupoPorEdad,
             sexo;`
     ,
-    territorio: (territorioId: string[]) => `
+    territorio: ({territoriosId}) => `
         SELECT DISTINCT
             ST_AsGeoJSON(geometry) AS geometry,
             id_ti AS id,
@@ -209,9 +209,9 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
-            ${haceClausulasWhere(territorioId, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
     ,
-    comunidadesEnTerritorio: (territorioId: string[]) => `
+    comunidadesEnTerritorio: ({territoriosId}) => `
         SELECT
             ST_AsGeoJSON(g.geometry) AS geometry,
             g.nomb_cnida AS nombre,
@@ -223,7 +223,7 @@ const funciones: Record<string, Query> = {
         ON
             a.id_cnida = g.id_cnida
         WHERE
-            ${haceClausulasWhere(territorioId, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
     
 };
 

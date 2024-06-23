@@ -25,7 +25,6 @@ ChartJS.register(
   Legend
 );
 
-
 interface FamiliasYPoblacionImp {
   familiasPorComunidad: FamiliasPorComunidad | null;
   poblacionPorComunidad: PoblacionTotalPorComunidad | null;
@@ -37,7 +36,6 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionImp> = ({ fami
   if (!familiasPorComunidad || !poblacionPorComunidad || !familiasConElectricidadPorComunidad) {
     return <div>Cargando...</div>;
   }
-  console.log("((((((((((((////////////", familiasConElectricidadPorComunidad);
   const comunidades = familiasPorComunidad.rows.map(row => row.comunidadNombre);
   const familias = familiasPorComunidad.rows.map(row => row.familias);
   const poblacionTotal = poblacionPorComunidad.rows.map(row => row.poblacionTotal);

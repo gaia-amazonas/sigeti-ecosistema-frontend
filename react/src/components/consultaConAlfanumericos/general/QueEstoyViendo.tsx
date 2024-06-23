@@ -78,8 +78,7 @@ const QueEstoyViendo: React.FC<QueEstoyViendoImp> = ({comunidades, territorios})
         <>
         {   
             !esPopupVisible && <BotonFijo onClick={alternarPopup}>?</BotonFijo>
-        }
-        
+        }     
         {
             esPopupVisible && (
                 <Popup>
