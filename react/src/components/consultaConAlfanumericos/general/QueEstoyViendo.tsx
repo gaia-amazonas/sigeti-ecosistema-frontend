@@ -34,7 +34,7 @@ const Popup = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   padding: 10px;
   border-radius: 8px;
-  z-index: 2;
+  z-index: 200;
 `;
 
 const CabeceraPopup = styled.div`
