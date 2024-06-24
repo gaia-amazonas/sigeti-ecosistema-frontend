@@ -1,3 +1,5 @@
+// src/components/seleccionAlfanumerica/filtros/Territorio.tsx
+
 import React, { useState, useEffect } from 'react';
 import logger from 'utilidades/logger';
 import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
@@ -8,7 +10,7 @@ interface DatosParaConsultar {
 }
 
 interface Opcion {
-  id_ti: string;
+  idTi: string;
   territorio: string;
 }
 
@@ -25,13 +27,11 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
   const [filtro, establecerFiltro] = useState<string>('');
   const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.territoriosId);
 
-  // REGEXP_EXTRACT(territorio, 'Territorio Indígena (.*)') as territorio: cuando estén mejor los nombres por territorio
-
   useEffect(() => {
     async function buscarDatos() {
       const consulta = `
         SELECT
-          id_ti,
+          id_ti as idTi,
           territorio
         FROM
           ${modo === 'online' ? '`sigeti.censo_632.territorios`' : 'sigetiescritorio.territorios'}
@@ -43,7 +43,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
         const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
         const resultado = await respuesta.json();
         if (resultado.rows) {
-          const opcionesConTodos: Opcion[] = [{ id_ti: 'Todos', territorio: 'Todos' }, ...resultado.rows];
+          const opcionesConTodos: Opcion[] = [{ idTi: 'Todos', territorio: 'Todos' }, ...resultado.rows];
           establecerOpciones(opcionesConTodos);
           establecerOpcionesFiltradas(opcionesConTodos);
         } else {
@@ -60,16 +60,16 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
   useEffect(() => {
     establecerOpcionesFiltradas(
       opciones.filter((opcion) =>
-        opcion.id_ti.includes(filtro)
+        opcion.idTi.includes(filtro)
       )
     );
   }, [filtro, opciones]);
 
-  const manejarSeleccion = (id_ti: string) => {
-    if (seleccionados.includes(id_ti)) {
-      establecerSeleccionados(seleccionados.filter(id => id !== id_ti));
+  const manejarSeleccion = (idTi: string) => {
+    if (seleccionados.includes(idTi)) {
+      establecerSeleccionados(seleccionados.filter(id => id !== idTi));
     } else {
-      establecerSeleccionados([...seleccionados, id_ti]);
+      establecerSeleccionados([...seleccionados, idTi]);
     }
   };
 
@@ -97,9 +97,9 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
       )}
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton
-          key={opcion.id_ti}
-          onClick={() => manejarSeleccion(opcion.id_ti)}
-          seleccionado={seleccionados.includes(opcion.id_ti)}
+          key={opcion.idTi}
+          onClick={() => manejarSeleccion(opcion.idTi)}
+          $seleccionado={seleccionados.includes(opcion.idTi)}
         >
           {opcion.territorio}
         </OpcionComoBoton>

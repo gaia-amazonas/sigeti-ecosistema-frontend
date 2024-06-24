@@ -1,10 +1,10 @@
-// src/components/graficos/estilos.ts
+// src/components/consultaConAlfanumericos/estilos.ts
 import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`
   font-family: 'Roboto', sans-serif;
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap */
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -31,7 +31,7 @@ export const ContenedorImagen = styled.div`
 
 export const Imagen = styled.img`
   width: 100%;
-  height: auto; /* Adjust height to maintain aspect ratio */
+  height: auto;
   object-fit: contain;
   margin-bottom: 1rem;
 `;

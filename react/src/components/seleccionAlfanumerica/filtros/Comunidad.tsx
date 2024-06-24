@@ -105,7 +105,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
         <OpcionComoBoton
           key={opcion.id_cnida}
           onClick={() => manejarSeleccion(opcion.id_cnida)}
-          seleccionado={seleccionados.includes(opcion.id_cnida)}
+          $seleccionado={seleccionados.includes(opcion.id_cnida)}
         >
           {opcion.comunidad}
         </OpcionComoBoton>

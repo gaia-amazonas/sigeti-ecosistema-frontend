@@ -15,6 +15,10 @@ const mapeaColor: { [key: string]: string } = {
 };
 
 export const estiloTerritorio = (feature: any) => {
+
+  if (!feature.properties) {
+    throw new Error("La característica a utilizar es nula")
+  }
   
   let color: string = '#3388FF';
   if (feature.properties.id) {

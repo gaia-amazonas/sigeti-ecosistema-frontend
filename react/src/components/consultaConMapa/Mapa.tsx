@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import logger from 'utilidades/logger';
 
-import estilos from './Mapa.module.css';
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { estiloContenedorBotones, estiloBoton } from './estilos';
 import { estiloTerritorio }from 'estilosParaMapas/paraMapas';
 
@@ -189,7 +189,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       {estaCargandoLineas || estaCargandoTerritorios || estaCargandoComunidades ? (
-        <div className={estilos['loading-overlay']}>
+        <div className={estilos['superposicionCarga']}>
           <div className={estilos.spinner}></div>
         </div>
       ) : null}

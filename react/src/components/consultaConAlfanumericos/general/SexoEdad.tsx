@@ -8,7 +8,7 @@ interface SexoEdadImp {
   datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null;
 }
 
-const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidalesSexoEdad }) => {
+const SexoEdad: React.FC<SexoEdadImp> = ({ datosPiramidalesSexoEdad = null }) => {
 
   if (!datosPiramidalesSexoEdad) {
     return null;
