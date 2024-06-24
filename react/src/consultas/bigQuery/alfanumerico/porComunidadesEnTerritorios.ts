@@ -227,6 +227,17 @@ const funciones: Record<string, Query> = {
             \`sigeti.unidades_de_analisis.comunidades_censo632\`
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')};`
+    ,
+    comunidadesAgregadasEnTerritorios: ({territoriosId}) => `
+        SELECT
+            territorio AS territorioId,
+            ARRAY_AGG(comunidad) AS comunidadesId
+        FROM
+            \`sigeti.censo_632.comunidades_por_territorio\`
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+        GROUP BY
+            territorio;`
     };
 
 

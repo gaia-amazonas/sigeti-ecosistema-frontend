@@ -1,12 +1,15 @@
-// src/tipos/datosConsultados/comunidadesEnTerritorio.ts
+// src/tipos/datosConsultados/comunidadesEnTerritorios.ts
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
+
 import { FamiliasPorComunidadFila,
     Sexo,
     Familias,
     SexoEdad,
     PoblacionTotalPorComunidadFila,
     FamiliasConElectricidadPorComunidadFila,
-    TerritorioGeoJson,
     ComunidadesGeoJson } from './comunidadesEnTerritorio';
+
+export interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
 
 interface FamiliasPorComunidadConTerritorioFila extends FamiliasPorComunidadFila {
   territorioNombre: string;
@@ -43,9 +46,6 @@ export interface ComunidadesEnTerritoriosDatosConsultados {
   poblacionPorComunidad: PoblacionTotalPorComunidadConTerritorio | null;
   familiasConElectricidadPorComunidad: FamiliasConElectricidadPorComunidadConTerritorio | null;
   comunidadesGeoJson: ComunidadesGeoJson | null;
-  territorioGeoJson: TerritorioGeoJson | null;
+  territoriosGeoJson: TerritoriosGeoJson | null;
+  comunidadesEnTerritorios: { rows: { territorioId: string, comunidadesId: string[] }[] } | null;
 }
-
-export interface TodasComunidadesEnTerritorioDatosConsultados extends ComunidadesEnTerritoriosDatosConsultados {
-
-};

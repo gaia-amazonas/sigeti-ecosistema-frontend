@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import General from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorio/General';
+import GeneralTerritorio from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorio/General';
+import GeneralTerritorios from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorios/General';
 
 import { ComunidadesEnTerritorioDatosConsultados } from 'tipos/datosConsultados/comunidadesEnTerritorio';
 import { ComunidadesEnTerritoriosDatosConsultados } from 'tipos/datosConsultados/comunidadesEnTerritorios';
@@ -28,12 +29,17 @@ interface PestanhasImp {
   modo: string;
 }
 
-interface DatosPorPestanhaImp {
+interface DatosPorPestanhaEnTerritorioImp {
   general: ComunidadesEnTerritorioDatosConsultados;
   cultural: any[];
   educacion: any[];
 }
 
+interface DatosPorPestanhaEnTerritoriosImp {
+  general: ComunidadesEnTerritoriosDatosConsultados;
+  cultural: any[];
+  educacion: any[];
+}
 
 const comunidadesEnTerritorioDatosIniciales: ComunidadesEnTerritorioDatosConsultados = {
   sexo: null,
@@ -54,26 +60,32 @@ const comunidadesEnTerritoriosDatosIniciales: ComunidadesEnTerritoriosDatosConsu
   poblacionPorComunidad: null,
   familiasConElectricidadPorComunidad: null,
   comunidadesGeoJson: null,
-  territorioGeoJson: null
+  territoriosGeoJson: null,
+  comunidadesEnTerritorios: null
 };
-
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   const [activo, establecerActivo] = useState('pestanha_general');
+  const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [comunidadesEnTerritoriosDatosConsultados, establecerComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
-  const [datosPorPestanha, establecerDatosPorPestanha] = useState<DatosPorPestanhaImp>({
+  const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: comunidadesEnTerritorioDatosIniciales,
     cultural: [],
     educacion: []
   });
+  const [datosPorPestanhaEnTerritorios, establecerDatosPorPestanhaEnTerritorios] = useState<DatosPorPestanhaEnTerritoriosImp>({
+    general: comunidadesEnTerritoriosDatosIniciales,
+    cultural: [],
+    educacion: []
+  })
 
   useEffect(() => {
     buscarDatosParaPestanha();
   }, [datosParaConsultar, modo]);
 
   useEffect(() => {
-    establecerDatosPorPestanha({
+    establecerDatosPorPestanhaEnTerritorio({
       general: {
         sexo: comunidadesEnTerritorioDatosConsultados.sexo,
         familias: comunidadesEnTerritorioDatosConsultados.familias,
@@ -87,9 +99,30 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       cultural: [],
       educacion: []
     });
+    establecerTipoConsulta('enTerritorio');
   }, [comunidadesEnTerritorioDatosConsultados]);
 
-  const buscarDatosParaPestanha = async () => {
+  useEffect(() => {
+    console.log("@@@@@@@@@@@@@@@@", comunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios);
+    establecerDatosPorPestanhaEnTerritorios({
+      general: {
+        sexo: comunidadesEnTerritoriosDatosConsultados.sexo,
+        familias: comunidadesEnTerritoriosDatosConsultados.familias,
+        sexoEdad: comunidadesEnTerritoriosDatosConsultados.sexoEdad,
+        familiasPorComunidad: comunidadesEnTerritoriosDatosConsultados.familiasPorComunidad,
+        poblacionPorComunidad: comunidadesEnTerritoriosDatosConsultados.poblacionPorComunidad,
+        familiasConElectricidadPorComunidad: comunidadesEnTerritoriosDatosConsultados.familiasConElectricidadPorComunidad,
+        comunidadesGeoJson: comunidadesEnTerritoriosDatosConsultados.comunidadesGeoJson,
+        territoriosGeoJson: comunidadesEnTerritoriosDatosConsultados.territoriosGeoJson,
+        comunidadesEnTerritorios: comunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios
+      },
+      cultural: [],
+      educacion: []
+    });
+    establecerTipoConsulta('enTerritorios');
+  }, [comunidadesEnTerritoriosDatosConsultados]);
+
+  const buscarDatosParaPestanha = async () => { // fragmentar estoooooooooooooooooooooo
     let consultaValida: boolean = false;
     if (datosParaConsultar.territoriosId.length === 1) {
       if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
@@ -102,10 +135,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     }
     if (datosParaConsultar.territoriosId.length > 1) {
       if (datosParaConsultar.territoriosId[0] !== 'Todas') {
-        establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorios(datosParaConsultar, modo));
+        establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       } else {
-        establecerTodasComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorios({ datosParaConsultar, modo}));
+        establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios({ datosParaConsultar, modo}));
         consultaValida = !consultaValida;
       }
     }
@@ -124,7 +157,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha $activo={activo === 'pestanha_educacional'} onClick={() => establecerActivo('pestanha_educacional')}>Educación</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
-        {activo === 'pestanha_general' && <General datosGenerales={datosPorPestanha.general} modo={modo} />}
+        {activo === 'pestanha_general' && tipoConsulta === 'enTerritorio' ? <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} /> : <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo}/>}
         {activo === 'pestanha_cultural' && <div>en desarrollo...</div>}
         {activo === 'pestanha_educacional' && <div>en desarrollo...</div>}
       </PanelPestanhas>
