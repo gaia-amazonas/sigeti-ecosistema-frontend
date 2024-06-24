@@ -13,11 +13,8 @@ import {
   buscarPorComunidadesEnTerritorio,
   buscarPorTodasComunidadesEnTerritorio,
   buscarPorComunidadesEnTerritorios,
-  buscarPorTodasComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica';
-
-  // buscarPorComunidadesEnTerritorios,
-  // buscarPorTodasComunidadesEnTerritorios,
-  // buscarPorTodasComunidadesEnTodosTerritorios } from 'buscadores/paraAlfanumerica';
+  buscarPorTodasComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTodosTerritorios } from 'buscadores/paraAlfanumerica';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -161,6 +158,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTerritorios(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       }
+    }
+    if ((datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.territoriosId[0] === 'Todos') && (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.comunidadesId[0] === 'Todas')) {
+      establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTodosTerritorios(datosParaConsultar, modo));
+      consultaValida = !consultaValida;
     }
     if (!consultaValida) {
       throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);

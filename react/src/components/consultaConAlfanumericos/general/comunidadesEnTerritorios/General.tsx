@@ -19,15 +19,13 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
   modo: string | string[];
 }
 
-export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
+export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
 
-  console.log("!!!!!!!!!!!!!!!!!!", datosGenerales);
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
-  console.log("##################", datosExtraidos);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorios = extraerTerritorio(datosExtraidos.territoriosGeoJson);
   const {
@@ -72,7 +70,7 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   );
 };
 
-export default ComponenteGeneralComponentesEnTerritorio;
+export default ComponenteGeneralComponentesEnTerritorios;
 
 const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritoriosDatosConsultados) => {
   return !datosGenerales.comunidadesGeoJson ||
