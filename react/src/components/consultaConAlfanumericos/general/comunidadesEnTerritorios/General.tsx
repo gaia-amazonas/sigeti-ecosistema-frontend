@@ -24,7 +24,10 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div>Cargando...</div>;
   }
+
+  console.log("!!!!!!!!!!!!!!!!!!", datosGenerales);
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
+  console.log("##################", datosExtraidos);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorios = extraerTerritorio(datosExtraidos.territoriosGeoJson);
   const {

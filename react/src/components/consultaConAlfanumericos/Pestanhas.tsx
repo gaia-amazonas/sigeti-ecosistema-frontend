@@ -11,8 +11,9 @@ import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } fr
 
 import {
   buscarPorComunidadesEnTerritorio,
-  buscarPorTodasComunidadesTerritorio,
-  buscarPorComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica';
+  buscarPorTodasComunidadesEnTerritorio,
+  buscarPorComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica';
 
   // buscarPorComunidadesEnTerritorios,
   // buscarPorTodasComunidadesEnTerritorios,
@@ -69,6 +70,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [comunidadesEnTerritoriosDatosConsultados, establecerComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
+  const [todasComunidadesEnTerritoriosDatosConsultados, establecerTodasComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: comunidadesEnTerritorioDatosIniciales,
     cultural: [],
@@ -103,7 +105,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   }, [comunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
-    console.log("@@@@@@@@@@@@@@@@", comunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios);
     establecerDatosPorPestanhaEnTerritorios({
       general: {
         sexo: comunidadesEnTerritoriosDatosConsultados.sexo,
@@ -122,23 +123,42 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     establecerTipoConsulta('enTerritorios');
   }, [comunidadesEnTerritoriosDatosConsultados]);
 
+  useEffect(() => {
+    establecerDatosPorPestanhaEnTerritorios({
+      general: {
+        sexo: todasComunidadesEnTerritoriosDatosConsultados.sexo,
+        familias: todasComunidadesEnTerritoriosDatosConsultados.familias,
+        sexoEdad: todasComunidadesEnTerritoriosDatosConsultados.sexoEdad,
+        familiasPorComunidad: todasComunidadesEnTerritoriosDatosConsultados.familiasPorComunidad,
+        poblacionPorComunidad: todasComunidadesEnTerritoriosDatosConsultados.poblacionPorComunidad,
+        familiasConElectricidadPorComunidad: todasComunidadesEnTerritoriosDatosConsultados.familiasConElectricidadPorComunidad,
+        comunidadesGeoJson: todasComunidadesEnTerritoriosDatosConsultados.comunidadesGeoJson,
+        territoriosGeoJson: todasComunidadesEnTerritoriosDatosConsultados.territoriosGeoJson,
+        comunidadesEnTerritorios: todasComunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios
+      },
+      cultural: [],
+      educacion: []
+    });
+    establecerTipoConsulta('enTerritorios');
+  }, [todasComunidadesEnTerritoriosDatosConsultados]);
+
   const buscarDatosParaPestanha = async () => { // fragmentar estoooooooooooooooooooooo
     let consultaValida: boolean = false;
-    if (datosParaConsultar.territoriosId.length === 1) {
+    if (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.territoriosId[0] !== 'Todos') {
       if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
         establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorio(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       } else {
-        establecerComunidadesEnTerritorioDatosConsultados(await buscarPorTodasComunidadesTerritorio(datosParaConsultar, modo));
+        establecerComunidadesEnTerritorioDatosConsultados(await buscarPorTodasComunidadesEnTerritorio(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       }
     }
     if (datosParaConsultar.territoriosId.length > 1) {
-      if (datosParaConsultar.territoriosId[0] !== 'Todas') {
+      if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
         establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       } else {
-        establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios({ datosParaConsultar, modo}));
+        establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTerritorios(datosParaConsultar, modo));
         consultaValida = !consultaValida;
       }
     }
