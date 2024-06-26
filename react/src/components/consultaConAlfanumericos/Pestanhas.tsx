@@ -139,35 +139,58 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     establecerTipoConsulta('enTerritorios');
   }, [todasComunidadesEnTerritoriosDatosConsultados]);
 
-  const buscarDatosParaPestanha = async () => { // fragmentar estoooooooooooooooooooooo
-    let consultaValida: boolean = false;
-    if (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.territoriosId[0] !== 'Todos') {
-      if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
-        establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorio(datosParaConsultar, modo));
-        consultaValida = !consultaValida;
-      } else {
-        establecerComunidadesEnTerritorioDatosConsultados(await buscarPorTodasComunidadesEnTerritorio(datosParaConsultar, modo));
-        consultaValida = !consultaValida;
-      }
+  const buscarDatosParaPestanha = async () => {
+    if (esUnTerritorioEspecifico(datosParaConsultar)) {
+      await manejarUnTerritorioEspecifico(datosParaConsultar, modo);
+      return;
     }
-    if (datosParaConsultar.territoriosId.length > 1) {
-      if (datosParaConsultar.comunidadesId[0] !== 'Todas') {
-        establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios(datosParaConsultar, modo));
-        consultaValida = !consultaValida;
-      } else {
-        establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTerritorios(datosParaConsultar, modo));
-        consultaValida = !consultaValida;
-      }
+
+    if (esVariosTerritorios(datosParaConsultar)) {
+      await manejarVariosTerritorios(datosParaConsultar, modo);
+      return;
     }
-    if ((datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.territoriosId[0] === 'Todos') && (datosParaConsultar.territoriosId.length === 1 && datosParaConsultar.comunidadesId[0] === 'Todas')) {
-      establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTodosTerritorios(datosParaConsultar, modo));
-      consultaValida = !consultaValida;
+
+    if (esTodosLosTerritoriosYComunidades(datosParaConsultar)) {
+      await manejarTodosTerritoriosYComunidades(datosParaConsultar, modo);
+      return;
     }
-    if (!consultaValida) {
-      throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
-    };
+
+    // If no valid condition is met, throw an error
+    throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
   };
 
+  const esUnTerritorioEspecifico = (datos) => {
+    return datos.territoriosId.length === 1 && datos.territoriosId[0] !== 'Todos';
+  };
+
+  const esVariosTerritorios = (datos) => {
+    return datos.territoriosId.length > 1;
+  };
+
+  const esTodosLosTerritoriosYComunidades = (datos) => {
+    return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';
+  };
+
+  const manejarUnTerritorioEspecifico = async (datos, modo) => {
+    if (datos.comunidadesId[0] !== 'Todas') {
+      establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorio(datos, modo));
+    } else {
+      establecerComunidadesEnTerritorioDatosConsultados(await buscarPorTodasComunidadesEnTerritorio(datos, modo));
+    }
+  };
+
+  const manejarVariosTerritorios = async (datos, modo) => {
+    if (datos.comunidadesId[0] !== 'Todas') {
+      establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios(datos, modo));
+    } else {
+      establecerTodasComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTerritorios(datos, modo));
+    }
+  };
+
+  const manejarTodosTerritoriosYComunidades = async (datos, modo) => {
+    establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTodosTerritorios(datos, modo));
+  };
+  
   return (
     <Contenedor>
       <BotonReiniciar onClick={reiniciar} />
