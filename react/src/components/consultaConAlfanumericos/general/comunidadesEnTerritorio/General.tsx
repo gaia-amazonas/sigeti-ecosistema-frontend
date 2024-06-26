@@ -24,7 +24,6 @@ import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 interface ComponenteGeneralComunidadesEnTerritorioImp {
   datosGenerales: ComunidadesEnTerritorioDatosConsultados;
   modo: string | string[];
-  // estaBuscando: boolean;
 }
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {

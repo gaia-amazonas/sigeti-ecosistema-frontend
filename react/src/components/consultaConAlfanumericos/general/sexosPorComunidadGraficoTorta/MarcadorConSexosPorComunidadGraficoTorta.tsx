@@ -32,7 +32,7 @@ const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, nu
         actualizaPosicionDePixel();
     }, [mapa, posicion]);
 
-    if (!posicionDePixel || nivelDeZoom <= 9) return null;
+    if (!posicionDePixel || nivelDeZoom <= 6) return null;
 
     return (
         <div

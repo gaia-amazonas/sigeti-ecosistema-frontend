@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
@@ -32,25 +32,29 @@ const MapEventsHandler = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => vo
 
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
     const centroMapa = [0.969793, -70.830454];
-    const [sexosPorComunidad, establecerSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
-    const [cargando, establecerCargando] = useState<{ [id: string]: boolean }>({});
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
+    const [sexosPorComunidad, setSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
+    const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
 
     useEffect(() => {
-        const buscarSexosPorComunidad = async () => {
-            comunidadesGeoJson.features.forEach(async comunidad => {
+        const fetchData = async () => {
+            const fetchPromises = comunidadesGeoJson.features.map(async comunidad => {
                 const id = comunidad.properties?.id;
                 if (id) {
-                    establecerCargando(previo => ({ ...previo, [id]: true }));
-                    const informacion = await traeInformacionComunidad(id, 'online');
-                    const hombres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
-                    const mujeres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
-                    establecerSexosPorComunidad(prev => ({ ...prev, [id]: { hombres, mujeres } }));
-                    establecerCargando(previo => ({ ...previo, [id]: false }));
+                    setCargando(prev => ({ ...prev, [id]: true }));
+                    try {
+                        const informacion = await traeInformacionComunidad(id, 'online');
+                        const hombres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
+                        const mujeres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
+                        setSexosPorComunidad(prev => ({ ...prev, [id]: { hombres, mujeres } }));
+                    } finally {
+                        setCargando(prev => ({ ...prev, [id]: false }));
+                    }
                 }
             });
+            await Promise.all(fetchPromises); // Initiate all fetches concurrently
         };
-        buscarSexosPorComunidad();
+        fetchData();
     }, [comunidadesGeoJson]);
 
     const crearMarcadorNombre = (nombre: string) => {
@@ -90,7 +94,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
                                     datos={datos}
                                     estaCargando={estaCargando}
                                 />
-                                {zoomNivel >= 13 && ( 
+                                {zoomNivel >= 13 && (
                                     <Marker
                                         position={[centroide[1], centroide[0] - centroide[0] * 0.00015]}
                                         icon={crearMarcadorNombre(nombre)}
