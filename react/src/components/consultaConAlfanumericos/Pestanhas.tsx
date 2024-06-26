@@ -67,6 +67,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [comunidadesEnTerritoriosDatosConsultados, establecerComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
+  // const [buscandoDatos, establecerBuscandoDatos] = useState<true>;
   const [todasComunidadesEnTerritoriosDatosConsultados, establecerTodasComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: comunidadesEnTerritorioDatosIniciales,
@@ -81,6 +82,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 
   useEffect(() => {
     buscarDatosParaPestanha();
+
   }, [datosParaConsultar, modo]);
 
   useEffect(() => {
@@ -144,18 +146,14 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       await manejarUnTerritorioEspecifico(datosParaConsultar, modo);
       return;
     }
-
     if (esVariosTerritorios(datosParaConsultar)) {
       await manejarVariosTerritorios(datosParaConsultar, modo);
       return;
     }
-
     if (esTodosLosTerritoriosYComunidades(datosParaConsultar)) {
       await manejarTodosTerritoriosYComunidades(datosParaConsultar, modo);
       return;
     }
-
-    // If no valid condition is met, throw an error
     throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
   };
 
@@ -201,7 +199,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha $activo={activo === 'pestanha_educacional'} onClick={() => establecerActivo('pestanha_educacional')}>Educación</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
-        {activo === 'pestanha_general' && tipoConsulta === 'enTerritorio' ? <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} /> : <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo}/>}
+        {activo === 'pestanha_general' && tipoConsulta === 'enTerritorio' ? <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} /> : <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo}/> }
         {activo === 'pestanha_cultural' && <div>en desarrollo...</div>}
         {activo === 'pestanha_educacional' && <div>en desarrollo...</div>}
       </PanelPestanhas>

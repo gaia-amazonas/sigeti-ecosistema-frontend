@@ -29,6 +29,20 @@
   pointer-events: none;
 }
 
+.superposicionCargaConsultaAlfanumerica {
+  position: absolute;
+  top: 70%;
+  left: 0;
+  height: 30%;
+  width: 100%;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
 .spinner {
   width: 3rem;
   height: 3rem;

@@ -9,9 +9,11 @@ import Mujer from '../Mujer';
 import Hombre from '../Hombre';
 import ComponenteSexoEdad from '../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
-import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import QueEstoyViendo from '../QueEstoyViendo';
+import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
@@ -22,7 +24,9 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
   if (datosGeneralesInvalidos(datosGenerales)) {
-    return <div>Cargando...</div>;
+    return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+            <div className={estilos.spinner}></div>
+          </div>;
   }
 
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);

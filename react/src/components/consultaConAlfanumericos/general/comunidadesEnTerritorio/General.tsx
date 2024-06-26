@@ -17,18 +17,24 @@ import TotalYFamilias from '../TotalYFamilias';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import QueEstoyViendo from '../QueEstoyViendo';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
   datosGenerales: ComunidadesEnTerritorioDatosConsultados;
   modo: string | string[];
+  // estaBuscando: boolean;
 }
 
 export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
   if (datosGeneralesInvalidos(datosGenerales)) {
-    return <div>Cargando...</div>;
+    return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+            <div className={estilos.spinner}></div>
+          </div>;
   }
+
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
