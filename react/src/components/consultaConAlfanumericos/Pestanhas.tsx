@@ -159,19 +159,19 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
   };
 
-  const esUnTerritorioEspecifico = (datos) => {
+  const esUnTerritorioEspecifico = (datos: DatosParaConsultar) => {
     return datos.territoriosId.length === 1 && datos.territoriosId[0] !== 'Todos';
   };
 
-  const esVariosTerritorios = (datos) => {
+  const esVariosTerritorios = (datos: DatosParaConsultar) => {
     return datos.territoriosId.length > 1;
   };
 
-  const esTodosLosTerritoriosYComunidades = (datos) => {
+  const esTodosLosTerritoriosYComunidades = (datos: DatosParaConsultar) => {
     return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';
   };
 
-  const manejarUnTerritorioEspecifico = async (datos, modo) => {
+  const manejarUnTerritorioEspecifico = async (datos: DatosParaConsultar, modo: string | string[]) => {
     if (datos.comunidadesId[0] !== 'Todas') {
       establecerComunidadesEnTerritorioDatosConsultados(await buscarPorComunidadesEnTerritorio(datos, modo));
     } else {
@@ -179,7 +179,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     }
   };
 
-  const manejarVariosTerritorios = async (datos, modo) => {
+  const manejarVariosTerritorios = async (datos: DatosParaConsultar, modo: string | string[]) => {
     if (datos.comunidadesId[0] !== 'Todas') {
       establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorComunidadesEnTerritorios(datos, modo));
     } else {
@@ -187,7 +187,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     }
   };
 
-  const manejarTodosTerritoriosYComunidades = async (datos, modo) => {
+  const manejarTodosTerritoriosYComunidades = async (datos: DatosParaConsultar, modo: string | string[]) => {
     establecerComunidadesEnTerritoriosDatosConsultados(await buscarPorTodasComunidadesEnTodosTerritorios(datos, modo));
   };
   
