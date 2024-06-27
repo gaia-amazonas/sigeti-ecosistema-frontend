@@ -67,7 +67,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [comunidadesEnTerritorioDatosConsultados, establecerComunidadesEnTerritorioDatosConsultados] = useState<ComunidadesEnTerritorioDatosConsultados>(comunidadesEnTerritorioDatosIniciales);
   const [comunidadesEnTerritoriosDatosConsultados, establecerComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
-  // const [buscandoDatos, establecerBuscandoDatos] = useState<true>;
   const [todasComunidadesEnTerritoriosDatosConsultados, establecerTodasComunidadesEnTerritoriosDatosConsultados] = useState<ComunidadesEnTerritoriosDatosConsultados>(comunidadesEnTerritoriosDatosIniciales);
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: comunidadesEnTerritorioDatosIniciales,
@@ -81,8 +80,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   })
 
   useEffect(() => {
-    buscarDatosParaPestanha();
+    console.log(activo);
+  }, [activo]);
 
+  useEffect(() => {
+    buscarDatosParaPestanha();
   }, [datosParaConsultar, modo]);
 
   useEffect(() => {
@@ -142,11 +144,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   }, [todasComunidadesEnTerritoriosDatosConsultados]);
 
   const buscarDatosParaPestanha = async () => {
-    if (esUnTerritorioEspecifico(datosParaConsultar)) {
+    if (enUnTerritorio(datosParaConsultar)) {
       await manejarUnTerritorioEspecifico(datosParaConsultar, modo);
       return;
     }
-    if (esVariosTerritorios(datosParaConsultar)) {
+    if (enTerritorios(datosParaConsultar)) {
       await manejarVariosTerritorios(datosParaConsultar, modo);
       return;
     }
@@ -157,11 +159,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
   };
 
-  const esUnTerritorioEspecifico = (datos: DatosParaConsultar) => {
+  const enUnTerritorio = (datos: DatosParaConsultar) => {
     return datos.territoriosId.length === 1 && datos.territoriosId[0] !== 'Todos';
   };
 
-  const esVariosTerritorios = (datos: DatosParaConsultar) => {
+  const enTerritorios = (datos: DatosParaConsultar) => {
     return datos.territoriosId.length > 1;
   };
 

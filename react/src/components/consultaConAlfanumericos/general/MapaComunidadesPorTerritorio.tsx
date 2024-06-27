@@ -6,10 +6,9 @@ import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
-import { traeInformacionTodasComunidades } from 'buscadores/paraMapa';
+import { traeSexosPorComunidad } from 'buscadores/paraMapa';
 
 import Comunidades from '../../Comunidades';
-import { SexoComunidad } from 'components/consultaConMapa/tipos';
 import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 import { Marker, useMapEvents, MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 
@@ -35,10 +34,10 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
 
     useEffect(() => {
-        const fetchData = async () => {
+        const ordenaSexosPorComunidad = async () => {
             try {
-                const data = await traeInformacionTodasComunidades(modo);
-                const comunidades = data.rows;
+                const sexosPorComunidad = await traeSexosPorComunidad(modo);
+                const comunidades = sexosPorComunidad.rows;
                 comunidades.forEach((comunidad: any) => {
                     const id = comunidad.id;
                     const hombres = comunidad.hombres || 0;
@@ -50,7 +49,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
                 console.error('Error fetching community data:', error);
             }
         };
-        fetchData();
+        ordenaSexosPorComunidad();
     }, [comunidadesGeoJson, modo]);
 
     const crearMarcadorNombre = (nombre: string) => {

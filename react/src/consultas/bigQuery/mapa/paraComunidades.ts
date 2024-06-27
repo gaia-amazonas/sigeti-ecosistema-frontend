@@ -130,7 +130,7 @@ const consultasBigQueryParaComunidades = {
         WHERE
             ID_CNIDA='${comunidadId}';`
     ,
-    allComunidadesData : `
+    sexosPorComunidad : `
         SELECT
             c.ID_CNIDA as id,
             c.NOMB_CNIDA as nombre,
