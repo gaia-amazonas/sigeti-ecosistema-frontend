@@ -1,6 +1,6 @@
 // src/components/graficos/general/Mujer.tsx
 import React from 'react';
-import { ContenedorImagen, Imagen, CajaReductor } from '../estilos';
+import { ContenedorImagen, Imagen, CajaReductor } from '../../estilos';
 
 interface MujerComponentImp {
   contador: number | null;

@@ -18,7 +18,7 @@ interface MapaImp {
     modo: string | string[];
 }
 
-const MapEventsHandler = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
+const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
     useMapEvents({
         zoomend: (e) => {
             setZoomLevel(e.target.getZoom());
@@ -46,7 +46,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
                     setCargando(prev => ({ ...prev, [id]: false }));
                 });
             } catch (error) {
-                console.error('Error fetching community data:', error);
+                console.error('Error buscando sexos por comunidad:', error);
             }
         };
         ordenaSexosPorComunidad();
@@ -64,7 +64,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
 
     return (
         <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
-            <MapEventsHandler setZoomLevel={establecerZoomNivel} />
+            <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
             <TileLayer
                 url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
                 attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'

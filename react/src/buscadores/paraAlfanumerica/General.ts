@@ -4,11 +4,11 @@ import { ComunidadesEnTerritoriosDatosConsultados } from 'tipos/datosConsultados
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
-import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/porComunidadesEnTerritorio';
-import consultasGeneralesPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/porComunidadesEnTerritorios';
-import consultasGeneralesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorio';
-import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorios';
-import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTodosTerritorios';
+import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorio';
+import consultasGeneralesPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorios';
+import consultasGeneralesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorio';
+import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios';
+import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios';
 
 interface DatosParaConsultar {
   territoriosId: string[];
