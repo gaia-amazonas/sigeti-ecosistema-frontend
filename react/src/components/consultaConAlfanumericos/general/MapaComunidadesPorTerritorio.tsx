@@ -1,14 +1,12 @@
-// src/components/graficos/general/MapaComunidadesPorTerritorio.tsx
-
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
-import { traeInformacionComunidad } from 'buscadores/paraMapa';
+import { traeInformacionTodasComunidades } from 'buscadores/paraMapa';
 
 import Comunidades from '../../Comunidades';
 import { SexoComunidad } from 'components/consultaConMapa/tipos';
@@ -38,24 +36,22 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
 
     useEffect(() => {
         const fetchData = async () => {
-            const fetchPromises = comunidadesGeoJson.features.map(async comunidad => {
-                const id = comunidad.properties?.id;
-                if (id) {
-                    setCargando(prev => ({ ...prev, [id]: true }));
-                    try {
-                        const informacion = await traeInformacionComunidad(id, 'online');
-                        const hombres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Hombre')?.f0_ || 0;
-                        const mujeres = informacion.sexos.rows.find((s: SexoComunidad) => s.SEXO === 'Mujer')?.f0_ || 0;
-                        setSexosPorComunidad(prev => ({ ...prev, [id]: { hombres, mujeres } }));
-                    } finally {
-                        setCargando(prev => ({ ...prev, [id]: false }));
-                    }
-                }
-            });
-            await Promise.all(fetchPromises); // Initiate all fetches concurrently
+            try {
+                const data = await traeInformacionTodasComunidades(modo);
+                const comunidades = data.rows;
+                comunidades.forEach((comunidad: any) => {
+                    const id = comunidad.id;
+                    const hombres = comunidad.hombres || 0;
+                    const mujeres = comunidad.mujeres || 0;
+                    setSexosPorComunidad(prev => ({ ...prev, [id]: { hombres, mujeres } }));
+                    setCargando(prev => ({ ...prev, [id]: false }));
+                });
+            } catch (error) {
+                console.error('Error fetching community data:', error);
+            }
         };
         fetchData();
-    }, [comunidadesGeoJson]);
+    }, [comunidadesGeoJson, modo]);
 
     const crearMarcadorNombre = (nombre: string) => {
         const leaflet = require('leaflet');

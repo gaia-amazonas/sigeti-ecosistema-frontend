@@ -129,6 +129,23 @@ const consultasBigQueryParaComunidades = {
             \`sigeti.censo_632.Conteo_Pueblos\`
         WHERE
             ID_CNIDA='${comunidadId}';`
+    ,
+    allComunidadesData : `
+        SELECT
+            c.ID_CNIDA as id,
+            c.NOMB_CNIDA as nombre,
+            COUNT(f.id_cnida) as familias,
+            COUNT(CASE WHEN p.SEXO = 'Hombre' THEN 1 END) as hombres,
+            COUNT(CASE WHEN p.SEXO = 'Mujer' THEN 1 END) as mujeres,
+            STRING_AGG(DISTINCT p.PUEBLO, ', ') as pueblos
+        FROM
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` c
+        LEFT JOIN
+            \`sigeti.censo_632.BD_familias\` f ON c.ID_CNIDA = f.id_cnida
+        LEFT JOIN
+            \`sigeti.censo_632.BD_personas\` p ON c.ID_CNIDA = p.id_cnida
+        GROUP BY
+            c.ID_CNIDA, c.NOMB_CNIDA;`
 }
 
 export default consultasBigQueryParaComunidades;

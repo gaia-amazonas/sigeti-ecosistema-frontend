@@ -44,3 +44,13 @@ export const traeInformacionDocumentalTerritorio = async (territorio: FeatureTer
     return [];
   }
 };
+
+export const traeInformacionTodasComunidades = async (modo: string | string[]) => {
+  try {
+    const comunidadesData = await buscarDatos(consultasBigQueryParaComunidades.allComunidadesData, modo);
+    return comunidadesData;
+  } catch (error) {
+    logger.error('Error buscando datos por sexo de communidades:', error);
+    return { rows: [] };
+  }
+};
