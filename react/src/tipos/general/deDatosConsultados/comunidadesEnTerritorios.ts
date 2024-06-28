@@ -38,7 +38,7 @@ interface FamiliasConElectricidadPorComunidadConTerritorio {
     rows: FamiliasConElectricidadPorComunidadConTerritorioFila[]
 }
 
-export interface ComunidadesEnTerritoriosDatosConsultados {
+interface ComunidadesEnTerritoriosDatosConsultados {
   sexo: Sexo | null;
   familias: Familias | null;
   sexoEdad: SexoEdad | null;
@@ -49,3 +49,5 @@ export interface ComunidadesEnTerritoriosDatosConsultados {
   territoriosGeoJson: TerritoriosGeoJson | null;
   comunidadesEnTerritorios: { rows: { territorioId: string, comunidadesId: string[] }[] } | null;
 }
+
+export default ComunidadesEnTerritoriosDatosConsultados;

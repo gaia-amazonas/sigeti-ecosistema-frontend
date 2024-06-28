@@ -2,8 +2,8 @@
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import { ComunidadesEnTerritoriosDatosConsultados, TerritoriosGeoJson } from 'tipos/datosConsultados/comunidadesEnTerritorios';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+import { ComunidadesEnTerritoriosDatosConsultados, TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
