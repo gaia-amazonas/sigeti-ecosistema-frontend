@@ -12,6 +12,8 @@ import Comunidades from '../../Comunidades';
 import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 import { Marker, useMapEvents, MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 
+import logger from 'utilidades/logger';
+
 interface MapaImp {
     territoriosGeoJson: FeatureCollection;
     comunidadesGeoJson: FeatureCollection;
@@ -46,7 +48,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
                     setCargando(prev => ({ ...prev, [id]: false }));
                 });
             } catch (error) {
-                console.error('Error buscando sexos por comunidad:', error);
+                logger.error('Error buscando sexos por comunidad:', error);
             }
         };
         ordenaSexosPorComunidad();

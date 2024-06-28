@@ -20,10 +20,12 @@ interface HierarchyData {
   value?: number;
 }
 
-const CulturalBubbleChartD3: React.FC<BubbleChartProps> = ({ data }) => {
+const CulturalBubbleChartD3Client: React.FC<BubbleChartProps> = ({ data }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
+    if (!svgRef.current) return;
+
     const bubbleData: BubbleData[] = data.map((item) => ({
       label: item.lengua,
       value: item.hombres + item.mujeres,
@@ -110,4 +112,4 @@ const CulturalBubbleChartD3: React.FC<BubbleChartProps> = ({ data }) => {
   );
 };
 
-export default CulturalBubbleChartD3;
+export default CulturalBubbleChartD3Client;

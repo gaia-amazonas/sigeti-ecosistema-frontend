@@ -2,7 +2,7 @@
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import { ComunidadesEnTerritoriosDatosConsultados, TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../sexo/Mujer';

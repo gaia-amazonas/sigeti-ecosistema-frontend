@@ -1,6 +1,6 @@
 // src/buscadores/paraAlfanumerica/General.ts
-import { ComunidadesEnTerritorioDatosConsultados } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
-import { ComunidadesEnTerritoriosDatosConsultados } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import ComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import ComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';

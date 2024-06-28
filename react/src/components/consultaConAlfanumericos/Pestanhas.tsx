@@ -10,6 +10,8 @@ import CulturalComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/dato
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
 
+import logger from 'utilidades/logger';
+
 import {
   buscarPorComunidadesEnTerritorio as buscarGeneralPorComunidadesEnTerritorio,
   buscarPorTodasComunidadesEnTerritorio as buscarGeneralPorTodasComunidadesEnTerritorio,
@@ -142,7 +144,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTerritorios(datos, modo));
       }
       if (activo === 'pestanhaCultural') {
-        console.log("What I need?");
+        logger.log("What I need?");
       }
     } else {
       establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
@@ -154,7 +156,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(datos, modo));
     }
     if (activo === 'pestanhaCultural') {
-      console.log("What I need?");
+      logger.log("What I need?");
     }
   };
 
