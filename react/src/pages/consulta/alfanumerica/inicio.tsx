@@ -1,4 +1,4 @@
-// src/pages/alfanumerica/inicio.tsx
+// src/pages/consulta/alfanumerica/inicio.tsx
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import BotonReiniciar from 'components/BotonReiniciar';

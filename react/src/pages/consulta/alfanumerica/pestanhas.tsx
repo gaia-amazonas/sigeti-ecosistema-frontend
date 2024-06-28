@@ -1,8 +1,10 @@
-// src/pages/pestanhas.tsx
+import dynamic from 'next/dynamic';
 import React from 'react';
 import { useRouter } from 'next/router';
-import Pestanhas from 'components/consultaConAlfanumericos/Pestanhas';
 import EstiloGlobal from 'estilos_paginas/global';
+import isClient from 'utilidades/isClient';
+
+const Pestanhas = dynamic(() => import('components/consultaConAlfanumericos/Pestanhas'), { ssr: false });
 
 const PestanhasPage: React.FC = () => {
   const router = useRouter();
@@ -26,7 +28,7 @@ const PestanhasPage: React.FC = () => {
   return (
     <>
       <EstiloGlobal />
-      <Pestanhas datosParaConsultar={datosAnalizados} reiniciar={reiniciarEstado} modo={modo as 'online' | 'offline'} />
+      {isClient && <Pestanhas datosParaConsultar={datosAnalizados} reiniciar={reiniciarEstado} modo={modo as 'online' | 'offline'} />}
     </>
   );
 };
