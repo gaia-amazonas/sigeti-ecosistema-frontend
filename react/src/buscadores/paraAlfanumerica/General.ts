@@ -1,14 +1,14 @@
-// src/buscadores/paraAlfanumerica.ts
-import { ComunidadesEnTerritorioDatosConsultados } from 'tipos/datosConsultados/comunidadesEnTerritorio';
-import { ComunidadesEnTerritoriosDatosConsultados } from 'tipos/datosConsultados/comunidadesEnTerritorios';
+// src/buscadores/paraAlfanumerica/General.ts
+import { ComunidadesEnTerritorioDatosConsultados } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import { ComunidadesEnTerritoriosDatosConsultados } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
-import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/porComunidadesEnTerritorio';
-import consultasGeneralesPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/porComunidadesEnTerritorios';
-import consultasGeneralesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorio';
-import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorios';
-import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/porTodasComunidadesEnTodosTerritorios';
+import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorio';
+import consultasGeneralesPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorios';
+import consultasGeneralesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorio';
+import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios';
+import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios';
 
 interface DatosParaConsultar {
   territoriosId: string[];

@@ -1,33 +1,42 @@
-// src/components/consultaConAlfanumericos/general/comunindadesEnTerritorios/General.tsx
+// src/components/consultaConAlfanumericos/general/comunindadesEnTerritorio/General.tsx
 import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-import { ComunidadesEnTerritoriosDatosConsultados, TerritoriosGeoJson } from 'tipos/datosConsultados/comunidadesEnTerritorios';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+import ComunidadesEnTerritorioDatosConsultados,
+  { Sexo,
+    SexoEdad,
+    SexoEdadFila,
+    ComunidadesGeoJson,
+    TerritorioGeoJson,
+    DatosPiramidalesItem } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
-import Mujer from '../Mujer';
-import Hombre from '../Hombre';
+import Mujer from '../sexo/Mujer';
+import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
 import QueEstoyViendo from '../QueEstoyViendo';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
 interface ComponenteGeneralComunidadesEnTerritorioImp {
-  datosGenerales: ComunidadesEnTerritoriosDatosConsultados;
+  datosGenerales: ComunidadesEnTerritorioDatosConsultados;
   modo: string | string[];
 }
 
-export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
+export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
   if (datosGeneralesInvalidos(datosGenerales)) {
-    return <div>Cargando...</div>;
+    return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+            <div className={estilos.spinner}></div>
+          </div>;
   }
 
   const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
-  const territorios = extraerTerritorio(datosExtraidos.territoriosGeoJson);
+  const territorio = extraerTerritorio(datosExtraidos.territorioGeoJson);
   const {
     mujerContador,
     hombreContador,
@@ -39,7 +48,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
     <div style={{ width: '100%', overflow: 'auto' }}>
       <QueEstoyViendo
         comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        territorios={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
       />
       <ContenedorGrafico>
         <Hombre contador={hombreContador} />
@@ -47,7 +56,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
           contadorTotal={totalContador}
           contadorFamilias={datosExtraidos.familias}
           comunidades={comunidades}
-          territorios={territorios}
+          territorios={territorio}
         />
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
@@ -55,7 +64,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
       <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
-        territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
@@ -64,15 +73,14 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         familiasPorComunidad={datosExtraidos.familiasPorComunidad}
         poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
         familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
-        comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
       />
     </div>
   );
 };
 
-export default ComponenteGeneralComponentesEnTerritorios;
+export default ComponenteGeneralComponentesEnTerritorio;
 
-const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritoriosDatosConsultados) => {
+const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
   return !datosGenerales.comunidadesGeoJson ||
   !datosGenerales.familias ||
   !datosGenerales.familiasPorComunidad ||
@@ -80,11 +88,10 @@ const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritoriosDatosCo
   !datosGenerales.sexoEdad ||
   !datosGenerales.poblacionPorComunidad ||
   !datosGenerales.familiasConElectricidadPorComunidad ||
-  !datosGenerales.territoriosGeoJson ||
-  !datosGenerales.comunidadesEnTerritorios
+  !datosGenerales.territorioGeoJson
 }
 
-const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritoriosDatosConsultados) => {
+const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
   const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
     sexo: datosGenerales.sexo,
@@ -94,8 +101,7 @@ const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritoriosDatosCons
     poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
     familiasConElectricidadPorComunidad: datosGenerales.familiasConElectricidadPorComunidad,
     comunidadesGeoJson: datosGenerales.comunidadesGeoJson,
-    territoriosGeoJson: datosGenerales.territoriosGeoJson,
-    comunidadesEnTerritorios: datosGenerales.comunidadesEnTerritorios
+    territorioGeoJson: datosGenerales.territorioGeoJson
   }
 }
 
@@ -106,9 +112,9 @@ const extraerComunidades = (comunidadesGeoJson: ComunidadesGeoJson | null): stri
   return null;
 }
 
-const extraerTerritorio = (territoriosGeoJson: TerritoriosGeoJson | null): string[] | null => {
-  if (territoriosGeoJson) {
-    return territoriosGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null)
+const extraerTerritorio = (territorioGeoJson: TerritorioGeoJson | null): string[] | null => {
+  if (territorioGeoJson) {
+    return territorioGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null)
   }
   return null;
 }

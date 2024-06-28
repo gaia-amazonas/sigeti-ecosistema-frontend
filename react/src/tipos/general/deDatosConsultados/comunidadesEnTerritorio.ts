@@ -66,7 +66,7 @@ export interface PoblacionTotalPorComunidad {
 export interface TerritorioGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 export interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
 
-export interface ComunidadesEnTerritorioDatosConsultados {
+interface ComunidadesEnTerritorioDatosConsultados {
   sexo: Sexo | null;
   familias: Familias | null;
   sexoEdad: SexoEdad | null;
@@ -76,3 +76,5 @@ export interface ComunidadesEnTerritorioDatosConsultados {
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territorioGeoJson: TerritorioGeoJson | null;
 }
+
+export default ComunidadesEnTerritorioDatosConsultados;

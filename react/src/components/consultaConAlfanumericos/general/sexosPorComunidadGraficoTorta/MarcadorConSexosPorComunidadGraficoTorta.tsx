@@ -42,7 +42,7 @@ const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, nu
                 left: `${posicionDePixel[0] - 4 * nivelDeZoom}px`,
                 top: `${posicionDePixel[1] - 6 * nivelDeZoom}px`,
                 transform: 'translate(-50%, -50%)',
-                zIndex: 2000,
+                zIndex: 400,
             }}
         >
             {estaCargando ? (

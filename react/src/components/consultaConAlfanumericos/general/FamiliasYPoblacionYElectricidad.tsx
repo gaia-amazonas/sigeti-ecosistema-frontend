@@ -13,7 +13,7 @@ import {
   ChartOptions,
 } from 'chart.js';
 
-import { FamiliasPorComunidad, PoblacionTotalPorComunidad, FamiliasConElectricidadPorComunidad } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+import { FamiliasPorComunidad, PoblacionTotalPorComunidad, FamiliasConElectricidadPorComunidad } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 
 ChartJS.register(

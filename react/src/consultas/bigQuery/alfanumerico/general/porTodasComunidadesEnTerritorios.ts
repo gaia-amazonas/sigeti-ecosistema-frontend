@@ -1,5 +1,5 @@
-// src/consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorio.ts
-import haceClausulasWhere from "./clausulas";
+// src/consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorios.ts
+import haceClausulasWhere from "../clausulas";
 
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
@@ -131,7 +131,7 @@ const funciones: Record<string, Query> = {
             ordenGrupoPorEdad,
             sexo;`
     ,
-    territorio: ({territoriosId}) => `
+    territorios: ({territoriosId}) => `
         SELECT DISTINCT
             ST_AsGeoJSON(geometry) AS geometry,
             id_ti AS id,
@@ -141,7 +141,7 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')};`
     ,
-    comunidadesEnTerritorio: ({territoriosId}) => `
+    comunidadesEnTerritorios: ({territoriosId}) => `
         SELECT
             ST_AsGeoJSON(g.geometry) AS geometry,
             g.nomb_cnida AS nombre,
@@ -154,7 +154,17 @@ const funciones: Record<string, Query> = {
             a.id_cnida = g.id_cnida
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')};`
-    
+    ,
+    comunidadesAgregadasEnTerritorios: ({territoriosId}) => `
+        SELECT
+            territorio AS territorioId,
+            ARRAY_AGG(comunidad) AS comunidadesId
+        FROM
+            \`sigeti.censo_632.comunidades_por_territorio\`
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+        GROUP BY
+            territorio;`
 };
 
 export default funciones;

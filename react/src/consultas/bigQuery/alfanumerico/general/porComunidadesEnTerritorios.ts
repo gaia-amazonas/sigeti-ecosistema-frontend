@@ -1,5 +1,5 @@
 // src/consultas/bigQuery/alfanumerico/porComunidadesEnTerritorio.ts
-import haceClausulasWhere from "./clausulas";
+import haceClausulasWhere from "../clausulas";
 
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 

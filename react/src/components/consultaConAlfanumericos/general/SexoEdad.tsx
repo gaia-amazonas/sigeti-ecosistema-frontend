@@ -2,7 +2,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Legend } from 'recharts';
 
-import { DatosPiramidalesItem } from 'tipos/datosConsultados/comunidadesEnTerritorio';
+import { DatosPiramidalesItem } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 interface SexoEdadImp {
   datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null;
