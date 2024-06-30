@@ -6,6 +6,7 @@ import GeneralTerritorios from 'components/consultaConAlfanumericos/general/comu
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import CulturalComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
@@ -21,7 +22,8 @@ import {
 } from 'buscadores/paraAlfanumerica/General';
 
 import {
-  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorio
+  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorio,
+  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorios
 } from 'buscadores/paraAlfanumerica/Cultural';
 
 interface DatosParaConsultar {
@@ -74,6 +76,10 @@ const culturalComunidadesEnTerritorioDatosIniciales: CulturalComunidadesEnTerrit
   sexosPorLenguaEnComunidades: null
 };
 
+const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
+  sexosPorLenguaEnComunidades: null
+}
+
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   const [activo, establecerActivo] = useState('pestanhaGeneral');
   const [tipoConsulta, establecerTipoConsulta] = useState('');
@@ -81,6 +87,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [generalComunidadesEnTerritoriosDatosConsultados, establecerGeneralComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [generalTodasComunidadesEnTerritoriosDatosConsultados, establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritorioDatosConsultados, establecerCulturalComunidadesEnTerritorioDatosConsultados] = useState<CulturalComunidadesEnTerritorioDatosConsultados>(culturalComunidadesEnTerritorioDatosIniciales);
+  const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] =  useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
 
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: generalComunidadesEnTerritorioDatosIniciales,
@@ -92,6 +99,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     cultural: [],
     educacion: []
   });
+
+  useEffect(() => {
+    console.log("XXXXXXXXXXXXX", culturalComunidadesEnTerritoriosDatosConsultados );
+  }, [culturalComunidadesEnTerritoriosDatosConsultados])
 
   useEffect(() => {
     buscarDatosParaPestanha();
@@ -144,7 +155,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTerritorios(datos, modo));
       }
       if (activo === 'pestanhaCultural') {
-        logger.log("What I need?");
+        establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
       }
     } else {
       establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));

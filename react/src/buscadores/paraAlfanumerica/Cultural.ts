@@ -2,7 +2,7 @@
 import ComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 
 import { buscarDatos } from 'buscadores/datosSQL';
-import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio';
+import consultasCulturalesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -10,7 +10,7 @@ interface DatosParaConsultar {
 }
 
 export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasGeneralesPorComunidadesEnTerritorio.sexo(datosParaConsultar), modo);
+  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.sexo(datosParaConsultar), modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
   }
