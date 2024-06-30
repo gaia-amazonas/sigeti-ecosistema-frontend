@@ -6,7 +6,9 @@ import GeneralTerritorios from 'components/consultaConAlfanumericos/general/comu
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import CulturalComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
@@ -21,9 +23,13 @@ import {
   buscarPorTodasComunidadesEnTodosTerritorios as buscarGeneralPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/General';
 
+
 import {
   buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorio,
-  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorios
+  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTerritorio as buscarCulturalPorTodasComunidadesEnTerritorio,
+  buscarPorTodasComunidadesEnTerritorios as buscarCulturalPorTodasComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTodosTerritorios as buscarCulturalPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Cultural';
 
 interface DatosParaConsultar {
@@ -76,7 +82,15 @@ const culturalComunidadesEnTerritorioDatosIniciales: CulturalComunidadesEnTerrit
   sexosPorLenguaEnComunidades: null
 };
 
+const culturalTodasComunidadesEnTerritorioDatosIniciales: CulturalTodasComunidadesEnTerritorioDatosConsultados = {
+  sexosPorLenguaEnComunidades: null
+}
+
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
+  sexosPorLenguaEnComunidades: null
+}
+
+const culturalTodasComunidadesEnTerritoriosDatosIniciales: CulturalTodasComunidadesEnTerritoriosDatosConsultados = {
   sexosPorLenguaEnComunidades: null
 }
 
@@ -87,7 +101,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [generalComunidadesEnTerritoriosDatosConsultados, establecerGeneralComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [generalTodasComunidadesEnTerritoriosDatosConsultados, establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritorioDatosConsultados, establecerCulturalComunidadesEnTerritorioDatosConsultados] = useState<CulturalComunidadesEnTerritorioDatosConsultados>(culturalComunidadesEnTerritorioDatosIniciales);
-  const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] =  useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
+  const [culturalTodasComunidadesEnTerritorioDatosConsultados, establecerCulturalTodasComunidadesEnTerritorioDatosConsultados] =  useState<CulturalTodasComunidadesEnTerritorioDatosConsultados>(culturalTodasComunidadesEnTerritorioDatosIniciales);
+  const [culturalTodasComunidadesEnTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados] = useState<CulturalTodasComunidadesEnTerritoriosDatosConsultados>(culturalTodasComunidadesEnTerritoriosDatosIniciales);
+  const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
+  const [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales)
 
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: generalComunidadesEnTerritorioDatosIniciales,
@@ -99,15 +116,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     cultural: [],
     educacion: []
   });
-
-  useEffect(() => {
-    console.log("XXXXXXXXXXXXX", culturalComunidadesEnTerritoriosDatosConsultados );
-  }, [culturalComunidadesEnTerritoriosDatosConsultados])
-
   useEffect(() => {
     buscarDatosParaPestanha();
   }, [datosParaConsultar, modo, activo]);
-
   const buscarDatosParaPestanha = async () => {
     if (enUnTerritorio(datosParaConsultar)) {
       await consultarTerritorio(datosParaConsultar, modo);
@@ -145,7 +156,12 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerCulturalComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorComunidadesEnTerritorio(datos, modo));
       }
     } else {
-      establecerGeneralComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
+      if (activo === 'pestanhaGeneral') {
+        establecerGeneralComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
+      } 
+      if (activo === 'pestanhaCultural') {
+        establecerCulturalTodasComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorio(datos, modo))
+      }
     }
   };
 
@@ -158,7 +174,12 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
       }
     } else {
-      establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
+      if (activo === 'pestanhaGeneral') {
+        establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
+      }
+      if (activo === 'pestanhaCultural') {
+        establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
+      }
     }
   };
 
@@ -167,7 +188,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(datos, modo));
     }
     if (activo === 'pestanhaCultural') {
-      logger.log("What I need?");
+      establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     }
   };
 
@@ -254,6 +275,18 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
           (<GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo} />)}
         {activo === 'pestanhaCultural' && culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades && (
           <CulturalBubbleChartD3 data={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+        )}
+        {activo === 'pestanhaCultural' && culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
+          <CulturalBubbleChartD3 data={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+        )}
+        {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades && (
+          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+        )}
+        {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
+          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+        )}
+        {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
+          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaEducacional' &&  <div>en desarrollo...</div>}
       </PanelPestanhas>
