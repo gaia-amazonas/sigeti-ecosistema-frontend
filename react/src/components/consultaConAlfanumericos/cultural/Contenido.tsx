@@ -4,11 +4,9 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 interface GraficoBurbujaImp {
-  datos: {
-    lengua: string;
-    hombres: number;
-    mujeres: number;
-  }[];
+  datos: any[];
+  labelKey: string;
+  valueKey: string;
 }
 
 interface DatosBurbuja {
@@ -22,12 +20,12 @@ interface DatosJerarquicos {
   valor?: number;
 }
 
-const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
+const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, valueKey }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
     if (!svgRef.current) return;
-    const datosBurbuja = creaDatosBurbuja(datos);
+    const datosBurbuja = creaDatosBurbuja(datos, labelKey, valueKey);
     const grosor = 1000;
     const altura = 800;
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
@@ -44,7 +42,7 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
     agregaZoom(svg);
     agregaLeyenda(svg, datosBurbuja, grosor);
 
-  }, [datos]);
+  }, [datos, labelKey, valueKey]);
 
   return (
     <svg ref={svgRef}></svg>
@@ -53,10 +51,10 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
 
 export default CulturalGraficoBurbuja;
 
-const creaDatosBurbuja = (datos: GraficoBurbujaImp['datos']): DatosBurbuja[] => {
+const creaDatosBurbuja = (datos: any[], labelKey: string, valueKey: string): DatosBurbuja[] => {
   return datos.map((item) => ({
-    label: item.lengua,
-    valor: item.hombres + item.mujeres,
+    label: item[labelKey],
+    valor: item[valueKey],
   }));
 };
 

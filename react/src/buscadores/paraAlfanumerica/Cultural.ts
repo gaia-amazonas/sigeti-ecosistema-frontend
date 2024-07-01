@@ -2,7 +2,8 @@
 import ComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 import { buscarDatos } from 'buscadores/datosSQL';
 import consultasCulturalesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio';
-import consultasCulturalesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorios'
+import consultasCulturalesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorio';
+import consultasCulturalesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorios';
 import consultasCulturalesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTodosTerritorios';
 
 interface DatosParaConsultar {
@@ -23,18 +24,20 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
 };
 
 export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
+  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo);
+  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.etniasEnComunidades(datosParaConsultar), modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: null
+    etniasEnComunidades: etniasEnComunidades
   };
 };
 
 export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
+  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etniasEnComunidades(datosParaConsultar), modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: null
+    etniasEnComunidades: etniasEnComunidades
   };
 };
 

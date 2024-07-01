@@ -4,8 +4,7 @@ const funciones = {
     sexoYLengua: `
         SELECT
             nombre_lengua AS lengua,
-            SUM(total_hombres) AS hombres, 
-            SUM(total_mujeres) AS mujeres,
+            SUM(total_hombres) + SUM(total_mujeres) AS conteo,
             ANY_VALUE(comunidad) AS nombreComunidad
         FROM
             \`sigeti.censo_632.distribucion_lenguas_por_comunidad\`

@@ -38,7 +38,9 @@ export const EstiloPestanha = styled.button<{ $activo: boolean }>`
 export const PanelPestanhas = styled.div`
   background-color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-top: 2rem;
+  gap: 2rem;
 `;
