@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 interface GraficoBurbujaImp {
-  data: {
+  datos: {
     lengua: string;
     hombres: number;
     mujeres: number;
@@ -20,7 +20,38 @@ interface DatosJerarquicos {
   value?: number;
 }
 
-const creaDatosBurbuja = (datos: GraficoBurbujaImp['data']): DatosBurbuja[] => {
+const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+    const datosBurbuja = creaDatosBurbuja(datos);
+    const grosor = 1000;
+    const altura = 800;
+    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
+      .attr('width', grosor)
+      .attr('height', altura)
+      .style('background', '#f0f0f0');
+    const pack = d3.pack<DatosJerarquicos>()
+      .size([grosor, altura])
+      .padding(5);
+    const root = d3.hierarchy<DatosJerarquicos>({ children: datosBurbuja })
+      .sum((d) => d.value || 0);
+    const nodos = pack(root).leaves();
+    agregaNodos(svg, nodos);
+    agregaZoom(svg);
+    agregaLeyenda(svg, datosBurbuja, grosor);
+
+  }, [datos]);
+
+  return (
+    <svg ref={svgRef}></svg>
+  );
+};
+
+export default CulturalGraficoBurbuja;
+
+const creaDatosBurbuja = (datos: GraficoBurbujaImp['datos']): DatosBurbuja[] => {
   return datos.map((item) => ({
     label: item.lengua,
     value: item.hombres + item.mujeres,
@@ -29,16 +60,13 @@ const creaDatosBurbuja = (datos: GraficoBurbujaImp['data']): DatosBurbuja[] => {
 
 const agregaNodos = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, nodos: d3.HierarchyCircularNode<DatosJerarquicos>[]) => {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
-
   const nodo = svg.selectAll<SVGGElement, d3.HierarchyCircularNode<DatosJerarquicos>>('g')
     .data(nodos)
     .enter().append('g')
     .attr('transform', (d) => `translate(${d.x},${d.y})`);
-
   nodo.append('circle')
     .attr('r', (d) => d.r)
     .attr('fill', (d, i) => color(i.toString()));
-
   nodo.append('text')
     .attr('dy', '-0.3em')
     .attr('text-anchor', 'middle')
@@ -47,7 +75,6 @@ const agregaNodos = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     .style('font-family', 'Arial')
     .style('font-size', '12px')
     .style('font-weight', 'bold');
-
   nodo.append('text')
     .attr('dy', '1em')
     .attr('text-anchor', 'middle')
@@ -88,41 +115,3 @@ const agregaLeyenda = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined
     .style('font-family', 'Arial')
     .style('font-size', '14px');
 };
-
-const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ data }) => {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-
-  useEffect(() => {
-    if (!svgRef.current) return;
-
-    const datosBurbuja = creaDatosBurbuja(data);
-
-    const width = 1000;
-    const height = 800;
-
-    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
-      .style('background', '#f0f0f0');
-
-    const pack = d3.pack<DatosJerarquicos>()
-      .size([width, height])
-      .padding(5);
-
-    const root = d3.hierarchy<DatosJerarquicos>({ children: datosBurbuja })
-      .sum((d) => d.value || 0);
-
-    const nodos = pack(root).leaves();
-
-    agregaNodos(svg, nodos);
-    agregaZoom(svg);
-    agregaLeyenda(svg, datosBurbuja, width);
-
-  }, [data]);
-
-  return (
-    <svg ref={svgRef}></svg>
-  );
-};
-
-export default CulturalGraficoBurbuja;

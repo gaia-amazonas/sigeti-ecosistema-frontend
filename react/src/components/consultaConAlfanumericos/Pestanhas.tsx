@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CulturalBubbleChartD3 from 'components/consultaConAlfanumericos/cultural/Contenido';
+import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
 import GeneralTerritorio from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorios/Contenido';
 
@@ -249,19 +249,19 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         {activo === 'pestanhaGeneral' && tipoConsulta !== 'enTerritorio' && 
           (<GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo} />)}
         {activo === 'pestanhaCultural' && culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+          <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaCultural' && culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+          <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+          <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+          <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaCultural' && culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
+          <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} />
         )}
         {activo === 'pestanhaEducacional' &&  <div>en desarrollo...</div>}
       </PanelPestanhas>
