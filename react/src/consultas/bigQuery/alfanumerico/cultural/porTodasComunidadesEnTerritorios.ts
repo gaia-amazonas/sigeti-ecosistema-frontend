@@ -1,10 +1,10 @@
-// src/consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio.ts
+// src/consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorios.ts
 import haceClausulasWhere from "../clausulas";
 
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
 const funciones: Record<string, Query> = {
-    sexoYLengua: ({comunidadesId}) => `
+    sexoYLengua: ({territoriosId}) => `
         SELECT
             nombre_lengua AS lengua,
             SUM(total_hombres) + SUM(total_mujeres) AS conteo,
@@ -12,17 +12,22 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.distribucion_lenguas_por_comunidad\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            nombre_lengua;`,
-    etniasEnComunidades: ({comunidadesId}) => `
+            nombre_lengua;`
+    ,
+    etniasEnComunidades: ({territoriosId}) => `
         SELECT
-            ETNIA as etnia,
-            SUM(CONTEO) AS conteo
+            ce.ETNIA as etnia,
+            SUM(ce.CONTEO) AS conteo
         FROM
-            \`sigeti.censo_632.Conteo_Etnias\`
+            \`sigeti.censo_632.Conteo_Etnias\` ce
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` cp
+        ON
+            ce.ID_CNIDA = cp.id_cnida
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
+            ${haceClausulasWhere({territoriosId}, 'cp.id_ti')}
         GROUP BY
             etnia;`
     };

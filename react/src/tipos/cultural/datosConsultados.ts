@@ -7,12 +7,22 @@ interface SexosPorLenguasEnComunidadFila {
   nombreComunidad: string;
 }
 
+interface EntniasEnComunidadFila {
+  etnia: string;
+  conteo: number;
+}
+
 interface SexosPorLenguaEnComunidades {
   rows: SexosPorLenguasEnComunidadFila[];
 }
 
+interface EtniasEnComunidades {
+  rows: EntniasEnComunidadFila[];
+}
+
 interface DatosConsultados {
   sexosPorLenguaEnComunidades: SexosPorLenguaEnComunidades | null;
+  etniasEnComunidades: EtniasEnComunidades | null;
 }
 
 export default DatosConsultados;

@@ -1,11 +1,16 @@
+// src/components/consultaConAlfanumericos/Pestanhas.tsx
+
 import React, { useState, useEffect } from 'react';
-import CulturalBubbleChartD3 from 'components/consultaConAlfanumericos/cultural/Contenido';
+import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
 import GeneralTerritorio from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorios/Contenido';
 
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import CulturalComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
@@ -19,7 +24,11 @@ import {
 } from 'buscadores/paraAlfanumerica/General';
 
 import {
-  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorio
+  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorio,
+  buscarPorComunidadesEnTerritorio as buscarCulturalPorComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTerritorio as buscarCulturalPorTodasComunidadesEnTerritorio,
+  buscarPorTodasComunidadesEnTerritorios as buscarCulturalPorTodasComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTodosTerritorios as buscarCulturalPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Cultural';
 
 interface DatosParaConsultar {
@@ -41,7 +50,7 @@ interface DatosPorPestanhaEnTerritorioImp {
 
 interface DatosPorPestanhaEnTerritoriosImp {
   general: GeneralComunidadesEnTerritoriosDatosConsultados;
-  cultural: any[];
+  cultural: CulturalComunidadesEnTerritoriosDatosConsultados;
   educacion: any[];
 }
 
@@ -69,31 +78,57 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 };
 
 const culturalComunidadesEnTerritorioDatosIniciales: CulturalComunidadesEnTerritorioDatosConsultados = {
-  sexosPorLenguaEnComunidades: null
+  sexosPorLenguaEnComunidades: null,
+  etniasEnComunidades: null
 };
+
+const culturalTodasComunidadesEnTerritorioDatosIniciales: CulturalTodasComunidadesEnTerritorioDatosConsultados = {
+  sexosPorLenguaEnComunidades: null,
+  etniasEnComunidades: null
+}
+
+const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
+  sexosPorLenguaEnComunidades: null,
+  etniasEnComunidades: null
+}
+
+const culturalTodasComunidadesEnTerritoriosDatosIniciales: CulturalTodasComunidadesEnTerritoriosDatosConsultados = {
+  sexosPorLenguaEnComunidades: null,
+  etniasEnComunidades: null
+}
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   const [activo, establecerActivo] = useState('pestanhaGeneral');
   const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [generalComunidadesEnTerritorioDatosConsultados, establecerGeneralComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
+    const [generalTodasComunidadesEnTerritorioDatosConsultados, establecerGeneralTodasComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
   const [generalComunidadesEnTerritoriosDatosConsultados, establecerGeneralComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [generalTodasComunidadesEnTerritoriosDatosConsultados, establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritorioDatosConsultados, establecerCulturalComunidadesEnTerritorioDatosConsultados] = useState<CulturalComunidadesEnTerritorioDatosConsultados>(culturalComunidadesEnTerritorioDatosIniciales);
+  const [culturalTodasComunidadesEnTerritorioDatosConsultados, establecerCulturalTodasComunidadesEnTerritorioDatosConsultados] =  useState<CulturalTodasComunidadesEnTerritorioDatosConsultados>(culturalTodasComunidadesEnTerritorioDatosIniciales);
+  const [culturalTodasComunidadesEnTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados] = useState<CulturalTodasComunidadesEnTerritoriosDatosConsultados>(culturalTodasComunidadesEnTerritoriosDatosIniciales);
+  const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
+  const [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales)
 
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: generalComunidadesEnTerritorioDatosIniciales,
     cultural: culturalComunidadesEnTerritorioDatosIniciales,
     educacion: []
   });
+
   const [datosPorPestanhaEnTerritorios, establecerDatosPorPestanhaEnTerritorios] = useState<DatosPorPestanhaEnTerritoriosImp>({
     general: generalComunidadesEnTerritoriosDatosIniciales,
-    cultural: [],
+    cultural: culturalComunidadesEnTerritoriosDatosIniciales,
     educacion: []
   });
 
   useEffect(() => {
     buscarDatosParaPestanha();
   }, [datosParaConsultar, modo, activo]);
+
+  useEffect(() => {
+    console.log("sssssssssss", culturalTodasComunidadesEnTodosTerritoriosDatosConsultados);
+  }, [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados]);
 
   const buscarDatosParaPestanha = async () => {
     if (enUnTerritorio(datosParaConsultar)) {
@@ -111,18 +146,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
   };
 
-  const enUnTerritorio = (datos: DatosParaConsultar) => {
-    return datos.territoriosId.length === 1 && datos.territoriosId[0] !== 'Todos';
-  };
-
-  const enTerritorios = (datos: DatosParaConsultar) => {
-    return datos.territoriosId.length > 1;
-  };
-
-  const esTodosLosTerritoriosYComunidades = (datos: DatosParaConsultar) => {
-    return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';
-  };
-
   const consultarTerritorio = async (datos: DatosParaConsultar, modo: string | string[]) => {
     if (datos.comunidadesId[0] !== 'Todas') {
       if (activo === 'pestanhaGeneral') {
@@ -132,7 +155,12 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerCulturalComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorComunidadesEnTerritorio(datos, modo));
       }
     } else {
-      establecerGeneralComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
+      if (activo === 'pestanhaGeneral') {
+        establecerGeneralTodasComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
+      } 
+      if (activo === 'pestanhaCultural') {
+        establecerCulturalTodasComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorio(datos, modo))
+      }
     }
   };
 
@@ -142,88 +170,64 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTerritorios(datos, modo));
       }
       if (activo === 'pestanhaCultural') {
-        console.log("What I need?");
+        establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
       }
     } else {
-      establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
+      if (activo === 'pestanhaGeneral') {
+        establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
+      }
+      if (activo === 'pestanhaCultural') {
+        establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
+      }
     }
   };
 
   const consultarTodosTerritoriosConTodasComunidades = async (datos: DatosParaConsultar, modo: string | string[]) => {
     if (activo === 'pestanhaGeneral') {
-      establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(datos, modo));
+      establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(modo));
     }
     if (activo === 'pestanhaCultural') {
-      console.log("What I need?");
+      establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     }
   };
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorio({
-      general: {
-        sexo: generalComunidadesEnTerritorioDatosConsultados.sexo,
-        familias: generalComunidadesEnTerritorioDatosConsultados.familias,
-        sexoEdad: generalComunidadesEnTerritorioDatosConsultados.sexoEdad,
-        familiasPorComunidad: generalComunidadesEnTerritorioDatosConsultados.familiasPorComunidad,
-        poblacionPorComunidad: generalComunidadesEnTerritorioDatosConsultados.poblacionPorComunidad,
-        familiasConElectricidadPorComunidad: generalComunidadesEnTerritorioDatosConsultados.familiasConElectricidadPorComunidad,
-        comunidadesGeoJson: generalComunidadesEnTerritorioDatosConsultados.comunidadesGeoJson,
-        territorioGeoJson: generalComunidadesEnTerritorioDatosConsultados.territorioGeoJson
-      },
+      general: generalComunidadesEnTerritorioDatosConsultados,
       cultural: culturalComunidadesEnTerritorioDatosIniciales,
       educacion: []
     });
     establecerTipoConsulta('enTerritorio');
-  }, [generalComunidadesEnTerritorioDatosConsultados]);
+  }, [generalComunidadesEnTerritorioDatosConsultados, culturalComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
+    console.log("general", generalTodasComunidadesEnTerritorioDatosConsultados);
+    console.log("cultural", culturalTodasComunidadesEnTerritorioDatosConsultados);
     establecerDatosPorPestanhaEnTerritorio({
-      general: generalComunidadesEnTerritorioDatosConsultados,
-      cultural: {
-        sexosPorLenguaEnComunidades: culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades
-      },
+      general: generalTodasComunidadesEnTerritorioDatosConsultados,
+      cultural: culturalTodasComunidadesEnTerritorioDatosConsultados,
       educacion: []
     });
     establecerTipoConsulta('enTerritorio');
-  }, [culturalComunidadesEnTerritorioDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritorioDatosConsultados, culturalTodasComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
-      general: {
-        sexo: generalComunidadesEnTerritoriosDatosConsultados.sexo,
-        familias: generalComunidadesEnTerritoriosDatosConsultados.familias,
-        sexoEdad: generalComunidadesEnTerritoriosDatosConsultados.sexoEdad,
-        familiasPorComunidad: generalComunidadesEnTerritoriosDatosConsultados.familiasPorComunidad,
-        poblacionPorComunidad: generalComunidadesEnTerritoriosDatosConsultados.poblacionPorComunidad,
-        familiasConElectricidadPorComunidad: generalComunidadesEnTerritoriosDatosConsultados.familiasConElectricidadPorComunidad,
-        comunidadesGeoJson: generalComunidadesEnTerritoriosDatosConsultados.comunidadesGeoJson,
-        territoriosGeoJson: generalComunidadesEnTerritoriosDatosConsultados.territoriosGeoJson,
-        comunidadesEnTerritorios: generalComunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios
-      },
-      cultural: [],
+      general: generalComunidadesEnTerritoriosDatosConsultados,
+      cultural: culturalComunidadesEnTerritoriosDatosConsultados,
       educacion: []
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalComunidadesEnTerritoriosDatosConsultados, culturalComunidadesEnTerritoriosDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
-      general: {
-        sexo: generalTodasComunidadesEnTerritoriosDatosConsultados.sexo,
-        familias: generalTodasComunidadesEnTerritoriosDatosConsultados.familias,
-        sexoEdad: generalTodasComunidadesEnTerritoriosDatosConsultados.sexoEdad,
-        familiasPorComunidad: generalTodasComunidadesEnTerritoriosDatosConsultados.familiasPorComunidad,
-        poblacionPorComunidad: generalTodasComunidadesEnTerritoriosDatosConsultados.poblacionPorComunidad,
-        familiasConElectricidadPorComunidad: generalTodasComunidadesEnTerritoriosDatosConsultados.familiasConElectricidadPorComunidad,
-        comunidadesGeoJson: generalTodasComunidadesEnTerritoriosDatosConsultados.comunidadesGeoJson,
-        territoriosGeoJson: generalTodasComunidadesEnTerritoriosDatosConsultados.territoriosGeoJson,
-        comunidadesEnTerritorios: generalTodasComunidadesEnTerritoriosDatosConsultados.comunidadesEnTerritorios
-      },
-      cultural: [],
+      general: generalTodasComunidadesEnTerritoriosDatosConsultados,
+      cultural: culturalTodasComunidadesEnTerritoriosDatosConsultados,
       educacion: []
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalTodasComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados]);
 
   return (
     <Contenedor>
@@ -235,13 +239,73 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha $activo={activo === 'pestanhaEducacional'} onClick={() => establecerActivo('pestanhaEducacional')}>Educación</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
-        {activo === 'pestanhaGeneral' && tipoConsulta === 'enTerritorio' &&
-          (<GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} />)}
-        {activo === 'pestanhaGeneral' && tipoConsulta !== 'enTerritorio' && 
-          (<GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo} />)}
-        {activo === 'pestanhaCultural' && culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades && (
-          <CulturalBubbleChartD3 data={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} />
-        )}
+        {
+          activo === 'pestanhaGeneral' &&
+          tipoConsulta === 'enTerritorio' &&
+          (
+            <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} />
+          )
+        }
+        {
+          activo === 'pestanhaGeneral' &&
+          tipoConsulta !== 'enTerritorio' && 
+          (
+            <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo} />
+          )
+        }
+        {
+          activo === 'pestanhaCultural' &&
+          culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades &&
+          culturalComunidadesEnTerritorioDatosConsultados.etniasEnComunidades && 
+          (
+          <>
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+          </>
+          )
+        }
+        { activo === 'pestanhaCultural' &&
+          culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades &&
+          culturalComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades &&
+          (
+          <>
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+          </>
+          )
+        }
+        {
+          activo === 'pestanhaCultural' &&
+          culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades &&
+          culturalTodasComunidadesEnTerritorioDatosConsultados.etniasEnComunidades &&
+          (
+            <>
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+            </>
+          )
+        }
+        {
+          activo === 'pestanhaCultural' &&
+          culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades &&
+          culturalTodasComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades &&
+          (
+            <>
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+            </>
+          )
+        }
+        { activo === 'pestanhaCultural' &&
+          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && 
+          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etniasEnComunidades &&
+          (
+            <>
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+            </>
+          )
+        }
         {activo === 'pestanhaEducacional' &&  <div>en desarrollo...</div>}
       </PanelPestanhas>
     </Contenedor>
@@ -249,3 +313,15 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 };
 
 export default Pestanhas;
+
+const enUnTerritorio = (datos: DatosParaConsultar) => {
+  return datos.territoriosId.length === 1 && datos.territoriosId[0] !== 'Todos';
+};
+
+const enTerritorios = (datos: DatosParaConsultar) => {
+  return datos.territoriosId.length > 1;
+};
+
+const esTodosLosTerritoriosYComunidades = (datos: DatosParaConsultar) => {
+  return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';
+};

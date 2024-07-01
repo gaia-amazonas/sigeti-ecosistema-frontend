@@ -1,9 +1,10 @@
-// src/pages/consulta/espacial/inicio.tsx
 import React from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
-import Mapa from 'components/consultaConMapa/Mapa';
 import BotonReiniciar from 'components/BotonReiniciar';
+
+const Mapa = dynamic(() => import('components/consultaConMapa/Mapa'), { ssr: false });
 
 const Espacial: React.FC = () => {
   const router = useRouter();
