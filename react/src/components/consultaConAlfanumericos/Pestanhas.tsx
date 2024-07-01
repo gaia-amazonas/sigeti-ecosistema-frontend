@@ -1,3 +1,5 @@
+// src/components/consultaConAlfanumericos/Pestanhas.tsx
+
 import React, { useState, useEffect } from 'react';
 import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
 import GeneralTerritorio from 'components/consultaConAlfanumericos/general/comunidadesEnTerritorio/Contenido';
@@ -124,6 +126,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     buscarDatosParaPestanha();
   }, [datosParaConsultar, modo, activo]);
 
+  useEffect(() => {
+    console.log("sssssssssss", culturalTodasComunidadesEnTodosTerritoriosDatosConsultados);
+  }, [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados]);
+
   const buscarDatosParaPestanha = async () => {
     if (enUnTerritorio(datosParaConsultar)) {
       await consultarTerritorio(datosParaConsultar, modo);
@@ -146,6 +152,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         establecerGeneralComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorComunidadesEnTerritorio(datos, modo));
       }
       if (activo === 'pestanhaCultural') {
+        console.log("gggggggggggggg");
         establecerCulturalComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorComunidadesEnTerritorio(datos, modo));
       }
     } else {
@@ -192,20 +199,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       educacion: []
     });
     establecerTipoConsulta('enTerritorio');
-  }, [generalComunidadesEnTerritorioDatosConsultados]);
-
-  useEffect(() => {
-    establecerDatosPorPestanhaEnTerritorio({
-      general: generalComunidadesEnTerritorioDatosConsultados,
-      cultural: culturalComunidadesEnTerritorioDatosConsultados,
-      educacion: []
-    });
-    establecerTipoConsulta('enTerritorio');
-  }, [culturalComunidadesEnTerritorioDatosConsultados]);
-
-  useEffect(() => {
-    console.log("culturalComunidadesEnTerritorioDatosConsultados", culturalComunidadesEnTerritorioDatosConsultados);
-  }, [culturalComunidadesEnTerritorioDatosConsultados]);
+  }, [generalComunidadesEnTerritorioDatosConsultados, culturalComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
@@ -214,16 +208,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       educacion: []
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalComunidadesEnTerritoriosDatosConsultados]);
-
-  useEffect(() => {
-    establecerDatosPorPestanhaEnTerritorios({
-      general: generalComunidadesEnTerritoriosDatosConsultados,
-      cultural: culturalComunidadesEnTerritoriosDatosConsultados,
-      educacion: []
-    });
-    establecerTipoConsulta('enTerritorios');
-  }, [culturalComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalComunidadesEnTerritoriosDatosConsultados, culturalComunidadesEnTerritoriosDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
@@ -232,7 +217,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       educacion: []
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalTodasComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados]);
 
   return (
     <Contenedor>

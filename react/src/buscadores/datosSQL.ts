@@ -33,7 +33,6 @@ const intentaBuscarDatosGeoJson = async (
     consulta: string,
     modo: string | string[],
     featuresMapa: (row: any) => any): Promise<FeatureCollection> => {
-        console.log("Consulta", consulta);
         const json = await buscarDatos(consulta, modo);
         const features = json.rows.map(featuresMapa).filter((feature: any) => feature !== null);
         const featureCollection: FeatureCollection = {

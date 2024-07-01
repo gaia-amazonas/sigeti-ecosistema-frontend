@@ -23,7 +23,7 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
 };
 
 export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexo(datosParaConsultar), modo);
+  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
     etniasEnComunidades: null
@@ -31,7 +31,7 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
 };
 
 export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexo(datosParaConsultar), modo);
+  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
     etniasEnComunidades: null
@@ -39,9 +39,10 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
 };
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.sexo, modo);
+  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.sexoYLengua, modo);
+  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etniasEnComunidades, modo);
   return {
     sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: null
+    etniasEnComunidades: etniasEnComunidades
   };
 };

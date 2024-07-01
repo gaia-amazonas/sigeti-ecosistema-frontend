@@ -4,7 +4,7 @@ import haceClausulasWhere from "../clausulas";
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
 const funciones: Record<string, Query> = {
-    sexo: ({territoriosId}) => `
+    sexoYLengua: ({territoriosId}) => `
         SELECT
             nombre_lengua AS lengua,
             SUM(total_hombres) AS hombres, 

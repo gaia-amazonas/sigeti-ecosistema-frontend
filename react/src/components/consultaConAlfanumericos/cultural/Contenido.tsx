@@ -1,3 +1,5 @@
+// src/components/consultaConAlfanumericos/cultural/Contenido.tsx
+
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
@@ -11,13 +13,13 @@ interface GraficoBurbujaImp {
 
 interface DatosBurbuja {
   label: string;
-  value: number;
+  valor: number;
 }
 
 interface DatosJerarquicos {
   children: DatosBurbuja[];
   label?: string;
-  value?: number;
+  valor?: number;
 }
 
 const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
@@ -36,7 +38,7 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos }) => {
       .size([grosor, altura])
       .padding(5);
     const root = d3.hierarchy<DatosJerarquicos>({ children: datosBurbuja })
-      .sum((d) => d.value || 0);
+      .sum((d) => d.valor || 0);
     const nodos = pack(root).leaves();
     agregaNodos(svg, nodos);
     agregaZoom(svg);
@@ -54,7 +56,7 @@ export default CulturalGraficoBurbuja;
 const creaDatosBurbuja = (datos: GraficoBurbujaImp['datos']): DatosBurbuja[] => {
   return datos.map((item) => ({
     label: item.lengua,
-    value: item.hombres + item.mujeres,
+    valor: item.hombres + item.mujeres,
   }));
 };
 
@@ -78,7 +80,7 @@ const agregaNodos = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   nodo.append('text')
     .attr('dy', '1em')
     .attr('text-anchor', 'middle')
-    .text((d) => (d.data as DatosBurbuja).value.toString())
+    .text((d) => (d.data as DatosBurbuja).valor.toString())
     .style('fill', '#fff')
     .style('font-family', 'Arial')
     .style('font-size', '12px')
@@ -111,7 +113,7 @@ const agregaLeyenda = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined
     .enter().append('text')
     .attr('x', 30)
     .attr('y', (d, i) => i * 25 + 15)
-    .text((d) => `${d.label}: ${d.value}`)
+    .text((d) => `${d.label}: ${d.valor}`)
     .style('font-family', 'Arial')
     .style('font-size', '14px');
 };
