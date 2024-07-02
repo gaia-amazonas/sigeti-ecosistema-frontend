@@ -21,7 +21,7 @@ const archivoVariablesAmbiente = process.env.AMBIENTE === 'produccion'
   ? '.ambiente.produccion'
   : process.env.AMBIENTE === 'desarrollo'
   ? '.ambiente.desarrollo'
-  : '.ambiente.local';
+  : '.ambiente.escritorio';
 
 const direccionAmbiente = path.resolve(process.cwd(), archivoVariablesAmbiente);
 config({ path: direccionAmbiente });
@@ -31,7 +31,7 @@ const clienteBigQuery = new BigQuery({
 });
 
 export default async function handler(solicitud: NextApiRequest, respuesta: NextApiResponse) {
-  const mode = solicitud.cookies.mode || 'online'; // Read mode from cookies
+  const mode = solicitud.cookies.mode || 'online';
 
   if (solicitud.method === 'GET') {
     const { query } = solicitud.query;

@@ -7,8 +7,8 @@ import { Contenedor, ContenedorPaso, Titulo } from './estilos/Seleccion';
 
 
 interface DatosParaConsultar {
-  territorios_id: string[];
-  comunidades_id: string[];
+  territoriosId: string[];
+  comunidadesId: string[];
 }
 
 interface SeleccionImp {
@@ -22,8 +22,8 @@ interface SeleccionImp {
 const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamico, establecerPasoDinamico, modo }) => {
   const [paso, establecerPaso] = useState<number>(1);
   const [datosParaConsultar, establecerDatosParaConsultar] = useState<DatosParaConsultar>({
-    territorios_id: [],
-    comunidades_id: [],
+    territoriosId: [],
+    comunidadesId: [],
   });
 
   const siguientePaso = () => {
@@ -44,8 +44,8 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
   useEffect(() => {
     if (paso === 1) {
       establecerDatosParaConsultar({
-        territorios_id: [],
-        comunidades_id: [],
+        territoriosId: [],
+        comunidadesId: [],
       });
     }
   }, [paso, reiniciar]);

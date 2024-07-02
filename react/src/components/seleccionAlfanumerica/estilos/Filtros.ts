@@ -1,3 +1,5 @@
+// src/components/seleccionAlfanumerica/estilos/Filtros.ts
+
 import styled from 'styled-components';
 
 export const Contenedor = styled.div`
@@ -14,13 +16,13 @@ export const Contenedor = styled.div`
   overflow-y: auto;
 `;
 
-export const OpcionComoBoton = styled.button<{ seleccionado?: boolean }>`
+export const OpcionComoBoton = styled.button<{ $seleccionado?: boolean }>`
   width: 100%;
   padding: 10px 20px;
   margin: 10px 0;
   font-size: 1em;
   color: #fff;
-  background-color: ${props => props.seleccionado ? '#0056b3' : '#4682b4'};
+  background-color: ${props => props.$seleccionado ? '#0056b3' : '#4682b4'};
   border: none;
   border-radius: 4px;
   cursor: pointer;

@@ -1,23 +1,15 @@
-// src/components/consultaConMapa/Mapa.tsx
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
-import dynamic from 'next/dynamic';
-import { Circle, Layer } from 'leaflet';
-import { FeatureCollection, Geometry, Feature } from 'geojson';
 import React, { useCallback, useEffect, useState } from 'react';
-
 import logger from 'utilidades/logger';
-
-import estilos from './Mapa.module.css';
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { estiloContenedorBotones, estiloBoton } from './estilos';
-import { estiloTerritorio }from 'estilosParaMapas/paraMapas';
-
+import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { buscarDatos, buscarDatosGeoJson } from 'buscadores/datosSQL';
 import consultasBigQueryParaTerritorios from 'consultas/bigQuery/mapa/paraTerritorios';
 import consultasBigQueryParaComunidades from 'consultas/bigQuery/mapa/paraComunidades';
 import consultasBigQueryParaLineasColindantes from 'consultas/bigQuery/mapa/paraLineasColindantes';
-
-import { traeInformacionDocumentalTerritorio } from 'buscadores/paraMapa'
+import { traeInformacionDocumentalTerritorio } from 'buscadores/paraMapa';
 import {
   adjuntarAPopUp,
   creaCirculoConAnhoDentro,
@@ -31,29 +23,26 @@ import {
   crearHtmlPopUpComunidad,
   htmlParaPopUpDeTerritorio
 } from './graficosDinamicos';
-
 import { GeometriasConVariables, FeatureComunidades, FilaComunidades } from 'tipos/paraMapas';
-import { 
-  PathZIndex, 
-  LineaSeleccionada, 
+import {
+  PathZIndex,
+  LineaSeleccionada,
   DocumentosPorTerritorio,
-  FeatureTerritorios, 
-  FeatureLineas, 
-  FilaTerritorios, 
-  FilaLineas, 
+  FeatureTerritorios,
+  FeatureLineas,
+  FilaTerritorios,
+  FilaLineas,
   MapaImp
 } from './tipos';
+import dynamic from 'next/dynamic';
+import { Feature, Geometry, GeoJsonProperties, FeatureCollection } from 'geojson';
 
-
-const Contenedor = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
-const CapaOSM = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const LineasColindantesGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
-const TerritoriosGeoJson = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
-const CirculoComunidad = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
-
+const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const GeoJSON = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false });
+const Circle = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
 
 const Mapa: React.FC<MapaImp> = ({ modo }) => {
-
   let lineaSeleccionada: LineaSeleccionada | null = null;
 
   const [lineasColindantesGeoJson, establecerLineasColindantesGeoJson] = useState<FeatureCollection | null>(null);
@@ -82,14 +71,14 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     traerComunidades(modo);
   };
 
-    const traerLineasColindantes = async (modo: string | string[]) => {
+  const traerLineasColindantes = async (modo: string | string[]) => {
     try {
       const lineas = (fila: FilaLineas): FeatureLineas => ({
         type: 'Feature',
         properties: { id: fila.OBJECTID, col_entre: fila.COL_ENTRE },
         geometry: JSON.parse(fila.geometry),
       });
-      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometrias, modo, lineas);
+      const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometriasYColindanciaEntre, modo, lineas);
       establecerLineasColindantesGeoJson(geoJsonLineas);
       establecerEstaCargandoLineas(false);
     } catch (error) {
@@ -130,7 +119,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
-  const enCadaLinea = (feature: Feature<Geometry, any>, layer: Layer) => {
+  const enCadaLinea = (feature: Feature<Geometry, any>, layer: any) => {
     const linea = feature as unknown as FeatureLineas;
     if (linea.properties && linea.properties.id) {
       determinaColorLineaColindante(linea);
@@ -143,7 +132,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
-  const enCadaTerritorio = (territorio: FeatureTerritorios, layer: Layer) => {
+  const enCadaTerritorio = (territorio: FeatureTerritorios, layer: any) => {
     if (territorio.properties.id) {
       layer.on('click', async () => {
         const contenedorLineaTiempo = creaContenedorLineaTiempo();
@@ -165,7 +154,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
     }
   };
 
-  const enCadaComunidad = useCallback(async (id: string, circle: Circle) => {
+  const enCadaComunidad = useCallback(async (id: string, circle: any) => {
     const animacionCargando = `
       <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
         <div class="${estilos.spinner}"></div>
@@ -189,7 +178,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       {estaCargandoLineas || estaCargandoTerritorios || estaCargandoComunidades ? (
-        <div className={estilos['loading-overlay']}>
+        <div className={estilos['superposicionCarga']}>
           <div className={estilos.spinner}></div>
         </div>
       ) : null}
@@ -199,9 +188,9 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         <button onClick={() => establecerMostrarTerritorios(!mostrarTerritorios)} style={estiloBoton(mostrarTerritorios, '#3388FF')}>Territorios</button>
         <button onClick={() => establecerMostrarComunidades(!mostrarComunidades)} style={estiloBoton(mostrarComunidades, '#3388FF')}>Comunidades</button>
       </div>
-      <Contenedor center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
+      <MapContainer center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {mostrarOSM && (
-          <CapaOSM
+          <TileLayer
             url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
@@ -209,22 +198,22 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
         {allDataLoaded && (
           <>
             {mostrarTerritorios && territoriosGeoJson && (
-              <TerritoriosGeoJson data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
+              <GeoJSON data={territoriosGeoJson} onEachFeature={enCadaTerritorio} style={estiloTerritorio} />
             )}
-            {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad, index) => {
+            {mostrarComunidades && comunidadesGeoJson && comunidadesGeoJson.features.map((comunidad: Feature<Geometry, GeoJsonProperties> | FeatureCollection<Geometry, GeoJsonProperties>, index: React.Key | null | undefined) => {
               const centroide = turf.centroid(comunidad).geometry.coordinates;
               const id = (comunidad as GeometriasConVariables).properties.id;
               return (
                 <React.Fragment key={index}>
-                  <CirculoComunidad
+                  <Circle
                     center={[centroide[1], centroide[0]]}
                     radius={1000}
                     pathOptions={{ color: 'black', fillOpacity: 0.1 }}
                     eventHandlers={{
-                      click: (e) => enCadaComunidad(id, e.target as Circle)
+                      click: (e) => enCadaComunidad(id, e.target as any)
                     }}
                   />
-                  <CirculoComunidad
+                  <Circle
                     center={[centroide[1], centroide[0]]}
                     radius={10}
                     pathOptions={{ color: 'black', fillOpacity: 1 }}
@@ -233,11 +222,11 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
               );
             })}
             {mostrarLineasColindantes && lineasColindantesGeoJson && (
-              <LineasColindantesGeoJson data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
+              <GeoJSON data={lineasColindantesGeoJson} onEachFeature={enCadaLinea} />
             )}
           </>
         )}
-      </Contenedor>
+      </MapContainer>
     </div>
   );
 };

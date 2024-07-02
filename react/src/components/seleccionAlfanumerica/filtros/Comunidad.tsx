@@ -4,8 +4,8 @@ import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'comp
 
 
 interface DatosParaConsultar {
-  territorios_id: string[];
-  comunidades_id: string[];
+  territoriosId: string[];
+  comunidadesId: string[];
 }
 
 interface Opcion {
@@ -21,8 +21,8 @@ interface ComunidadImp {
 }
 
 const consultas = {
-  segregado: (territorios_id: string[], modo: 'online' | 'offline') => {
-    const whereClause = territorios_id.length > 0 ? territorios_id.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territorios_id[0]}'`;
+  segregado: (territoriosId: string[], modo: 'online' | 'offline') => {
+    const whereClause = territoriosId.length > 0 ? territoriosId.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territoriosId[0]}'`;
     return `
       SELECT id_cnida, comunidad
       FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
@@ -42,15 +42,15 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState<string>('');
-  const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.comunidades_id);
+  const [seleccionados, establecerSeleccionados] = useState<string[]>(datosParaConsultar.comunidadesId);
 
   useEffect(() => {
-    async function buscarDatos(territorios_id: string[]) {
+    async function buscarDatos(territoriosId: string[]) {
       let consulta: string;
-      if (territorios_id[0] === 'Todos') {
+      if (territoriosId[0] === 'Todos') {
         consulta = consultas.total(modo);
       } else {
-        consulta = consultas.segregado(territorios_id, modo);
+        consulta = consultas.segregado(territoriosId, modo);
       }
       const puntofinal = modo === 'online' ? '/api/bigQuery' : '/api/postgreSQL';
       const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
@@ -59,9 +59,9 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
       establecerOpciones(opcionesConTodas);
       establecerOpcionesFiltradas(opcionesConTodas);
     }
-    buscarDatos(datosParaConsultar.territorios_id);
+    buscarDatos(datosParaConsultar.territoriosId);
 
-  }, [datosParaConsultar.territorios_id, modo]);
+  }, [datosParaConsultar.territoriosId, modo]);
 
   useEffect(() => {
     establecerOpcionesFiltradas(
@@ -84,7 +84,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
   };
 
   useEffect(() => {
-    establecerDatosParaConsultar({ ...datosParaConsultar, comunidades_id: seleccionados });
+    establecerDatosParaConsultar({ ...datosParaConsultar, comunidadesId: seleccionados });
     if (seleccionados[0] === "Todas") {
       siguientePaso();
     }
@@ -105,7 +105,7 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
         <OpcionComoBoton
           key={opcion.id_cnida}
           onClick={() => manejarSeleccion(opcion.id_cnida)}
-          seleccionado={seleccionados.includes(opcion.id_cnida)}
+          $seleccionado={seleccionados.includes(opcion.id_cnida)}
         >
           {opcion.comunidad}
         </OpcionComoBoton>
