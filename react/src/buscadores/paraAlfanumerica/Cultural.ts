@@ -12,40 +12,47 @@ interface DatosParaConsultar {
 }
 
 export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [sexosPorLenguaEnComunidades, etniasEnComunidades] = await Promise.all([
+  const [sexosPorLengua, etnias, clanes] = await Promise.all([
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo),
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etniasEnComunidades(datosParaConsultar), modo)
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo)
   ]);
-
   return {
-    sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: etniasEnComunidades
+    sexosPorLengua: sexosPorLengua,
+    etnias: etnias,
+    clanes: clanes
   };
 };
 
 export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo);
-  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.etniasEnComunidades(datosParaConsultar), modo);
+  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo);
+  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.etnias(datosParaConsultar), modo);
+  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.clanes(datosParaConsultar), modo);
   return {
-    sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: etniasEnComunidades
+    sexosPorLengua: sexosPorLengua,
+    etnias: etnias,
+    clanes: clanes
   };
 };
 
 export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
-  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etniasEnComunidades(datosParaConsultar), modo);
+  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
+  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etnias(datosParaConsultar), modo);
+  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.clanes(datosParaConsultar), modo);
   return {
-    sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: etniasEnComunidades
+    sexosPorLengua: sexosPorLengua,
+    etnias: etnias,
+    clanes: clanes
   };
 };
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLenguaEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.sexoYLengua, modo);
-  const etniasEnComunidades = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etniasEnComunidades, modo);
+  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.sexoYLengua, modo);
+  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etnias, modo);
+  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.clanes, modo);
   return {
-    sexosPorLenguaEnComunidades: sexosPorLenguaEnComunidades,
-    etniasEnComunidades: etniasEnComunidades
+    sexosPorLengua: sexosPorLengua,
+    etnias: etnias,
+    clanes: clanes
   };
 };

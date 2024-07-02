@@ -78,30 +78,34 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 };
 
 const culturalComunidadesEnTerritorioDatosIniciales: CulturalComunidadesEnTerritorioDatosConsultados = {
-  sexosPorLenguaEnComunidades: null,
-  etniasEnComunidades: null
+  sexosPorLengua: null,
+  etnias: null,
+  clanes: null
 };
 
 const culturalTodasComunidadesEnTerritorioDatosIniciales: CulturalTodasComunidadesEnTerritorioDatosConsultados = {
-  sexosPorLenguaEnComunidades: null,
-  etniasEnComunidades: null
+  sexosPorLengua: null,
+  etnias: null,
+  clanes: null
 }
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
-  sexosPorLenguaEnComunidades: null,
-  etniasEnComunidades: null
+  sexosPorLengua: null,
+  etnias: null,
+  clanes: null
 }
 
 const culturalTodasComunidadesEnTerritoriosDatosIniciales: CulturalTodasComunidadesEnTerritoriosDatosConsultados = {
-  sexosPorLenguaEnComunidades: null,
-  etniasEnComunidades: null
+  sexosPorLengua: null,
+  etnias: null,
+  clanes: null
 }
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   const [activo, establecerActivo] = useState('pestanhaGeneral');
   const [tipoConsulta, establecerTipoConsulta] = useState('');
   const [generalComunidadesEnTerritorioDatosConsultados, establecerGeneralComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
-    const [generalTodasComunidadesEnTerritorioDatosConsultados, establecerGeneralTodasComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
+  const [generalTodasComunidadesEnTerritorioDatosConsultados, establecerGeneralTodasComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
   const [generalComunidadesEnTerritoriosDatosConsultados, establecerGeneralComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [generalTodasComunidadesEnTerritoriosDatosConsultados, establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritorioDatosConsultados, establecerCulturalComunidadesEnTerritorioDatosConsultados] = useState<CulturalComunidadesEnTerritorioDatosConsultados>(culturalComunidadesEnTerritorioDatosIniciales);
@@ -125,10 +129,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   useEffect(() => {
     buscarDatosParaPestanha();
   }, [datosParaConsultar, modo, activo]);
-
-  useEffect(() => {
-    console.log("sssssssssss", culturalTodasComunidadesEnTodosTerritoriosDatosConsultados);
-  }, [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados]);
 
   const buscarDatosParaPestanha = async () => {
     if (enUnTerritorio(datosParaConsultar)) {
@@ -201,8 +201,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   }, [generalComunidadesEnTerritorioDatosConsultados, culturalComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
-    console.log("general", generalTodasComunidadesEnTerritorioDatosConsultados);
-    console.log("cultural", culturalTodasComunidadesEnTerritorioDatosConsultados);
     establecerDatosPorPestanhaEnTerritorio({
       general: generalTodasComunidadesEnTerritorioDatosConsultados,
       cultural: culturalTodasComunidadesEnTerritorioDatosConsultados,
@@ -255,54 +253,64 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         }
         {
           activo === 'pestanhaCultural' &&
-          culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades &&
-          culturalComunidadesEnTerritorioDatosConsultados.etniasEnComunidades && 
+          culturalComunidadesEnTerritorioDatosConsultados.sexosPorLengua &&
+          culturalComunidadesEnTerritorioDatosConsultados.etnias && 
+          culturalComunidadesEnTerritorioDatosConsultados.clanes &&
           (
           <>
-            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
-            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.etnias.rows} labelKey="etnia" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritorioDatosConsultados.clanes.rows} labelKey="etnia" valueKey="conteo" />
           </>
           )
         }
         { activo === 'pestanhaCultural' &&
-          culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades &&
-          culturalComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades &&
+          culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLengua &&
+          culturalComunidadesEnTerritoriosDatosConsultados.etnias &&
+          culturalComunidadesEnTerritoriosDatosConsultados.clanes &&
           (
           <>
-            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
-            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.etnias.rows} labelKey="etnia" valueKey="conteo" />
+            <CulturalGraficoBurbuja datos={culturalComunidadesEnTerritoriosDatosConsultados.clanes.rows} labelKey="clan" valueKey="conteo" />
           </>
           )
         }
         {
           activo === 'pestanhaCultural' &&
-          culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades &&
-          culturalTodasComunidadesEnTerritorioDatosConsultados.etniasEnComunidades &&
+          culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLengua &&
+          culturalTodasComunidadesEnTerritorioDatosConsultados.etnias &&
+          culturalTodasComunidadesEnTerritorioDatosConsultados.clanes &&
           (
             <>
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.etnias.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritorioDatosConsultados.clanes.rows} labelKey="clan" valueKey="conteo" />
             </>
           )
         }
         {
           activo === 'pestanhaCultural' &&
-          culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades &&
-          culturalTodasComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades &&
+          culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLengua &&
+          culturalTodasComunidadesEnTerritoriosDatosConsultados.etnias &&
+          culturalTodasComunidadesEnTerritoriosDatosConsultados.clanes &&
           (
             <>
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.etnias.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTerritoriosDatosConsultados.clanes.rows} labelKey="clan" valueKey="conteo" />
             </>
           )
         }
         { activo === 'pestanhaCultural' &&
-          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades && 
-          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etniasEnComunidades &&
+          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLengua && 
+          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etnias &&
+          culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.clanes &&
           (
             <>
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLenguaEnComunidades.rows} labelKey="lengua" valueKey="conteo" />
-              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etniasEnComunidades.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etnias.rows} labelKey="etnia" valueKey="conteo" />
+              <CulturalGraficoBurbuja datos={culturalTodasComunidadesEnTodosTerritoriosDatosConsultados.etnias.rows} labelKey="clan" valueKey="conteo" />
             </>
           )
         }

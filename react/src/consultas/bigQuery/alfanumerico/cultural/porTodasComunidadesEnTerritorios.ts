@@ -16,7 +16,7 @@ const funciones: Record<string, Query> = {
         GROUP BY
             nombre_lengua;`
     ,
-    etniasEnComunidades: ({territoriosId}) => `
+    etnias: ({territoriosId}) => `
         SELECT
             ce.ETNIA as etnia,
             SUM(ce.CONTEO) AS conteo
@@ -30,6 +30,17 @@ const funciones: Record<string, Query> = {
             ${haceClausulasWhere({territoriosId}, 'cp.id_ti')}
         GROUP BY
             etnia;`
+    ,
+    clanes: ({territoriosId}) => `
+        SELECT
+            COUNT(*) AS conteo,
+            clan
+        FROM
+            \`sigeti.censo_632.BD_personas\`
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+        GROUP BY
+            clan;`
     };
 
 export default funciones;

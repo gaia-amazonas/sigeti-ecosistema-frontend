@@ -11,7 +11,7 @@ const funciones = {
         GROUP BY
             nombre_lengua;`
     ,
-    etniasEnComunidades: `
+    etnias: `
         SELECT
             ETNIA as etnia,
             SUM(CONTEO) AS conteo
@@ -19,6 +19,15 @@ const funciones = {
             \`sigeti.censo_632.Conteo_Etnias\`
         GROUP BY
             etnia;`
+    ,
+    clanes: `
+        SELECT
+            COUNT(*) AS conteo,
+            clan
+        FROM
+            \`sigeti.censo_632.BD_personas\`
+        GROUP BY
+            clan;`
     };
 
 export default funciones;

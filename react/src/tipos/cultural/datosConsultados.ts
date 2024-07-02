@@ -12,6 +12,11 @@ interface EntniasEnComunidadFila {
   conteo: number;
 }
 
+interface ClanesEnComunidadFila {
+  clan: string;
+  conteo: number;
+}
+
 interface SexosPorLenguaEnComunidades {
   rows: SexosPorLenguasEnComunidadFila[];
 }
@@ -20,9 +25,14 @@ interface EtniasEnComunidades {
   rows: EntniasEnComunidadFila[];
 }
 
+interface ClanesEnComunidades {
+  rows: ClanesEnComunidadFila[];
+}
+
 interface DatosConsultados {
-  sexosPorLenguaEnComunidades: SexosPorLenguaEnComunidades | null;
-  etniasEnComunidades: EtniasEnComunidades | null;
+  sexosPorLengua: SexosPorLenguaEnComunidades | null;
+  etnias: EtniasEnComunidades | null;
+  clanes: ClanesEnComunidades | null;
 }
 
 export default DatosConsultados;
