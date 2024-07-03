@@ -15,16 +15,26 @@ const funciones: Record<string, Query> = {
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
             nombre_lengua;`,
-    etniasEnComunidades: ({comunidadesId}) => `
+    etnias: ({comunidadesId}) => `
         SELECT
-            ETNIA as etnia,
+            ETNIA AS etnia,
             SUM(CONTEO) AS conteo
         FROM
             \`sigeti.censo_632.Conteo_Etnias\`
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
-            etnia;`
+            etnia;`,
+    clanes: ({comunidadesId}) => `
+        SELECT
+            COUNT(*) AS conteo,
+            clan
+        FROM
+            \`sigeti.censo_632.BD_personas\`
+        WHERE
+            ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
+        GROUP BY
+            clan;`
     };
 
 export default funciones;

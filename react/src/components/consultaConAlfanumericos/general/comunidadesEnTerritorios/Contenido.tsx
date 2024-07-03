@@ -7,7 +7,7 @@ import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem 
 
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
-import ComponenteSexoEdad from '../SexoEdad';
+import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
@@ -37,7 +37,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
     hombreContador,
     totalContador
   } = calcularSexosPorEdades(datosExtraidos.sexo);
-  const datosPiramidalesSexoEdad: DatosPiramidalesItem[] | null = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
+  const datosPiramidalesSexoEdad = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
@@ -56,7 +56,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
       <CajaTitulo>SEXO Y EDAD</CajaTitulo>
-      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} />
+      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo='Hombre' labelDerecho='Mujer' />
       <CajaTitulo>MAPA</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
@@ -136,7 +136,7 @@ const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | 
     return null;
   }
   return sexoEdadDatos.rows.map((item: SexoEdadFila) => ({
-    grupoPorEdad: item.grupoPorEdad,
+    grupo: item.grupoPorEdad,
     [item.sexo]: item.contador * (item.sexo === 'Hombre' ? -1 : 1)
   }));
 };
