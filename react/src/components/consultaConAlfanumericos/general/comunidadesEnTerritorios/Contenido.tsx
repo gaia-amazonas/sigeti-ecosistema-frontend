@@ -7,7 +7,7 @@ import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem 
 
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
-import ComponenteSexoEdad from '../SexoEdad';
+import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
 import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';

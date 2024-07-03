@@ -1,6 +1,8 @@
 // src/buscadores/paraAlfanumerica/Cultural.ts
-import ComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+
 import { buscarDatos } from 'buscadores/datosSQL';
+
+import ComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 import consultasCulturalesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio';
 import consultasCulturalesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorio';
 import consultasCulturalesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorios';
@@ -15,7 +17,7 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
   const [sexosPorLengua, etnias, clanes] = await Promise.all([
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo),
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo)
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.clanes(datosParaConsultar), modo)
   ]);
   return {
     sexosPorLengua: sexosPorLengua,
