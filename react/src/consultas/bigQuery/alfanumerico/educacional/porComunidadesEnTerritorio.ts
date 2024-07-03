@@ -7,7 +7,6 @@ type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: strin
 const funciones: Record<string, Query> = {
     escolaridadJoven: ({comunidadesId}) => `
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Ninguna' AS nivelEducativo,
             SUM(Esc_Ninguna) AS conteo
@@ -17,7 +16,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'NSNR' AS nivelEducativo,
             SUM(Esc_NSNR) AS conteo
@@ -27,7 +25,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Preescolar' AS nivelEducativo,
             SUM(Esc_Preescolar) AS conteo
@@ -37,7 +34,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Primaria' AS nivelEducativo,
             SUM(Esc_Primaria) AS conteo
@@ -47,7 +43,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Media' AS nivelEducativo,
             SUM(Esc_Media) AS conteo
@@ -57,7 +52,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Secundaria' AS nivelEducativo,
             SUM(Esc_Secundaria) AS conteo
@@ -67,7 +61,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Tecnico' AS nivelEducativo,
             SUM(Esc_Tecnico) AS conteo
@@ -77,7 +70,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Tecnologico' AS nivelEducativo,
             SUM(Esc_Tecnologica) AS conteo
@@ -87,7 +79,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Universitaria Incompleta' AS nivelEducativo,
             SUM(Esc_UniversitarioIncomp) AS conteo
@@ -97,7 +88,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Universitaria Completa' AS nivelEducativo,
             SUM(Esc_UniversitarioComp) AS conteo
@@ -107,7 +97,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo;`,
     escolaridad: ({comunidadesId}) => `
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Ninguna' AS nivelEducativo,
             SUM(Esc_Ninguna) AS conteo
@@ -116,7 +105,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'NSNR' AS nivelEducativo,
             SUM(Esc_NSNR) AS conteo
@@ -125,7 +113,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Preescolar' AS nivelEducativo,
             SUM(Esc_Preescolar) AS conteo
@@ -134,7 +121,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Primaria' AS nivelEducativo,
             SUM(Esc_Primaria) AS conteo
@@ -143,7 +129,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Media' AS nivelEducativo,
             SUM(Esc_Media) AS conteo
@@ -152,7 +137,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Secundaria' AS nivelEducativo,
             SUM(Esc_Secundaria) AS conteo
@@ -161,7 +145,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Tecnico' AS nivelEducativo,
             SUM(Esc_Tecnico) AS conteo
@@ -170,7 +153,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Tecnologico' AS nivelEducativo,
             SUM(Esc_Tecnologica) AS conteo
@@ -179,7 +161,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Universitaria Incompleta' AS nivelEducativo,
             SUM(Esc_UniversitarioIncomp) AS conteo
@@ -188,7 +169,6 @@ const funciones: Record<string, Query> = {
         GROUP BY ID_CNIDA, sexo
         UNION ALL
         SELECT
-            ID_CNIDA as comunidadId,
             sexo,
             'Universitaria Completa' AS nivelEducativo,
             SUM(Esc_UniversitarioComp) AS conteo

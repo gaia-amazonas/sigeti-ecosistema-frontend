@@ -1,7 +1,6 @@
 // src/tipos/educacional/datosConsultados.ts
 
 export interface EscolaridadFila {
-  comunidadId: string;
   sexo: string;
   nivelEducativo: string;
   conteo: number;
