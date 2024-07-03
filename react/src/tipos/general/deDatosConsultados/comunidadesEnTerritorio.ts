@@ -48,7 +48,7 @@ export interface SexoEdad {
 }
 
 export type DatosPiramidalesItem = {
-    grupoPorEdad: string;
+    grupo: string;
     Hombre?: number;
     Mujer?: number;
 };
