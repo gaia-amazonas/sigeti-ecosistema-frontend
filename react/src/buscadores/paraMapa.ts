@@ -54,3 +54,12 @@ export const traeSexosPorComunidad = async (modo: string | string[]) => {
     return { rows: [] };
   }
 };
+
+export const traeInfraestructuraEducacionalPorComunidad = async (comunidadesId: string[], modo: string | string[]) => {
+  try {
+    return await buscarDatos(consultasBigQueryParaComunidades.infraestructura(comunidadesId), modo);
+  } catch (error) {
+    logger.error('Error buscando infraestructura por comunidad');
+    return { rows: []};
+  }
+}

@@ -45,8 +45,8 @@ interface SexoEdad {
   rows: SexoEdadFila[];
 }
 
-interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
-interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {}
+interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
+interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
 
 interface DatosConsultados {
   sexo: Sexo | null;

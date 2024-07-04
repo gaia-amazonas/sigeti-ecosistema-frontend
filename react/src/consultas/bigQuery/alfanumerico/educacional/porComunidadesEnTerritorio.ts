@@ -174,7 +174,26 @@ const funciones: Record<string, Query> = {
             SUM(Esc_UniversitarioComp) AS conteo
         FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\`
         WHERE ${haceClausulasWhere({comunidadesId}, 'ID_CNIDA')}
-        GROUP BY ID_CNIDA, sexo;`
+        GROUP BY ID_CNIDA, sexo;`,
+    territorio: ({territoriosId}) => `
+        SELECT DISTINCT
+            ST_AsGeoJSON(geometry) AS geometry,
+            id_ti AS id,
+            territorio AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+    ,
+    comunidadesEnTerritorio: ({comunidadesId}) => `
+        SELECT
+            ST_AsGeoJSON(c.geometry) AS geometry,
+            c.id_cnida AS id,
+            c.nomb_cnida AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+        WHERE
+            ${haceClausulasWhere({comunidadesId}, 'c.id_cnida')};`
 };
 
 export default funciones;
