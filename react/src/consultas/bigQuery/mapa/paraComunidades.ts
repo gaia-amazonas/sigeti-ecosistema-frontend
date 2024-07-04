@@ -1,4 +1,5 @@
 // src/consultas/bigQuery/paraComunidades.ts
+
 const consultasBigQueryParaComunidades = {
     comunidades: `
         SELECT
@@ -145,7 +146,59 @@ const consultasBigQueryParaComunidades = {
         LEFT JOIN
             \`sigeti.censo_632.BD_personas\` p ON c.ID_CNIDA = p.id_cnida
         GROUP BY
-            c.ID_CNIDA, c.NOMB_CNIDA;`
+            c.ID_CNIDA, c.NOMB_CNIDA;`,
+    infraestructura: (comunidadesId: string[]) => {
+        const sqlTemplate = `
+            WITH tipos AS (
+            SELECT 'Educativa' AS tipo
+            UNION ALL
+            SELECT 'Salud'
+            UNION ALL
+            SELECT 'Malocas'
+            ),
+            educacion AS (
+            SELECT
+                COUNT(*) AS conteo,
+                'Educativa' AS tipo,
+                id_cnida AS comunidadId
+            FROM \`sigeti-admin-364713.censo_632.educacion_infrastructura\`
+            WHERE id_cnida IN ({comunidadesId})
+            GROUP BY id_cnida
+            ),
+            salud AS (
+            SELECT
+                COUNT(*) AS conteo,
+                'Salud' AS tipo,
+                id_cnida AS comunidadId
+            FROM \`sigeti-admin-364713.Salud.Infraestructura_Puestos_Salud\`
+            WHERE id_cnida IN ({comunidadesId})
+            GROUP BY id_cnida
+            ),
+            malocas AS (
+            SELECT
+                COALESCE(SUM(infr_totmalocas), 0) AS conteo,
+                'Malocas' AS tipo,
+                id_cnida AS comunidadId
+            FROM \`sigeti-admin-364713.censo_632.infrastructura_malocas\`
+            WHERE id_cnida IN ({comunidadesId})
+            GROUP BY id_cnida
+            )
+
+            SELECT
+            COALESCE(e.conteo, s.conteo, m.conteo, 0) AS conteo,
+            t.tipo,
+            COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) AS comunidadId
+            FROM
+            tipos t
+            LEFT JOIN educacion e ON t.tipo = e.tipo
+            LEFT JOIN salud s ON t.tipo = s.tipo
+            LEFT JOIN malocas m ON t.tipo = m.tipo
+            WHERE COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) IN ({comunidadesId});
+            `;
+        const idCnidaString = comunidadesId.map(id => `'${id}'`).join(', ');
+        const finalSQL = sqlTemplate.replace(/{comunidadesId}/g, idCnidaString);
+        return finalSQL;
+    }
 }
 
 export default consultasBigQueryParaComunidades;

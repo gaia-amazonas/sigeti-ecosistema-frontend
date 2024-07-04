@@ -3,14 +3,14 @@ import React from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, DatosPiramidalesItem } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
-import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
+import MapaComunidadesPorTerritorio from '../MapaComunidades';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 
 import estilos from 'estilosParaMapas/ParaMapas.module.css';

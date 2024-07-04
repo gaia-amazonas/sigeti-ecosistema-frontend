@@ -15,7 +15,7 @@ import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
-import MapaComunidadesPorTerritorio from '../MapaComunidadesPorTerritorio';
+import MapaComunidadesPorTerritorio from '../MapaComunidades';
 import QueEstoyViendo from '../QueEstoyViendo';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 
