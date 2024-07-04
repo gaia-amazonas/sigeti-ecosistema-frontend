@@ -15,7 +15,7 @@ import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
-import EducacionalComunidadesEnTerritorioDatosConsultados, {Escolaridad, EscolaridadFila} from 'tipos/educacional/datosConsultados';
+import EducacionalComunidadesEnTerritorioDatosConsultados, { Escolaridad, EscolaridadFila } from 'tipos/educacional/datosConsultados';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
@@ -103,40 +103,40 @@ const culturalTodasComunidadesEnTerritorioDatosIniciales: CulturalTodasComunidad
   sexosPorLengua: null,
   etnias: null,
   clanes: null
-}
+};
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
   clanes: null
-}
+};
 
 const culturalTodasComunidadesEnTerritoriosDatosIniciales: CulturalTodasComunidadesEnTerritoriosDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
   clanes: null
-}
+};
 
 const educacionalComunidadesEnTerritorioDatosIniciales: EducacionalComunidadesEnTerritorioDatosConsultados = {
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,
   territoriosGeoJson: null
-}
+};
 
 const educacionalComunidadesEnTerritoriosDatosIniciales: EducacionalComunidadesEnTerritoriosDatosConsultados = {
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,
   territoriosGeoJson: null
-}
+};
 
 const educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales: EducacionalComunidadesEnTerritoriosDatosConsultados = {
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,
   territoriosGeoJson: null
-}
+};
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   const [activo, establecerActivo] = useState('pestanhaGeneral');
@@ -150,13 +150,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [culturalTodasComunidadesEnTerritorioDatosConsultados, establecerCulturalTodasComunidadesEnTerritorioDatosConsultados] =  useState<CulturalTodasComunidadesEnTerritorioDatosConsultados>(culturalTodasComunidadesEnTerritorioDatosIniciales);
   const [culturalTodasComunidadesEnTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados] = useState<CulturalTodasComunidadesEnTerritoriosDatosConsultados>(culturalTodasComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
-  const [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
 
   const [educacionalComunidadesEnTerritorioDatosConsultados, establecerEducacionalComunidadesEnTerritorioDatosConsultados] = useState<EducacionalComunidadesEnTerritorioDatosConsultados>(educacionalComunidadesEnTerritorioDatosIniciales);
   const [educacionalTodasComunidadesEnTerritorioDatosConsultados, establecerEducacionalTodasComunidadesEnTerritorioDatosConsultados]  = useState<EducacionalComunidadesEnTerritorioDatosConsultados>(educacionalComunidadesEnTerritorioDatosIniciales);
   const [educacionalComunidadesEnTerritoriosDatosConsultados, establecerEducacionalComunidadesEnTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalComunidadesEnTerritoriosDatosIniciales);
-  const [educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerEducacionalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales);
-  const [educacionalTodasComunidadesEnTerritoriosDatosConsultados, establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales)
+  const [educacionalTodasComunidadesEnTerritoriosDatosConsultados, establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales);
 
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: generalComunidadesEnTerritorioDatosIniciales,
@@ -184,7 +182,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       return;
     }
     if (esTodosLosTerritoriosYComunidades(datosParaConsultar)) {
-      await consultarTodosTerritoriosConTodasComunidades(datosParaConsultar, modo);
+      await consultarTodosTerritoriosConTodasComunidades(modo);
       return;
     }
     throw new Error(`Tipo de filtrado no manejado (comunidad: ${datosParaConsultar.comunidadesId}, territorio: ${datosParaConsultar.territoriosId})`);
@@ -208,7 +206,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 
   const consultarTerritorios = async (datos: DatosParaConsultar, modo: string | string[]) => {
     const buscarGeneral = activo === 'pestanhaGeneral';
-    const buscarCultural = activo === 'pestanhaCultural'
+    const buscarCultural = activo === 'pestanhaCultural';
     const buscarEducacional = activo === 'pestanhaEducacional';
     if (datos.comunidadesId[0] !== 'Todas') {
       if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTerritorios(datos, modo));
@@ -221,13 +219,13 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     }
   };
 
-  const consultarTodosTerritoriosConTodasComunidades = async (datos: DatosParaConsultar, modo: string | string[]) => {
+  const consultarTodosTerritoriosConTodasComunidades = async (modo: string | string[]) => {
     const buscarGeneral = activo === 'pestanhaGeneral';
-    const buscarCultural = activo === 'pestanhaCultural'
+    const buscarCultural = activo === 'pestanhaCultural';
     const buscarEducacional = activo === 'pestanhaEducacional';
     if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(modo));
-    if (buscarCultural) establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
-    if (buscarEducacional) establecerEducacionalTodasComunidadesEnTodosTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo))
+    if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
+    if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
   };
 
   useEffect(() => {
@@ -246,7 +244,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       educacion: educacionalTodasComunidadesEnTerritorioDatosConsultados
     });
     establecerTipoConsulta('enTerritorio');
-  }, [generalTodasComunidadesEnTerritorioDatosConsultados, culturalTodasComunidadesEnTerritorioDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritorioDatosConsultados, culturalTodasComunidadesEnTerritorioDatosConsultados, educacionalTodasComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
@@ -261,7 +259,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     establecerDatosPorPestanhaEnTerritorios({
       general: generalTodasComunidadesEnTerritoriosDatosConsultados,
       cultural: culturalTodasComunidadesEnTerritoriosDatosConsultados,
-      educacion: educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados
+      educacion: educacionalTodasComunidadesEnTerritoriosDatosConsultados
     });
     establecerTipoConsulta('enTerritorios');
   }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados, educacionalTodasComunidadesEnTerritoriosDatosConsultados]);
@@ -275,46 +273,34 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   };
 
   const renderizaContenidoCultural = () => {
-    const contenidoCultural = [
-      culturalComunidadesEnTerritorioDatosConsultados,
-      culturalTodasComunidadesEnTerritorioDatosConsultados,
-      culturalComunidadesEnTerritoriosDatosConsultados,
-      culturalTodasComunidadesEnTerritoriosDatosConsultados,
-      culturalTodasComunidadesEnTodosTerritoriosDatosConsultados
-    ];
-    return contenidoCultural.map((datos, index) => (
-      <CulturalGraficoBurbuja key={index} datos={datos} />
-    ));
+    return tipoConsulta === 'enTerritorio' ? (
+      <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} />
+    ) : (
+      <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} />
+    );
   };
 
   const renderizaContenidoEducacional = () => {
-    const contenidoEducacional = [
-      educacionalComunidadesEnTerritorioDatosConsultados,
-      educacionalTodasComunidadesEnTerritorioDatosConsultados,
-      educacionalTodasComunidadesEnTerritoriosDatosConsultados,
-      educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados,
-      educacionalComunidadesEnTerritoriosDatosConsultados
-    ];
-    const contenidoEducacionalConsultado = contenidoEducacional.filter((datos) => 
-      datos && datos.escolaridad && datos.escolaridadJoven && datos.territoriosGeoJson && datos.comunidadesGeoJson
+    return tipoConsulta === 'enTerritorio' ? (
+      <>
+        <CajaTitulo>Infraestructura</CajaTitulo>
+        <MapaEducativo datos={datosPorPestanhaEnTerritorio.educacion} modo={modo} />
+        <CajaTitulo>Escolaridad Jóven</CajaTitulo>
+        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorio.educacion.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+        <CajaTitulo>Escolaridad General</CajaTitulo>
+        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorio.educacion.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+      </>
+    ) : (
+      <>
+        <CajaTitulo>Infraestructura</CajaTitulo>
+        <MapaEducativo datos={datosPorPestanhaEnTerritorios.educacion} modo={modo} />
+        <CajaTitulo>Escolaridad Jóven</CajaTitulo>
+        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorios.educacion.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+        <CajaTitulo>Escolaridad General</CajaTitulo>
+        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorios.educacion.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+      </>
     );
-    return contenidoEducacionalConsultado.map((datos, index) => {
-      const { escolaridadJoven, escolaridad } = datos;
-      const escolaridadJovenPiramidal = segmentarPorEdadYSexoParaGraficasPiramidales(escolaridadJoven);
-      const escolaridadPiramidal = segmentarPorEdadYSexoParaGraficasPiramidales(escolaridad);
-      return (
-        <React.Fragment key={index}>
-          <CajaTitulo>Infraestructura</CajaTitulo>
-          <MapaEducativo datos={datos} modo={modo}></MapaEducativo>
-          <CajaTitulo>Escolaridad Jóven</CajaTitulo>
-          <SexoEdad datosPiramidalesSexoEdad={escolaridadJovenPiramidal} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-          <CajaTitulo>Escolaridad General</CajaTitulo>
-          <SexoEdad datosPiramidalesSexoEdad={escolaridadPiramidal} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-        </React.Fragment>
-      );
-    });
   };
-
 
   return (
     <Contenedor>
@@ -333,7 +319,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     </Contenedor>
   );
 };
-
 
 export default Pestanhas;
 
