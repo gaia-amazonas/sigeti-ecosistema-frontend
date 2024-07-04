@@ -43,6 +43,7 @@ import {
   buscarPorComunidadesEnTerritorio as buscarEducacionalPorComunidadesEnTerritorio,
   buscarPorComunidadesEnTerritorios as buscarEducacionalPorComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorio,
+  buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTodosTerritorios as buscarEducacionalPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Educacional'
 
@@ -144,15 +145,18 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   const [generalTodasComunidadesEnTerritorioDatosConsultados, establecerGeneralTodasComunidadesEnTerritorioDatosConsultados] = useState<GeneralComunidadesEnTerritorioDatosConsultados>(generalComunidadesEnTerritorioDatosIniciales);
   const [generalComunidadesEnTerritoriosDatosConsultados, establecerGeneralComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
   const [generalTodasComunidadesEnTerritoriosDatosConsultados, establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados] = useState<GeneralComunidadesEnTerritoriosDatosConsultados>(generalComunidadesEnTerritoriosDatosIniciales);
+
   const [culturalComunidadesEnTerritorioDatosConsultados, establecerCulturalComunidadesEnTerritorioDatosConsultados] = useState<CulturalComunidadesEnTerritorioDatosConsultados>(culturalComunidadesEnTerritorioDatosIniciales);
   const [culturalTodasComunidadesEnTerritorioDatosConsultados, establecerCulturalTodasComunidadesEnTerritorioDatosConsultados] =  useState<CulturalTodasComunidadesEnTerritorioDatosConsultados>(culturalTodasComunidadesEnTerritorioDatosIniciales);
   const [culturalTodasComunidadesEnTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados] = useState<CulturalTodasComunidadesEnTerritoriosDatosConsultados>(culturalTodasComunidadesEnTerritoriosDatosIniciales);
   const [culturalComunidadesEnTerritoriosDatosConsultados, establecerCulturalComunidadesEnTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
   const [culturalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerCulturalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<CulturalComunidadesEnTerritoriosDatosConsultados>(culturalComunidadesEnTerritoriosDatosIniciales);
+
   const [educacionalComunidadesEnTerritorioDatosConsultados, establecerEducacionalComunidadesEnTerritorioDatosConsultados] = useState<EducacionalComunidadesEnTerritorioDatosConsultados>(educacionalComunidadesEnTerritorioDatosIniciales);
   const [educacionalTodasComunidadesEnTerritorioDatosConsultados, establecerEducacionalTodasComunidadesEnTerritorioDatosConsultados]  = useState<EducacionalComunidadesEnTerritorioDatosConsultados>(educacionalComunidadesEnTerritorioDatosIniciales);
   const [educacionalComunidadesEnTerritoriosDatosConsultados, establecerEducacionalComunidadesEnTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalComunidadesEnTerritoriosDatosIniciales);
   const [educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados, establecerEducacionalTodasComunidadesEnTodosTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales);
+  const [educacionalTodasComunidadesEnTerritoriosDatosConsultados, establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados] = useState<EducacionalComunidadesEnTerritoriosDatosConsultados>(educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales)
 
   const [datosPorPestanhaEnTerritorio, establecerDatosPorPestanhaEnTerritorio] = useState<DatosPorPestanhaEnTerritorioImp>({
     general: generalComunidadesEnTerritorioDatosIniciales,
@@ -213,6 +217,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     } else {
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
+      if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorios(datos, modo));
     }
   };
 
@@ -259,7 +264,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       educacion: educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados, educacionalTodasComunidadesEnTerritoriosDatosConsultados]);
 
   const renderizaContenidoGeneral = () => {
     return tipoConsulta === 'enTerritorio' ? (
@@ -286,7 +291,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     const contenidoEducacional = [
       educacionalComunidadesEnTerritorioDatosConsultados,
       educacionalTodasComunidadesEnTerritorioDatosConsultados,
-      educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados
+      educacionalTodasComunidadesEnTerritoriosDatosConsultados,
+      educacionalTodasComunidadesEnTodosTerritoriosDatosConsultados,
+      educacionalComunidadesEnTerritoriosDatosConsultados
     ];
     const contenidoEducacionalConsultado = contenidoEducacional.filter((datos) => 
       datos && datos.escolaridad && datos.escolaridadJoven && datos.territoriosGeoJson && datos.comunidadesGeoJson

@@ -155,6 +155,25 @@ const funciones = {
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\`
             GROUP BY ID_CNIDA, sexo
         ) GROUP BY nivelEducativo, sexo;`,
+    territorios: `
+        SELECT DISTINCT
+            ST_AsGeoJSON(geometry) AS geometry,
+            id_ti AS id,
+            territorio AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
+    ,
+    comunidadesEnTerritorios: `
+        SELECT
+            ST_AsGeoJSON(c.geometry) AS geometry,
+            c.id_cnida AS id,
+            c.nomb_cnida AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` AS cpt
+        ON
+            c.id_cnida = cpt.id_cnida;`
 }
 
 export default funciones;

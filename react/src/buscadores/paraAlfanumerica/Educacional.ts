@@ -18,8 +18,8 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
   const [escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
-    buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
-    buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo)
+    buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
+    buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo)
   ]);
   return {
     escolaridadJoven: escolaridadJoven,
@@ -30,40 +30,46 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
 };
 
 export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [escolaridadJoven, escolaridad] = await Promise.all([
+  const [escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
+    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
+    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
   return {
     escolaridadJoven: escolaridadJoven,
     escolaridad: escolaridad,
-    territoriosGeoJson: null,
-    comunidadesGeoJson: null
+    territoriosGeoJson: territoriosGeoJson,
+    comunidadesGeoJson: comunidadesGeoJson
   };
 };
 
 export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [escolaridadJoven, escolaridad, ] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
+  const [escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
+    buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
+    buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
   return {
     escolaridadJoven: escolaridadJoven,
     escolaridad: escolaridad,
-    territoriosGeoJson: null,
-    comunidadesGeoJson: null
+    territoriosGeoJson: territoriosGeoJson,
+    comunidadesGeoJson: comunidadesGeoJson
   };
 };
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [escolaridadJoven, escolaridad] = await Promise.all([
+  const [escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadJoven, modo),
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridad, modo),
+    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios, modo),
+    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.territorios, modo),
   ]);
   return {
     escolaridadJoven: escolaridadJoven,
     escolaridad: escolaridad,
-    territoriosGeoJson: null,
-    comunidadesGeoJson: null
+    territoriosGeoJson: territoriosGeoJson,
+    comunidadesGeoJson: comunidadesGeoJson
   };
 };

@@ -219,6 +219,29 @@ const funciones: Record<string, Query> = {
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
         ) GROUP BY nivelEducativo, sexo;`,
+    territorio: ({territoriosId}) => `
+        SELECT DISTINCT
+            ST_AsGeoJSON(geometry) AS geometry,
+            id_ti AS id,
+            territorio AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.territorios_censo632\`
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+    ,
+    comunidadesEnTerritorio: ({territoriosId}) => `
+        SELECT
+            ST_AsGeoJSON(c.geometry) AS geometry,
+            c.id_cnida AS id,
+            c.nomb_cnida AS nombre
+        FROM
+            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` AS cpt
+        ON
+            c.id_cnida = cpt.id_cnida
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`
 }
 
 export default funciones;
