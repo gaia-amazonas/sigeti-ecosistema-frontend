@@ -13,15 +13,11 @@ import MalocasIcon from 'logos/Maloca_Redonda_001.png';
 import EducativaIcon from 'logos/Educacion_001.png';
 import SaludIcon from 'logos/Salud_001.png';
 
-interface Infraestructura {
-    tipo: string;
-    conteo: number;
-}
 
 interface InfraestructuraPorComunidad {
-    Malocas: Infraestructura;
-    Educativa: Infraestructura;
-    Salud: Infraestructura;
+    Malocas: number;
+    Educativa: number;
+    Salud: number;
 }
 
 interface MapaImp {
@@ -38,13 +34,21 @@ const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) 
     return null;
 };
 
-const CustomMarker = ({ position, icon, count }: { position: [number, number], icon: string, count: number }) => {
+const MarcadorConIcono = ({ position, icono, conteo }: { position: [number, number], icono: string, conteo: number }) => {
     const leaflet = require('leaflet');
     const customIcon = leaflet.divIcon({
         html: `<div style="position: relative;">
-                <img src="${icon}" style="width: 5rem; height: 5rem;" />
-                <span style="position: absolute; top: 0px; right: -5px; background-color: white; border-radius: 50%; padding: 2px; font-size: 10px; font-weight: bold; color: black;">
-                    ${count}
+                <img src="${icono}" style="width: 5rem; height: 5rem;" />
+                <span style="position: absolute;
+                top: 0px;
+                right: -5px;
+                background-color: white;
+                border-radius: 50%;
+                padding: 2px;
+                font-size: 10px;
+                font-weight: bold;
+                color: black;">
+                    ${conteo}
                 </span>
             </div>`,
         iconSize: [20, 20],
@@ -64,7 +68,7 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
             .map((comunidad) => comunidad.properties?.id)
             .filter((id): id is string => typeof id === 'string') || [];
 
-        const fetchInfraestructuraEducacionalPorComunidad = async () => {
+        const buscarInfraestructuraEducacionalPorComunidad = async () => {
             try {
                 const infraestructura = await traeInfraestructuraEducacionalPorComunidad(comunidadesId, modo);
                 const comunidades = infraestructura.rows;
@@ -89,33 +93,33 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                     });
                 });
 
-                const newInfraestructura = comunidadesConTipos.reduce((acc, comunidad) => {
+                const infraestructuraMinima = comunidadesConTipos.reduce((acc, comunidad) => {
                     const { comunidadId, tipo, conteo } = comunidad;
                     if (!acc[comunidadId]) {
                         acc[comunidadId] = {
-                            Malocas: { tipo: 'Malocas', conteo: 0 },
-                            Educativa: { tipo: 'Educativa', conteo: 0 },
-                            Salud: { tipo: 'Salud', conteo: 0 },
+                            Malocas: 0,
+                            Educativas: 0,
+                            Salud: 0,
                         };
                     }
-                    acc[comunidadId][tipo] = { tipo, conteo };
+                    acc[comunidadId][tipo] = conteo;
                     return acc;
                 }, {} as { [id: string]: InfraestructuraPorComunidad });
 
-                establecerInfraestructuraEducacionalPorComunidad(newInfraestructura);
+                establecerInfraestructuraEducacionalPorComunidad(infraestructuraMinima);
                 establecerCargando(previo => {
-                    const newCargando = { ...previo };
+                    const nuevoCargando = { ...previo };
                     comunidadesId.forEach(id => {
-                        newCargando[id] = false;
+                        nuevoCargando[id] = false;
                     });
-                    return newCargando;
+                    return nuevoCargando;
                 });
             } catch (error) {
                 logger.error('Error buscando infraestructura educacional por comunidad:', error);
             }
         };
 
-        fetchInfraestructuraEducacionalPorComunidad();
+        buscarInfraestructuraEducacionalPorComunidad();
     }, [datos.comunidadesGeoJson, modo]);
 
     const crearMarcadorNombre = (nombre: string) => {
@@ -138,15 +142,6 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
         });
     };
 
-    const getOffsetPosition = (coordinates: [number, number], offsetX: number, offsetY: number): [number, number] => {
-        const scaleFactor = Math.pow(2, zoomNivel - 6);
-        return [coordinates[0] + offsetY / scaleFactor, coordinates[1] + offsetX / scaleFactor];
-    };
-
-    const calculateOffset = (zoom: number, factor: number) => {
-        return factor * (15 / zoom);
-    };
-
     return (
         <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={zoomNivel} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
             <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
@@ -165,7 +160,7 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                             const centroide = turf.centroid(comunidad).geometry.coordinates;
                             const id = comunidad.properties?.id;
                             const nombre = comunidad.properties?.nombre || '';
-                            const comunidadDatos = infraestructuraEducacionalPorComunidad[id] || { Malocas: { tipo: 'Malocas', conteo: 0 }, Educativa: { tipo: 'Educativa', conteo: 0 }, Salud: { tipo: 'Salud', conteo: 0 } };
+                            const comunidadDatos = infraestructuraEducacionalPorComunidad[id] || { Malocas: 0, Educativa: 0, Salud: 0 };
                             const { Malocas, Educativa, Salud } = comunidadDatos;
                             return (
                                 <React.Fragment key={index}>
@@ -177,13 +172,15 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                                             />
                                         )
                                     }
-                                    {zoomNivel >= 10 && (
-                                        <>
-                                            <CustomMarker position={getOffsetPosition([centroide[1], centroide[0]], -2, 1)} icon={MalocasIcon.src} count={Malocas.conteo} />
-                                            <CustomMarker position={getOffsetPosition([centroide[1], centroide[0]], -4, 1)} icon={EducativaIcon.src} count={Educativa.conteo} />
-                                            <CustomMarker position={getOffsetPosition([centroide[1], centroide[0]], -6, 1)} icon={SaludIcon.src} count={Salud.conteo} />
-                                        </>
-                                    )}
+                                    {
+                                        zoomNivel >= 10 && (
+                                            <>
+                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -2, 1, zoomNivel)} icono={MalocasIcon.src} conteo={Malocas} />
+                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -4, 1, zoomNivel)} icono={EducativaIcon.src} conteo={Educativa} />
+                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -6, 1, zoomNivel)} icono={SaludIcon.src} conteo={Salud} />
+                                            </>
+                                        )
+                                    }
                                 </React.Fragment>
                             );
                         })
@@ -195,3 +192,12 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
 };
 
 export default Mapa;
+
+const getOffsetPosition = (coordinates: [number, number], offsetX: number, offsetY: number, zoomNivel: number): [number, number] => {
+    const scaleFactor = Math.pow(2, zoomNivel - 6);
+    return [coordinates[0] + offsetY / scaleFactor, coordinates[1] + offsetX / scaleFactor];
+};
+
+const calculateOffset = (zoom: number, factor: number) => {
+    return factor * (15 / zoom);
+};
