@@ -6,7 +6,6 @@ import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
 import CulturalGraficoBurbuja from './cultural/BurbujaWrapper';
 import Educacional from './educacional/Contenido';
-import SexoEdad from './SexoEdad';
 
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
@@ -21,8 +20,6 @@ import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacion
 
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
-import { CajaTitulo } from './estilos';
-import MapaEducativo from 'components/consultaConAlfanumericos/educacional/MapaComunidades';
 
 import {
   buscarPorComunidadesEnTerritorio as buscarGeneralPorComunidadesEnTerritorio,

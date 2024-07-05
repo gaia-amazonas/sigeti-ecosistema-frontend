@@ -6,15 +6,18 @@ type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: strin
 const funciones: Record<string, Query> = {
     sexoYLengua: ({territoriosId}) => `
         SELECT
-            nombre_lengua AS lengua,
-            SUM(total_hombres) + SUM(total_mujeres) AS conteo,
-            ANY_VALUE(comunidad) AS nombreComunidad
+            LENGUA_HAB AS lengua,
+            SUM(NUM_HAB) AS conteo
         FROM
-            \`sigeti.censo_632.distribucion_lenguas_por_comunidad\`
+            \`sigeti.censo_632.Distribución_Lenguas\` dl
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` cpt
+        ON
+            dl.TERRITORIO = cpt.territorio
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
         GROUP BY
-            nombre_lengua;`
+            LENGUA_HAB;`
     ,
     etnias: ({territoriosId}) => `
         SELECT

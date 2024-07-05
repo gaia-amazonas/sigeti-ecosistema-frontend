@@ -3,13 +3,12 @@
 const funciones = {
     sexoYLengua: `
         SELECT
-            nombre_lengua AS lengua,
-            SUM(total_hombres) + SUM(total_mujeres) AS conteo,
-            ANY_VALUE(comunidad) AS nombreComunidad
+            LENGUA_HAB AS lengua,
+            SUM(NUM_HAB) AS conteo
         FROM
-            \`sigeti.censo_632.distribucion_lenguas_por_comunidad\`
+            \`sigeti.censo_632.Distribución_Lenguas\`
         GROUP BY
-            nombre_lengua;`
+            LENGUA_HAB;`
     ,
     etnias: `
         SELECT
