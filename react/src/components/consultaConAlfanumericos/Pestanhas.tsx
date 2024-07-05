@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
 import CulturalGraficoBurbuja from './cultural/BurbujaWrapper';
+import Educacional from './educacional/Contenido';
 import SexoEdad from './SexoEdad';
 
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
@@ -283,23 +284,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 
   const renderizaContenidoEducacional = () => {
     return tipoConsulta === 'enTerritorio' ? (
-      <>
-        <CajaTitulo>Infraestructura</CajaTitulo>
-        <MapaEducativo datos={datosPorPestanhaEnTerritorio.educacion} modo={modo} />
-        <CajaTitulo>Escolaridad Jóven</CajaTitulo>
-        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorio.educacion.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-        <CajaTitulo>Escolaridad General</CajaTitulo>
-        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorio.educacion.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-      </>
+      <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} modo={modo}></Educacional>
     ) : (
-      <>
-        <CajaTitulo>Infraestructura</CajaTitulo>
-        <MapaEducativo datos={datosPorPestanhaEnTerritorios.educacion} modo={modo} />
-        <CajaTitulo>Escolaridad Jóven</CajaTitulo>
-        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorios.educacion.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-        <CajaTitulo>Escolaridad General</CajaTitulo>
-        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosPorPestanhaEnTerritorios.educacion.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-      </>
+      <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} modo={modo}></Educacional>
     );
   };
 

@@ -1,1 +1,0 @@
-// src/components/consultaConAlfanumericos/educacional/Iconos.tsx

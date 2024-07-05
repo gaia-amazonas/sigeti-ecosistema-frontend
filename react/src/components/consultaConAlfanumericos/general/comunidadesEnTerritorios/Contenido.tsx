@@ -55,15 +55,15 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         />
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
-      <CajaTitulo>SEXO Y EDAD</CajaTitulo>
+      <CajaTitulo>Sexo y Edad</CajaTitulo>
       <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo='Hombre' labelDerecho='Mujer' />
-      <CajaTitulo>MAPA</CajaTitulo>
+      <CajaTitulo>Mapa</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
-      <CajaTitulo>FAMILIAS Y POBLACIÓN</CajaTitulo>
+      <CajaTitulo>Familias y Población</CajaTitulo>
       <FamiliasYPoblacionYElectricidad
         familiasPorComunidad={datosExtraidos.familiasPorComunidad}
         poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}

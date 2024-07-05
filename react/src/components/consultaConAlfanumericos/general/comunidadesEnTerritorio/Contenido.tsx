@@ -27,7 +27,7 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
   modo: string | string[];
 }
 
-export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
+const ComponenteGeneralComunidadesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
 
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -61,15 +61,15 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
         />
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
-      <CajaTitulo>SEXO Y EDAD</CajaTitulo>
+      <CajaTitulo>Sexo y Edad</CajaTitulo>
       <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo='Hombre' labelDerecho='Mujer'/>
-      <CajaTitulo>MAPA</CajaTitulo>
+      <CajaTitulo>Mapa</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         modo={modo}
       />
-      <CajaTitulo>FAMILIAS Y POBLACIÓN</CajaTitulo>
+      <CajaTitulo>Familias y Población</CajaTitulo>
       <FamiliasYPoblacionYElectricidad
         familiasPorComunidad={datosExtraidos.familiasPorComunidad}
         poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
@@ -79,7 +79,7 @@ export const ComponenteGeneralComponentesEnTerritorio: React.FC<ComponenteGenera
   );
 };
 
-export default ComponenteGeneralComponentesEnTerritorio;
+export default ComponenteGeneralComunidadesEnTerritorios;
 
 const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritorioDatosConsultados) => {
   return !datosGenerales.comunidadesGeoJson ||
