@@ -1,15 +1,22 @@
 // src/components/consultaConAlfanumericos/cultural/CulturalGraficoBurbujaWrapper.tsx
 
 import React from 'react';
+import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
+import CulturalComunidadesEnTerritorios from 'tipos/cultural/datosConsultados';
 
 import { CajaTitulo } from '../estilos';
 
-interface CulturalGraficoBurbujaWrapperProps {
-  datos: any;
+interface CulturalGraficoBurbujaWrapperImp {
+  datos: CulturalComunidadesEnTerritorios;
 }
 
-const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperProps> = ({ datos }) => {
+const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos }) => {
+    if (datosCulturalesInvalidos(datos)) {
+        return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+                <div className={estilos.spinner}></div>
+            </div>;
+    }
     return (
         <>
             { datos.sexosPorLengua?.rows && (
@@ -35,3 +42,9 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperProps
 };
 
 export default CulturalGraficoBurbujaWrapper;
+
+const datosCulturalesInvalidos = (datosCulturales: CulturalComunidadesEnTerritorios) => {
+    return !datosCulturales.clanes ||
+    !datosCulturales.etnias ||
+    !datosCulturales.sexosPorLengua
+}

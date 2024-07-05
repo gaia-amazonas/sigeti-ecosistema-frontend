@@ -93,10 +93,8 @@ const agregaZoom = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) 
 
 const agregaLeyenda = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, datosBurbuja: DatosBurbuja[], width: number) => {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
-
   const leyenda = svg.append('g')
     .attr('transform', `translate(${width - 150}, 20)`);
-
   leyenda.selectAll('rect')
     .data(datosBurbuja)
     .enter().append('rect')
@@ -105,7 +103,6 @@ const agregaLeyenda = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined
     .attr('width', 20)
     .attr('height', 20)
     .attr('fill', (d, i) => color(i.toString()));
-
   leyenda.selectAll('text')
     .data(datosBurbuja)
     .enter().append('text')

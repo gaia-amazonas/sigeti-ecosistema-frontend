@@ -14,7 +14,7 @@ const ComponenteTotal: React.FC<ComponenteTotalImp> = ({ contadorTotal, contador
   const territoriosFormateados = formateaLista(territorios);
   return (
     <ContenedorTotal>
-      <CajaTitulo>POBLACIÓN TOTAL</CajaTitulo>
+      <CajaTitulo>Población Total</CajaTitulo>
       <CajaReductor style={{ background: 'transparent', color: 'black' }}>{contadorTotal === null ? '-' : contadorTotal}</CajaReductor>
       <TextoIndicativo>
         <div>En {!comunidades ? '' : comunidades.length > 1 ? 'las comunidades' : 'la comunidad'} <strong>{comunidadesFormateadas}</strong></div>
