@@ -40,11 +40,11 @@ const datosCulturalesInvalidos = (datosEducacionales: EducacionalComunidadesEnTe
 }
 
 const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: Escolaridad | null) => {
-  if (!sexoEdadDatos) {
-    return null;
-  }
-  return sexoEdadDatos.rows.map((item: EscolaridadFila) => ({
-    grupo: item.nivelEducativo,
-    [item.sexo]: item.conteo * (item.sexo === 'Hombres' ? -1 : 1)
-  }));
+    if (!sexoEdadDatos) {
+        return null;
+    }
+    return sexoEdadDatos.rows.map((item: EscolaridadFila) => ({
+        grupo: item.nivelEducativo,
+        [item.sexo]: item.conteo * (item.sexo === 'Hombres' ? -1 : 1)
+    }));
 };

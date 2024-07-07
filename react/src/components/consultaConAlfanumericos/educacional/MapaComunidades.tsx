@@ -25,12 +25,19 @@ interface MapaImp {
     modo: string | string[];
 }
 
+interface TipoInfraestructuraEnComunidad {
+    comunidadId: string;
+    tipo: string;
+    conteo: number;
+}
+
+const TIPOS = ['Malocas', 'Educativa', 'Salud'];
+
 const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
     const [infraestructuraEducacionalPorComunidad, establecerInfraestructuraEducacionalPorComunidad] = useState<{ [id: string]: InfraestructuraPorComunidad }>({});
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const centroMapa = [0.969793, -70.830454];
     const [cargando, establecerCargando] = useState<{ [id: string]: boolean }>({});
-    console.log("aaaaaaaaaaaa", datos);
 
     useEffect(() => {
         const comunidadesId: string[] = datos.comunidadesGeoJson?.features
@@ -40,30 +47,12 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
         const buscarInfraestructuraEducacionalPorComunidad = async () => {
             try {
                 const infraestructura = await traeInfraestructuraEducacionalPorComunidad(comunidadesId, modo);
-                const comunidades = infraestructura.rows;
-                const TIPOS = ['Malocas', 'Educativa', 'Salud'];
+                const infraestructuraEnComunidades = infraestructura.rows;
+                const tiposInfraestructuraPorComunidades = defineTiposDeInfraestructuraPorComunidades(infraestructuraEnComunidades);
+                defineInfraestructuraMinimaSinUnTipoPorComunidad(comunidadesId, TIPOS, tiposInfraestructuraPorComunidades, infraestructuraEnComunidades);
 
-                const comunidadTiposMap = new Map<string, Set<string>>();
-
-                comunidades.forEach((comunidad: { conteo: number, tipo: string, comunidadId: string }) => {
-                    if (!comunidadTiposMap.has(comunidad.comunidadId)) {
-                        comunidadTiposMap.set(comunidad.comunidadId, new Set());
-                    }
-                    comunidadTiposMap.get(comunidad.comunidadId)?.add(comunidad.tipo);
-                });
-
-                const comunidadesConTipos = [...comunidades];
-
-                comunidadesId.forEach(comunidadId => {
-                    TIPOS.forEach(tipo => {
-                        if (!comunidadTiposMap.get(comunidadId)?.has(tipo)) {
-                            comunidadesConTipos.push({ conteo: 0, tipo, comunidadId });
-                        }
-                    });
-                });
-
-                const infraestructuraMinima = comunidadesConTipos.reduce((acc, comunidad) => {
-                    const { comunidadId, tipo, conteo } = comunidad;
+                const infraestructuraMinima = infraestructuraEnComunidades.reduce((acc: { [x: string]: { [x: string]: any; } }, infraestructuraEnComunidad: TipoInfraestructuraEnComunidad) => {
+                    const { comunidadId, tipo, conteo } = infraestructuraEnComunidad;
                     if (!acc[comunidadId]) {
                         acc[comunidadId] = {
                             Malocas: 0,
@@ -136,7 +125,7 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                                     {
                                         zoomNivel >= 13 && crearMarcadorNombre(nombre) && (
                                             <Marker
-                                                position={[centroide[1], centroide[0] - calculateOffset(zoomNivel, -0.01)]}
+                                                position={[centroide[1], centroide[0] - calculaDesplazamiento(zoomNivel, -0.01)]}
                                                 icon={crearMarcadorNombre(nombre)}
                                             />
                                         )
@@ -144,9 +133,9 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                                     {
                                         zoomNivel >= 10 && (
                                             <>
-                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -2, 1, zoomNivel)} icono={MalocasIcon.src} conteo={Malocas} />
-                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -4, 1, zoomNivel)} icono={EducativaIcon.src} conteo={Educativa} />
-                                                <MarcadorConIcono position={getOffsetPosition([centroide[1], centroide[0]], -6, 1, zoomNivel)} icono={SaludIcon.src} conteo={Salud} />
+                                                <MarcadorConIcono position={calculaPosicionDeDesplazada([centroide[1], centroide[0]], -2, 1, zoomNivel)} icono={MalocasIcon.src} conteo={Malocas} />
+                                                <MarcadorConIcono position={calculaPosicionDeDesplazada([centroide[1], centroide[0]], -4, 1, zoomNivel)} icono={EducativaIcon.src} conteo={Educativa} />
+                                                <MarcadorConIcono position={calculaPosicionDeDesplazada([centroide[1], centroide[0]], -6, 1, zoomNivel)} icono={SaludIcon.src} conteo={Salud} />
                                             </>
                                         )
                                     }
@@ -194,11 +183,36 @@ const MarcadorConIcono = ({ position, icono, conteo }: { position: [number, numb
     return <Marker position={position} icon={customIcon} />;
 };
 
-const getOffsetPosition = (coordinates: [number, number], offsetX: number, offsetY: number, zoomNivel: number): [number, number] => {
-    const scaleFactor = Math.pow(2, zoomNivel - 6);
-    return [coordinates[0] + offsetY / scaleFactor, coordinates[1] + offsetX / scaleFactor];
+const calculaPosicionDeDesplazada = (coordenadas: [number, number], offsetX: number, offsetY: number, zoomNivel: number): [number, number] => {
+    const factorDeEscala = Math.pow(2, zoomNivel - 6);
+    return [coordenadas[0] + offsetY / factorDeEscala, coordenadas[1] + offsetX / factorDeEscala];
 };
 
-const calculateOffset = (zoom: number, factor: number) => {
+const calculaDesplazamiento = (zoom: number, factor: number) => {
     return factor * (15 / zoom);
 };
+
+type Key = string;
+type ConjuntoDeValores = Set<"Educativa" | "Salud" | "Malocas">;
+type MapaDeTiposPorComunidades = Map<Key, ConjuntoDeValores>;
+
+const defineTiposDeInfraestructuraPorComunidades = (infraestructuraEnComunidades: { conteo: number; tipo: string; comunidadId: string; }[]) => {
+    const tiposInfraestructuraPorComunidades = new Map<string, Set<"Educativa" | "Salud" | "Malocas">>();
+    infraestructuraEnComunidades.forEach((comunidad: { conteo: number, tipo: string, comunidadId: string }) => {
+        if (!tiposInfraestructuraPorComunidades.has(comunidad.comunidadId)) {
+            tiposInfraestructuraPorComunidades.set(comunidad.comunidadId, new Set());
+        }
+        tiposInfraestructuraPorComunidades.get(comunidad.comunidadId)?.add(comunidad.tipo as "Educativa" | "Salud" | "Malocas");
+    });
+    return tiposInfraestructuraPorComunidades;
+}
+
+const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], TIPOS: readonly string[], tiposInfraestructuraPorComunidades: MapaDeTiposPorComunidades, infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
+    comunidadesId.forEach((comunidadId: string) => {
+        TIPOS.forEach((tipo) => {
+            if (!tiposInfraestructuraPorComunidades.get(comunidadId)?.has(tipo as "Educativa" | "Salud" | "Malocas")) {
+                infraestructuraEnComunidades.push({ conteo: 0, tipo: tipo as "Educativa" | "Salud" | "Malocas", comunidadId });
+            }
+        });
+    });
+}
