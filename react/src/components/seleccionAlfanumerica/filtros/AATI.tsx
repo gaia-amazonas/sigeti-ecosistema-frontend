@@ -2,47 +2,46 @@ import React, { useState, useEffect } from 'react';
 import { Contenedor, FiltraEntrada, OpcionComoBoton } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface AATIImp {
-  data: any;
-  setData: (data: any) => void;
-  nextStep: () => void;
+  datos: any;
+  establecerDatos: (datos: any) => void;
+  siguientePaso: () => void;
 }
 
-const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
-  const [options, setOptions] = useState([]);
-  const [filteredOptions, setFilteredOptions] = useState([]);
-  const [filter, setFilter] = useState('');
+const AATI: React.FC<AATIImp> = ({ datos, establecerDatos, siguientePaso }) => {
+  const [opciones, establecerOpciones] = useState([]);
+  const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
+  const [filtro, establecerFiltro] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
+    async function buscarAATIs() {
       const query = `
         SELECT
           ID_AATI, NOMBRE_AAT
         FROM
           \`sigeti.ELT.TE_AATI\``;
-      const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-      const result = await response.json();
-      setOptions(result.rows);
-      setFilteredOptions(result.rows);
+      const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
+      const resultado = await respuesta.json();
+      establecerOpciones(resultado.rows);
+      establecerOpcionesFiltradas(resultado.rows);
     }
-
-    fetchData();
+    buscarAATIs();
   }, []);
 
   useEffect(() => {
-    setFilteredOptions(
-      options.filter((option: any) =>
-        option.NOMBRE_AAT.toLowerCase().includes(filter.toLowerCase())
+    establecerOpcionesFiltradas(
+      opciones.filter((opcion: any) =>
+        opcion.NOMBRE_AAT.toLowerCase().includes(filtro.toLowerCase())
       )
     );
-  }, [filter, options]);
+  }, [filtro, opciones]);
 
-  const handleSelect = (id_aati: string) => {
-    setData({ ...data, aati_id: id_aati });
-    nextStep();
+  const controlarSeleccion = (id_aati: string) => {
+    establecerDatos({ ...datos, aati_id: id_aati });
+    siguientePaso();
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(event.target.value);
+  const controlarCambioDeFiltro = (evento: React.ChangeEvent<HTMLInputElement>) => {
+    establecerFiltro(evento.target.value);
   };
 
   return (
@@ -50,12 +49,12 @@ const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
       <FiltraEntrada
         type="text"
         placeholder="Filtre escribiendo..."
-        value={filter}
-        onChange={handleFilterChange}
+        value={filtro}
+        onChange={controlarCambioDeFiltro}
       />
-      {filteredOptions.map((option: any) => (
-        <OpcionComoBoton key={option.ID_AATI} onClick={() => handleSelect(option.ID_AATI)}>
-          {option.NOMBRE_AAT}
+      {opcionesFiltradas.map((opcion: {ID_AATI: string, NOMBRE_AAT: string}) => (
+        <OpcionComoBoton key={opcion.ID_AATI} onClick={() => controlarSeleccion(opcion.ID_AATI)}>
+          {opcion.NOMBRE_AAT}
         </OpcionComoBoton>
       ))}
     </Contenedor>

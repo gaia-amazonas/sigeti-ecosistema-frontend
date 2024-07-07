@@ -13,7 +13,7 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ datos, establecerDa
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    async function buscarDatos() {
+    async function buscarResguardos() {
       const query = `
         SELECT ID_RI, NOMBRE_RI
           FROM (
@@ -32,7 +32,7 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ datos, establecerDa
       establecerOpcionesFiltradas(resultado.rows);
     }
 
-    buscarDatos();
+    buscarResguardos();
   }, []);
 
   useEffect(() => {
@@ -43,12 +43,12 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ datos, establecerDa
     );
   }, [filter, opciones]);
 
-  const handleSelect = (id_ri: string) => {
+  const controlarSeleccion = (id_ri: string) => {
     establecerDatos({ ...datos, resguardo_id: id_ri });
     siguientePaso();
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const controlarCambioDeFiltro = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(event.target.value);
   };
 
@@ -58,10 +58,10 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ datos, establecerDa
         type="text"
         placeholder="Filtre escribiendo..."
         value={filter}
-        onChange={handleFilterChange}
+        onChange={controlarCambioDeFiltro}
       />
       {opcionesFiltradas.map((opcion: {ID_RI: string, NOMBRE_RI: string, NUMERO_FILA: number}) => (
-        <OpcionComoBoton key={opcion.ID_RI} onClick={() => handleSelect(opcion.ID_RI)}>
+        <OpcionComoBoton key={opcion.ID_RI} onClick={() => controlarSeleccion(opcion.ID_RI)}>
           {opcion.NOMBRE_RI}
         </OpcionComoBoton>
       ))}
