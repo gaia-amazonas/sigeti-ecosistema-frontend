@@ -174,7 +174,7 @@ const consultasBigQueryParaComunidades = {
                     'Salud' AS tipo,
                     id_cnida AS comunidadId
                 FROM
-                    \`sigeti-admin-364713.Salud.Infraestructura_Puestos_Salud\`
+                    \`sigeti.Salud.Infraestructura_Puestos_Salud\`
                 WHERE
                     id_cnida IN ({comunidadesId})
                 GROUP BY
