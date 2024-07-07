@@ -6,7 +6,6 @@ import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
 import CulturalGraficoBurbuja from './cultural/BurbujaWrapper';
 import Educacional from './educacional/Contenido';
-import SexoEdad from './SexoEdad';
 
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
@@ -21,15 +20,14 @@ import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacion
 
 import BotonReiniciar from 'components/BotonReiniciar';
 import { Contenedor, ListaPestanhas, EstiloPestanha, PanelPestanhas, Titulo } from 'components/consultaConAlfanumericos/estilos/Pestanhas';
-import { CajaTitulo } from './estilos';
-import MapaEducativo from 'components/consultaConAlfanumericos/educacional/MapaComunidades';
 
 import {
   buscarPorComunidadesEnTerritorio as buscarGeneralPorComunidadesEnTerritorio,
   buscarPorTodasComunidadesEnTerritorio as buscarGeneralPorTodasComunidadesEnTerritorio,
   buscarPorComunidadesEnTerritorios as buscarGeneralPorComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTerritorios as buscarGeneralPorTodasComunidadesEnTerritorios,
-  buscarPorTodasComunidadesEnTodosTerritorios as buscarGeneralPorTodasComunidadesEnTodosTerritorios
+  buscarPorTodasComunidadesEnTodosTerritorios as buscarGeneralPorTodasComunidadesEnTodosTerritorios,
+  buscarPorComunidadesEnTodosTerritorios as buscarGeneralPorComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/General';
 
 import {
@@ -45,7 +43,8 @@ import {
   buscarPorComunidadesEnTerritorios as buscarEducacionalPorComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorio,
   buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorios,
-  buscarPorTodasComunidadesEnTodosTerritorios as buscarEducacionalPorTodasComunidadesEnTodosTerritorios
+  buscarPorTodasComunidadesEnTodosTerritorios as buscarEducacionalPorTodasComunidadesEnTodosTerritorios,
+  buscarPorComunidadesEnTodosTerritorios as buscarEducacionalPorComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Educacional'
 
 interface DatosParaConsultar {
@@ -183,6 +182,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       await consultarTerritorios(datosParaConsultar, modo);
       return;
     }
+    if (enTodosTerritorios(datosParaConsultar)) {
+      await consultarTodosTerritorios(datosParaConsultar, modo);
+      return;
+    }
     if (esTodosLosTerritoriosYComunidades(datosParaConsultar)) {
       await consultarTodosTerritoriosConTodasComunidades(modo);
       return;
@@ -220,6 +223,15 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorios(datos, modo));
     }
   };
+
+  const consultarTodosTerritorios = async (datos: DatosParaConsultar, modo: string | string[]) => {
+    const buscarGeneral = activo === 'pestanhaGeneral';
+    const buscarCultural = activo === 'pestanhaCultural';
+    const buscarEducacional = activo === 'pestanhaEducacional';
+    if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTodosTerritorios(datos, modo));
+    if (buscarCultural) establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
+    if (buscarEducacional) establecerEducacionalComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorComunidadesEnTodosTerritorios(datos, modo));
+  }
 
   const consultarTodosTerritoriosConTodasComunidades = async (modo: string | string[]) => {
     const buscarGeneral = activo === 'pestanhaGeneral';
@@ -317,6 +329,12 @@ const enUnTerritorio = (datos: DatosParaConsultar) => {
 const enTerritorios = (datos: DatosParaConsultar) => {
   return datos.territoriosId.length > 1;
 };
+
+const enTodosTerritorios = (datos: DatosParaConsultar) => {
+  const enTodosTerritorios = datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos';
+  const noEnTodasComunidades = datos.comunidadesId[0] !== 'Todas';
+  return enTodosTerritorios && noEnTodasComunidades;
+}
 
 const esTodosLosTerritoriosYComunidades = (datos: DatosParaConsultar) => {
   return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';

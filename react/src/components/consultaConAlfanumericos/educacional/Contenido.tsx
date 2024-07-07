@@ -13,7 +13,6 @@ interface ComponenteCulturalComunidadesEnTerritoriosImp {
 
 
 const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({datosEducacionales, modo}) => {
-    console.log(datosEducacionales);
     if (datosCulturalesInvalidos(datosEducacionales)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
             <div className={estilos.spinner}></div>

@@ -7,6 +7,7 @@ import ComunidadesEnTerritorioDatosConsultados from 'tipos/educacional/datosCons
 import consultasEducacionalesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/educacional/porComunidadesEnTerritorio';
 import consultasEducacionalesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/educacional/porTodasComunidadesEnTerritorio';
 import consultasEducacionalesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/educacional/porTodasComunidadesEnTodosTerritorios';
+import consultasEducacionalesPorComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/educacional/porComunidadesEnTodosTerritorios';
 
 
 interface DatosParaConsultar {
@@ -33,8 +34,8 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
   const [escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
-    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
-    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
+    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
+    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo)
   ]);
   return {
     escolaridadJoven: escolaridadJoven,
@@ -50,6 +51,21 @@ export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: Dato
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
     buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
+  ]);
+  return {
+    escolaridadJoven: escolaridadJoven,
+    escolaridad: escolaridad,
+    territoriosGeoJson: territoriosGeoJson,
+    comunidadesGeoJson: comunidadesGeoJson
+  };
+};
+
+export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+  const [escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
+    buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
+    buscarTerritorios(consultasEducacionalesPorComunidadesEnTodosTerritorios.territorios(datosParaConsultar), modo)
   ]);
   return {
     escolaridadJoven: escolaridadJoven,

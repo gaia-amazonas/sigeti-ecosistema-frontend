@@ -30,6 +30,7 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
   const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo);
   const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.etnias(datosParaConsultar), modo);
   const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.clanes(datosParaConsultar), modo);
+  if (sexosPorLengua.rows.length === 0) sexosPorLengua.rows = [{lengua: 'Sin datos', conteo: 1}]
   return {
     sexosPorLengua: sexosPorLengua,
     etnias: etnias,
