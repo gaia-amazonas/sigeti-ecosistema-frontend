@@ -2,50 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { Contenedor, OpcionComoBoton, Titulo, FiltraEntrada } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface ResguardoIndigenaImp {
-  data: any;
-  setData: (data: any) => void;
-  nextStep: () => void;
+  datos: any;
+  establecerDatos: (datos: any) => void;
+  siguientePaso: () => void;
 }
 
-const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, nextStep }) => {
-  const [options, setOptions] = useState([]);
-  const [filteredOptions, setFilteredOptions] = useState([]);
+const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ datos, establecerDatos, siguientePaso }) => {
+  const [opciones, establecerOpciones] = useState([]);
+  const [opcionesFiltradas, establecerOpcionesFiltradas] = useState([]);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
+    async function buscarDatos() {
       const query = `
         SELECT ID_RI, NOMBRE_RI
-        FROM (
+          FROM (
             SELECT
-                ID_RI,
-                NOMBRE_RI,
-                ROW_NUMBER() OVER (PARTITION BY ID_RI ORDER BY NOMBRE_RI) AS row_num
+              ID_RI,
+              NOMBRE_RI,
+              ROW_NUMBER() OVER (PARTITION BY ID_RI ORDER BY NOMBRE_RI) AS NUMERO_FILA
             FROM
-                \`sigeti-admin-364713.analysis_units.TE_RI\`
-        ) AS subquery
+              \`sigeti.ELT.TE_RI\`
+          ) AS subquery
         WHERE
-        row_num = 1;`;
-      const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
-      const result = await response.json();
-      setOptions(result.rows);
-      setFilteredOptions(result.rows); // Initialize filtered options
+          NUMERO_FILA = 1;`;
+      const respuesta = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
+      const resultado = await respuesta.json();
+      establecerOpciones(resultado.rows);
+      establecerOpcionesFiltradas(resultado.rows);
     }
 
-    fetchData();
+    buscarDatos();
   }, []);
 
   useEffect(() => {
-    setFilteredOptions(
-      options.filter((option: any) =>
-        option.NOMBRE_RI.toLowerCase().includes(filter.toLowerCase())
+    establecerOpcionesFiltradas(
+      opciones.filter((opcion: any) =>
+        opcion.NOMBRE_RI.toLowerCase().includes(filter.toLowerCase())
       )
     );
-  }, [filter, options]);
+  }, [filter, opciones]);
 
   const handleSelect = (id_ri: string) => {
-    setData({ ...data, resguardo_id: id_ri });
-    nextStep();
+    establecerDatos({ ...datos, resguardo_id: id_ri });
+    siguientePaso();
   };
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,9 +60,9 @@ const ResguardoIndigena: React.FC<ResguardoIndigenaImp> = ({ data, setData, next
         value={filter}
         onChange={handleFilterChange}
       />
-      {filteredOptions.map((option: any) => (
-        <OpcionComoBoton key={option.ID_RI} onClick={() => handleSelect(option.ID_RI)}>
-          {option.NOMBRE_RI}
+      {opcionesFiltradas.map((opcion: {ID_RI: string, NOMBRE_RI: string, NUMERO_FILA: number}) => (
+        <OpcionComoBoton key={opcion.ID_RI} onClick={() => handleSelect(opcion.ID_RI)}>
+          {opcion.NOMBRE_RI}
         </OpcionComoBoton>
       ))}
     </Contenedor>

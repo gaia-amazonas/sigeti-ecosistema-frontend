@@ -3,19 +3,19 @@
 const consultasBigQueryParaComunidades = {
     comunidades: `
         SELECT
-            ST_AsGeoJSON(geo) AS geometry,
-            NOMB_CNIDA AS nomb_cnida,
-            ID_CNIDA AS id_cnida
+            ST_AsGeoJSON(geometry) AS geometry,
+            nomb_cnida,
+            id_cnida
         FROM
-            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
+            \`sigeti.unidades_de_analisis.comunidades_censo632\`;`
     ,
     nombreComunidad: (comunidadId: string) => `
         SELECT
-            NOMB_CNIDA
+            nomb_cnida
         FROM
-            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
+            \`sigeti.unidades_de_analisis.comunidades_censo632\`
         WHERE
-            ID_CNIDA = '${comunidadId}';`
+            id_cnida = '${comunidadId}';`
     ,
     sexo_edad: (comunidadId: string) => `
         SELECT 
@@ -83,11 +83,11 @@ const consultasBigQueryParaComunidades = {
     ,
     territorio: (comunidadId: string) => `
         SELECT
-            ST_AsGeoJSON(t.geo) as geometry,
-            t.ID_TI as id_ti,
-            t.NOMBRE_TI as territorio
+            ST_AsGeoJSON(t.geometry) as geometry,
+            t.id_ti,
+            t.territorio
         FROM
-            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
+            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
         JOIN
             \`sigeti.censo_632.comunidades_por_territorio\` AS c
         ON
@@ -96,9 +96,9 @@ const consultasBigQueryParaComunidades = {
             c.id_cnida = '${comunidadId}';`,
     nombreTerritorio: (comunidadId: string) => `
         SELECT
-            t.NOMBRE_TI as nombreTerritorio
+            t.territorio as nombreTerritorio
         FROM
-            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_20240527\` AS t
+            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
         JOIN
             \`sigeti.censo_632.comunidades_por_territorio\` AS c
         ON
@@ -150,50 +150,62 @@ const consultasBigQueryParaComunidades = {
     infraestructura: (comunidadesId: string[]) => {
         const sqlTemplate = `
             WITH tipos AS (
-            SELECT 'Educativa' AS tipo
-            UNION ALL
-            SELECT 'Salud'
-            UNION ALL
-            SELECT 'Malocas'
+                SELECT 'Educativa' AS tipo
+                UNION ALL
+                SELECT 'Salud'
+                UNION ALL
+                SELECT 'Malocas'
             ),
             educacion AS (
-            SELECT
-                COUNT(*) AS conteo,
-                'Educativa' AS tipo,
-                id_cnida AS comunidadId
-            FROM \`sigeti-admin-364713.censo_632.educacion_infrastructura\`
-            WHERE id_cnida IN ({comunidadesId})
-            GROUP BY id_cnida
+                SELECT
+                    COUNT(*) AS conteo,
+                    'Educativa' AS tipo,
+                    id_cnida AS comunidadId
+                FROM
+                    \`sigeti-admin-364713.censo_632.educacion_infrastructura\`
+                WHERE
+                    id_cnida IN ({comunidadesId})
+                GROUP BY
+                    id_cnida
             ),
             salud AS (
-            SELECT
-                COUNT(*) AS conteo,
-                'Salud' AS tipo,
-                id_cnida AS comunidadId
-            FROM \`sigeti-admin-364713.Salud.Infraestructura_Puestos_Salud\`
-            WHERE id_cnida IN ({comunidadesId})
-            GROUP BY id_cnida
+                SELECT
+                    COUNT(*) AS conteo,
+                    'Salud' AS tipo,
+                    id_cnida AS comunidadId
+                FROM
+                    \`sigeti-admin-364713.Salud.Infraestructura_Puestos_Salud\`
+                WHERE
+                    id_cnida IN ({comunidadesId})
+                GROUP BY
+                    id_cnida
             ),
             malocas AS (
-            SELECT
-                COALESCE(SUM(infr_totmalocas), 0) AS conteo,
-                'Malocas' AS tipo,
-                id_cnida AS comunidadId
-            FROM \`sigeti-admin-364713.censo_632.infrastructura_malocas\`
-            WHERE id_cnida IN ({comunidadesId})
-            GROUP BY id_cnida
+                SELECT
+                    COALESCE(SUM(infr_totmalocas), 0) AS conteo,
+                    'Malocas' AS tipo,
+                    id_cnida AS comunidadId
+                FROM
+                    \`sigeti-admin-364713.censo_632.infrastructura_malocas\`
+                WHERE
+                    id_cnida IN ({comunidadesId})
+                GROUP BY
+                    id_cnida
             )
-
             SELECT
-            COALESCE(e.conteo, s.conteo, m.conteo, 0) AS conteo,
-            t.tipo,
-            COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) AS comunidadId
+                COALESCE(e.conteo, s.conteo, m.conteo, 0) AS conteo,
+                t.tipo,
+                COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) AS comunidadId
             FROM
-            tipos t
-            LEFT JOIN educacion e ON t.tipo = e.tipo
-            LEFT JOIN salud s ON t.tipo = s.tipo
-            LEFT JOIN malocas m ON t.tipo = m.tipo
-            WHERE COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) IN ({comunidadesId});
+                tipos t
+            LEFT JOIN
+                educacion e ON t.tipo = e.tipo
+            LEFT JOIN
+                salud s ON t.tipo = s.tipo
+            LEFT JOIN
+                malocas m ON t.tipo = m.tipo
+            WHERE
+                COALESCE(e.comunidadId, s.comunidadId, m.comunidadId) IN ({comunidadesId});
             `;
         const idCnidaString = comunidadesId.map(id => `'${id}'`).join(', ');
         const finalSQL = sqlTemplate.replace(/{comunidadesId}/g, idCnidaString);

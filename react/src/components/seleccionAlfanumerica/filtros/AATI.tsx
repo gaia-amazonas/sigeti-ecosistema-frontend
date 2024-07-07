@@ -18,11 +18,11 @@ const AATI: React.FC<AATIImp> = ({ data, setData, nextStep }) => {
         SELECT
           ID_AATI, NOMBRE_AAT
         FROM
-          \`sigeti-admin-364713.analysis_units.TE_AATI\``;
+          \`sigeti.ELT.TE_AATI\``;
       const response = await fetch(`/api/bigQuery?query=${encodeURIComponent(query)}`);
       const result = await response.json();
       setOptions(result.rows);
-      setFilteredOptions(result.rows); // Initialize filtered options
+      setFilteredOptions(result.rows);
     }
 
     fetchData();
