@@ -31,54 +31,53 @@ interface TipoInfraestructuraEnComunidad {
     conteo: number;
 }
 
+interface TipoInfraestructuraEnComunidades {
+    rows: TipoInfraestructuraEnComunidad[];
+}
+
 const TIPOS = ['Malocas', 'Educativa', 'Salud'];
 
 const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
     const [infraestructuraEducacionalPorComunidad, establecerInfraestructuraEducacionalPorComunidad] = useState<{ [id: string]: InfraestructuraPorComunidad }>({});
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const centroMapa = [0.969793, -70.830454];
+    const [infraestructuraCruda, establecerInfraestructuraCruda] = useState<TipoInfraestructuraEnComunidades>();
+    const [comunidadesId, establecerComunidadesId] = useState<string[]>();
     const [cargando, establecerCargando] = useState<{ [id: string]: boolean }>({});
 
     useEffect(() => {
-        const comunidadesId: string[] = datos.comunidadesGeoJson?.features
-            .map((comunidad) => comunidad.properties?.id)
-            .filter((id): id is string => typeof id === 'string') || [];
+        establecerComunidadesId(datos.comunidadesGeoJson?.features
+                    .map((comunidad) => comunidad.properties?.id)
+                    .filter((id): id is string => typeof id === 'string') || []);
+    }, [datos])
 
+    useEffect(() => {
+        if (!comunidadesId) return;
         const buscarInfraestructuraEducacionalPorComunidad = async () => {
             try {
-                const infraestructura = await traeInfraestructuraEducacionalPorComunidad(comunidadesId, modo);
-                const infraestructuraEnComunidades = infraestructura.rows;
-                const tiposInfraestructuraPorComunidades = defineTiposDeInfraestructuraPorComunidades(infraestructuraEnComunidades);
-                defineInfraestructuraMinimaSinUnTipoPorComunidad(comunidadesId, TIPOS, tiposInfraestructuraPorComunidades, infraestructuraEnComunidades);
-
-                const infraestructuraMinima = infraestructuraEnComunidades.reduce((acc: { [x: string]: { [x: string]: any; } }, infraestructuraEnComunidad: TipoInfraestructuraEnComunidad) => {
-                    const { comunidadId, tipo, conteo } = infraestructuraEnComunidad;
-                    if (!acc[comunidadId]) {
-                        acc[comunidadId] = {
-                            Malocas: 0,
-                            Educativas: 0,
-                            Salud: 0,
-                        };
-                    }
-                    acc[comunidadId][tipo] = conteo;
-                    return acc;
-                }, {} as { [id: string]: InfraestructuraPorComunidad });
-
-                establecerInfraestructuraEducacionalPorComunidad(infraestructuraMinima);
-                establecerCargando(previo => {
-                    const nuevoCargando = { ...previo };
-                    comunidadesId.forEach(id => {
-                        nuevoCargando[id] = false;
-                    });
-                    return nuevoCargando;
-                });
+                establecerInfraestructuraCruda(await traeInfraestructuraEducacionalPorComunidad(comunidadesId, modo));
             } catch (error) {
                 logger.error('Error buscando infraestructura educacional por comunidad:', error);
             }
         };
-
         buscarInfraestructuraEducacionalPorComunidad();
-    }, [datos.comunidadesGeoJson, modo]);
+    }, [comunidadesId, modo]);
+
+    useEffect(() => {
+        if (!infraestructuraCruda || !comunidadesId) return;
+        const infraestructuraEnComunidades = infraestructuraCruda.rows;
+        const tiposInfraestructuraPorComunidades = defineTiposDeInfraestructuraPorComunidades(infraestructuraEnComunidades);
+        defineInfraestructuraMinimaSinUnTipoPorComunidad(comunidadesId, tiposInfraestructuraPorComunidades, infraestructuraEnComunidades);
+        const infraestructuraMinima = defineInfraestructuraMinimaSiNingunTipoPorComunidad(infraestructuraEnComunidades);
+        establecerInfraestructuraEducacionalPorComunidad(infraestructuraMinima);
+        establecerCargando(previo => {
+            const nuevoCargando = { ...previo };
+            comunidadesId.forEach(id => {
+                nuevoCargando[id] = false;
+            });
+            return nuevoCargando;
+        });
+    }, [infraestructuraCruda])
 
     const crearMarcadorNombre = (nombre: string) => {
         if (!isClient) return null;
@@ -207,7 +206,7 @@ const defineTiposDeInfraestructuraPorComunidades = (infraestructuraEnComunidades
     return tiposInfraestructuraPorComunidades;
 }
 
-const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], TIPOS: readonly string[], tiposInfraestructuraPorComunidades: MapaDeTiposPorComunidades, infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
+const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], tiposInfraestructuraPorComunidades: MapaDeTiposPorComunidades, infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
     comunidadesId.forEach((comunidadId: string) => {
         TIPOS.forEach((tipo) => {
             if (!tiposInfraestructuraPorComunidades.get(comunidadId)?.has(tipo as "Educativa" | "Salud" | "Malocas")) {
@@ -216,3 +215,19 @@ const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[
         });
     });
 }
+
+const defineInfraestructuraMinimaSiNingunTipoPorComunidad = (infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]): { [id: string]: InfraestructuraPorComunidad } => {
+    const infraestructuraMinimaCompleta = infraestructuraEnComunidades.reduce((acc: { [id: string]: InfraestructuraPorComunidad }, infraestructuraEnComunidad: TipoInfraestructuraEnComunidad) => {
+        const { comunidadId, tipo, conteo } = infraestructuraEnComunidad;
+        if (!acc[comunidadId]) {
+            acc[comunidadId] = {
+                Malocas: 0,
+                Educativa: 0,
+                Salud: 0,
+            };
+        }
+        acc[comunidadId][tipo as keyof InfraestructuraPorComunidad] = conteo;
+        return acc;
+    }, {} as { [id: string]: InfraestructuraPorComunidad });
+    return infraestructuraMinimaCompleta;
+};
