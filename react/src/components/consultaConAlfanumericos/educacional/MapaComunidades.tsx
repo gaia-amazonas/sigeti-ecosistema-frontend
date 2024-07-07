@@ -25,43 +25,12 @@ interface MapaImp {
     modo: string | string[];
 }
 
-const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
-    useMapEvents({
-        zoomend: (e) => {
-            setZoomLevel(e.target.getZoom());
-        }
-    });
-    return null;
-};
-
-const MarcadorConIcono = ({ position, icono, conteo }: { position: [number, number], icono: string, conteo: number }) => {
-    const leaflet = require('leaflet');
-    const customIcon = leaflet.divIcon({
-        html: `<div style="position: relative;">
-                <img src="${icono}" style="width: 5rem; height: 5rem;" />
-                <span style="position: absolute;
-                top: 0px;
-                right: -5px;
-                background-color: white;
-                border-radius: 50%;
-                padding: 2px;
-                font-size: 10px;
-                font-weight: bold;
-                color: black;">
-                    ${conteo}
-                </span>
-            </div>`,
-        iconSize: [20, 20],
-        className: ''
-    });
-    return <Marker position={position} icon={customIcon} />;
-};
-
 const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
     const [infraestructuraEducacionalPorComunidad, establecerInfraestructuraEducacionalPorComunidad] = useState<{ [id: string]: InfraestructuraPorComunidad }>({});
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const centroMapa = [0.969793, -70.830454];
     const [cargando, establecerCargando] = useState<{ [id: string]: boolean }>({});
+    console.log("aaaaaaaaaaaa", datos);
 
     useEffect(() => {
         const comunidadesId: string[] = datos.comunidadesGeoJson?.features
@@ -192,6 +161,38 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
 };
 
 export default Mapa;
+
+const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
+    useMapEvents({
+        zoomend: (e) => {
+            setZoomLevel(e.target.getZoom());
+        }
+    });
+    return null;
+};
+
+const MarcadorConIcono = ({ position, icono, conteo }: { position: [number, number], icono: string, conteo: number }) => {
+    const leaflet = require('leaflet');
+    const customIcon = leaflet.divIcon({
+        html: `<div style="position: relative;">
+                <img src="${icono}" style="width: 5rem; height: 5rem;" />
+                <span style="position: absolute;
+                top: 0px;
+                right: -5px;
+                background-color: white;
+                border-radius: 50%;
+                padding: 2px;
+                font-size: 10px;
+                font-weight: bold;
+                color: black;">
+                    ${conteo}
+                </span>
+            </div>`,
+        iconSize: [20, 20],
+        className: ''
+    });
+    return <Marker position={position} icon={customIcon} />;
+};
 
 const getOffsetPosition = (coordinates: [number, number], offsetX: number, offsetY: number, zoomNivel: number): [number, number] => {
     const scaleFactor = Math.pow(2, zoomNivel - 6);

@@ -8,6 +8,7 @@ import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alf
 import consultasGeneralesPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorios';
 import consultasGeneralesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorio';
 import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios';
+import consultasGeneralesPorComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTodosTerritorios';
 import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios';
 
 interface DatosParaConsultar {
@@ -129,15 +130,50 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
     comunidadesGeoJson,
     territoriosGeoJson
   ] = await Promise.all([
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.sexo(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.familias(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.sexoEdad(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.familiasPorComunidad(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsultar), modo),
-    buscarDatos(consultasGeneralesPorTodasComunidadesEnTerritorios.comunidadesAgregadasEnTerritorios(datosParaConsultar), modo),
-    buscarComunidades(consultasGeneralesPorTodasComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo),
-    buscarTerritorios(consultasGeneralesPorTodasComunidadesEnTerritorios.territorios(datosParaConsultar), modo)
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.sexo(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familias(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.sexoEdad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familiasPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.comunidadesAgregadasEnTerritorios(datosParaConsultar), modo),
+    buscarComunidades(consultasGeneralesPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo),
+    buscarTerritorios(consultasGeneralesPorComunidadesEnTodosTerritorios.territorios(datosParaConsultar), modo)
+  ]);
+  return {
+    sexo,
+    familias,
+    sexoEdad,
+    familiasPorComunidad,
+    poblacionPorComunidad,
+    familiasConElectricidadPorComunidad,
+    comunidadesEnTerritorios: comunidadesAgregadasEnTerritorios,
+    comunidadesGeoJson,
+    territoriosGeoJson
+  };
+};
+
+export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
+  const [
+    sexo,
+    familias,
+    sexoEdad,
+    familiasPorComunidad,
+    poblacionPorComunidad,
+    familiasConElectricidadPorComunidad,
+    comunidadesAgregadasEnTerritorios,
+    comunidadesGeoJson,
+    territoriosGeoJson
+  ] = await Promise.all([
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.sexo(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familias(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.sexoEdad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familiasPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsultar), modo),
+    buscarDatos(consultasGeneralesPorComunidadesEnTerritorios.comunidadesAgregadasEnTerritorios(datosParaConsultar), modo),
+    buscarComunidades(consultasGeneralesPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo),
+    buscarTerritorios(consultasGeneralesPorComunidadesEnTodosTerritorios.territorios(datosParaConsultar), modo)
   ]);
 
   return {
