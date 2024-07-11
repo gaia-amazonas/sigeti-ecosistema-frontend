@@ -1,3 +1,5 @@
+// src/components/consultaConAlfanumericos/general/MapaComunidades.tsx
+
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
 import React, { useEffect, useState } from 'react';

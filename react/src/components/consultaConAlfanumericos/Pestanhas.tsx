@@ -15,7 +15,7 @@ import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
-import EducacionalComunidadesEnTerritorioDatosConsultados, { Escolaridad, EscolaridadFila } from 'tipos/educacional/datosConsultados';
+import EducacionalComunidadesEnTerritorioDatosConsultados from 'tipos/educacional/datosConsultados';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
@@ -221,7 +221,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorios(datos, modo));
-      console.log("xxxxxxxxxxxxxxx", generalTodasComunidadesEnTerritoriosDatosConsultados);
     }
   };
 
@@ -339,14 +338,4 @@ const enTodosTerritorios = (datos: DatosParaConsultar) => {
 
 const esTodosLosTerritoriosYComunidades = (datos: DatosParaConsultar) => {
   return datos.territoriosId.length === 1 && datos.territoriosId[0] === 'Todos' && datos.comunidadesId.length === 1 && datos.comunidadesId[0] === 'Todas';
-};
-
-const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: Escolaridad | null) => {
-  if (!sexoEdadDatos) {
-    return null;
-  }
-  return sexoEdadDatos.rows.map((item: EscolaridadFila) => ({
-    grupo: item.nivelEducativo,
-    [item.sexo]: item.conteo * (item.sexo === 'Hombres' ? -1 : 1)
-  }));
 };

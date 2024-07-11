@@ -1,5 +1,4 @@
-// src/components/consultaConAlfanumericos/general/comunindadesEnTerritorios/General.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
@@ -12,6 +11,8 @@ import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
 import MapaComunidadesPorTerritorio from '../MapaComunidades';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
+import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
 
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
@@ -22,6 +23,17 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
 }
 
 export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
+  const [popupVisible, establecerPopupVisible] = useState(false);
+  const [edadMinima, establecerEdadMinima] = useState(0);
+  const [edadMaxima, establecerEdadMaxima] = useState(120);
+
+  const cambiaVisibilidadFiltroAvanzadoPopup = () => {
+    establecerPopupVisible(!popupVisible);
+  };
+
+  useEffect(() => {
+    console.log("aaaaaaaaaaaaaa", edadMinima, edadMaxima);
+  }, [edadMaxima, edadMinima]);
 
   if (datosGeneralesInvalidos(datosGenerales)) {
     return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -70,6 +82,8 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
         comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
       />
+      <FiltrosAvanzadosPopup esVisible={popupVisible} establecerEdadMinima={establecerEdadMinima} establecerEdadMaxima={establecerEdadMaxima} onClose={cambiaVisibilidadFiltroAvanzadoPopup} />
+      <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
     </div>
   );
 };
