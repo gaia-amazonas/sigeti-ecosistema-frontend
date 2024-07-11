@@ -1,4 +1,4 @@
-// src/components/consultaConAlfanumericos/cultural/CulturalGraficoBurbujaWrapper.tsx
+// src/components/consultaConAlfanumericos/cultural/BurbujaWrapper.tsx
 
 import React from 'react';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
