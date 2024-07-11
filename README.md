@@ -1,6 +1,6 @@
 # sigeti-ecosistema-frontend
 
-**sigeti-ecosistema-frontend** es el ecosistema front-end para SIG, escrito en React, que consume datos desde la API (sigeti-api).
+**sigeti-ecosistema-frontend** es el ecosistema front-end para SIG, escrito con Next.js y consume datos con su API nativa haciendo consultas en BigQuery.
 
 ## Instrucciones para Desplegar la App con GCP Run
 
