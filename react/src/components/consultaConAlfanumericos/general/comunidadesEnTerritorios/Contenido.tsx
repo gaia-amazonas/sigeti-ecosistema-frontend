@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
-
-import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import buscarPorTodasComunidadesEnTodosTerritorios from 'buscadores/paraAlfanumerica/dinamicas/General';
 import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
-
+import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios'
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
@@ -13,7 +13,6 @@ import MapaComunidadesPorTerritorio from '../MapaComunidades';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
-
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
@@ -26,30 +25,52 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
   const [popupVisible, establecerPopupVisible] = useState(false);
   const [edadMinima, establecerEdadMinima] = useState(0);
   const [edadMaxima, establecerEdadMaxima] = useState(120);
+  const [datosExtraidos, establecerDatosExtraidos] = useState(extraerDatosEntrantes(datosGenerales));
+  const [datosPiramidalesSexoEdad, establecerDatosPiramidalesSexoEdad] = useState<DatosPiramidalesItem[] | null>(segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad));
+  const [mujerContador, establecerMujerContador] = useState();
+  const [hombreContador, establecerHombreContador] = useState();
+  const [totalContador, establecerTotalContador] = useState();
 
   const cambiaVisibilidadFiltroAvanzadoPopup = () => {
     establecerPopupVisible(!popupVisible);
   };
 
   useEffect(() => {
-    console.log("aaaaaaaaaaaaaa", edadMinima, edadMaxima);
-  }, [edadMaxima, edadMinima]);
+    establecerDatosExtraidos(extraerDatosEntrantes(datosGenerales));
+    establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosGenerales.sexoEdad));
+  }, [datosGenerales]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
+      const datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      establecerDatosExtraidos(prev => ({
+        ...prev,
+        sexoEdad: datosDinamicos.sexoEdad,
+      }));
+      establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+    };
+    
+    fetchData();
+  }, [edadMaxima, edadMinima, modo]);
+
+  useEffect(() => {
+    const sexoPorEdades = calcularSexosPorEdades(datosExtraidos.sexo);
+    establecerMujerContador(sexoPorEdades.mujerContador);
+    establecerHombreContador(sexoPorEdades.hombreContador);
+    establecerTotalContador(sexoPorEdades.totalContador);
+  }, [datosPiramidalesSexoEdad]);
 
   if (datosGeneralesInvalidos(datosGenerales)) {
-    return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
-            <div className={estilos.spinner}></div>
-          </div>;
+    return (
+      <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+        <div className={estilos.spinner}></div>
+      </div>
+    );
   }
 
-  const datosExtraidos = extraerDatosEntrantes(datosGenerales);
   const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
   const territorios = extraerTerritorio(datosExtraidos.territoriosGeoJson);
-  const {
-    mujerContador,
-    hombreContador,
-    totalContador
-  } = calcularSexosPorEdades(datosExtraidos.sexo);
-  const datosPiramidalesSexoEdad = segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad);
 
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
@@ -68,7 +89,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         <Mujer contador={mujerContador} />
       </ContenedorGrafico>
       <CajaTitulo>Sexo y Edad</CajaTitulo>
-      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo='Hombre' labelDerecho='Mujer' />
+      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo="Hombre" labelDerecho="Mujer" />
       <CajaTitulo>Mapa</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
@@ -82,7 +103,12 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
         comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
       />
-      <FiltrosAvanzadosPopup esVisible={popupVisible} establecerEdadMinima={establecerEdadMinima} establecerEdadMaxima={establecerEdadMaxima} onClose={cambiaVisibilidadFiltroAvanzadoPopup} />
+      <FiltrosAvanzadosPopup
+        esVisible={popupVisible}
+        establecerEdadMinima={establecerEdadMinima}
+        establecerEdadMaxima={establecerEdadMaxima}
+        onClose={cambiaVisibilidadFiltroAvanzadoPopup}
+      />
       <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
     </div>
   );
@@ -91,19 +117,21 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
 export default ComponenteGeneralComponentesEnTerritorios;
 
 const datosGeneralesInvalidos = (datosGenerales: ComunidadesEnTerritoriosDatosConsultados) => {
-  return !datosGenerales.comunidadesGeoJson ||
-  !datosGenerales.familias ||
-  !datosGenerales.familiasPorComunidad ||
-  !datosGenerales.sexo ||
-  !datosGenerales.sexoEdad ||
-  !datosGenerales.poblacionPorComunidad ||
-  !datosGenerales.familiasConElectricidadPorComunidad ||
-  !datosGenerales.territoriosGeoJson ||
-  !datosGenerales.comunidadesEnTerritorios
-}
+  return (
+    !datosGenerales.comunidadesGeoJson ||
+    !datosGenerales.familias ||
+    !datosGenerales.familiasPorComunidad ||
+    !datosGenerales.sexo ||
+    !datosGenerales.sexoEdad ||
+    !datosGenerales.poblacionPorComunidad ||
+    !datosGenerales.familiasConElectricidadPorComunidad ||
+    !datosGenerales.territoriosGeoJson ||
+    !datosGenerales.comunidadesEnTerritorios
+  );
+};
 
 const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritoriosDatosConsultados) => {
-  const familias = datosGenerales.familias === null? null : datosGenerales.familias.rows.at(0)?.familias;
+  const familias = datosGenerales.familias === null ? null : datosGenerales.familias.rows.at(0)?.familias;
   return {
     sexo: datosGenerales.sexo,
     familias: familias === undefined ? null : familias,
@@ -114,26 +142,32 @@ const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritoriosDatosCons
     comunidadesGeoJson: datosGenerales.comunidadesGeoJson,
     territoriosGeoJson: datosGenerales.territoriosGeoJson,
     comunidadesEnTerritorios: datosGenerales.comunidadesEnTerritorios
-  }
-}
+  };
+};
+
+const extraerDatosEntrantesDinamicos = (datosGenerales: ComunidadesEnTerritoriosDatosConsultadosDinamicos) => {
+  return {
+    sexoEdad: datosGenerales.sexoEdad
+  };
+};
 
 const extraerComunidades = (comunidadesGeoJson: ComunidadesGeoJson | null): string[] | null => {
   if (comunidadesGeoJson) {
-    return comunidadesGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null);
+    return comunidadesGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
   }
   return null;
-}
+};
 
 const extraerTerritorio = (territoriosGeoJson: TerritoriosGeoJson | null): string[] | null => {
   if (territoriosGeoJson) {
-    return territoriosGeoJson.features.map(feature => feature.properties ? feature.properties.nombre : null)
+    return territoriosGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
   }
   return null;
-}
+};
 
 const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {
-  const mujerContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Mujer').map(row => row.cantidad)[0];
-  const hombreContador = sexoDatos === null? null: sexoDatos.rows.filter(row => row.sexo === 'Hombre').map(row => row.cantidad)[0];
+  const mujerContador = sexoDatos === null ? null : sexoDatos.rows.filter(row => row.sexo === 'Mujer').map(row => row.cantidad)[0];
+  const hombreContador = sexoDatos === null ? null : sexoDatos.rows.filter(row => row.sexo === 'Hombre').map(row => row.cantidad)[0];
   let totalContador: number | null = null;
   if (mujerContador && hombreContador) {
     totalContador = hombreContador + mujerContador;
@@ -142,14 +176,20 @@ const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {
     mujerContador,
     hombreContador,
     totalContador
-  }
-}
+  };
+};
 
-const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null) => {
+type DatosPiramidalesItem = {
+  grupo: string;
+  Hombre?: number;
+  Mujer?: number;
+};
+
+const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: SexoEdad | null): DatosPiramidalesItem[] | null => {
   if (!sexoEdadDatos) {
     return null;
   }
-  return sexoEdadDatos.rows.map((item: SexoEdadFila) => ({
+  return sexoEdadDatos.rows.map((item: SexoEdadFila): DatosPiramidalesItem => ({
     grupo: item.grupoPorEdad,
     [item.sexo]: item.contador * (item.sexo === 'Hombre' ? -1 : 1)
   }));

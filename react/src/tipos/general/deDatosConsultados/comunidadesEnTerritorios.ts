@@ -1,4 +1,4 @@
-// src/tipos/datosConsultados/comunidadesEnTerritorios.ts
+// src/tipos/general/datosConsultados/comunidadesEnTerritorios.ts
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 import { FamiliasPorComunidadFila,
