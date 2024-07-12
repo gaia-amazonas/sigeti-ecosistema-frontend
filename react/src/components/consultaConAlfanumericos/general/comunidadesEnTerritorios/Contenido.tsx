@@ -3,7 +3,7 @@ import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import buscarPorTodasComunidadesEnTodosTerritorios from 'buscadores/paraAlfanumerica/dinamicas/General';
 import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
-import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios'
+import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
@@ -27,9 +27,9 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
   const [edadMaxima, establecerEdadMaxima] = useState(120);
   const [datosExtraidos, establecerDatosExtraidos] = useState(extraerDatosEntrantes(datosGenerales));
   const [datosPiramidalesSexoEdad, establecerDatosPiramidalesSexoEdad] = useState<DatosPiramidalesItem[] | null>(segmentarPorEdadYSexoParaGraficasPiramidales(datosExtraidos.sexoEdad));
-  const [mujerContador, establecerMujerContador] = useState();
-  const [hombreContador, establecerHombreContador] = useState();
-  const [totalContador, establecerTotalContador] = useState();
+  const [mujerContador, establecerMujerContador] = useState<number | null>(null);
+  const [hombreContador, establecerHombreContador] = useState<number | null>(null);
+  const [totalContador, establecerTotalContador] = useState<number | null>(null);
 
   const cambiaVisibilidadFiltroAvanzadoPopup = () => {
     establecerPopupVisible(!popupVisible);
@@ -105,6 +105,8 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
       />
       <FiltrosAvanzadosPopup
         esVisible={popupVisible}
+        edadMinima={edadMinima}
+        edadMaxima={edadMaxima}
         establecerEdadMinima={establecerEdadMinima}
         establecerEdadMaxima={establecerEdadMaxima}
         onClose={cambiaVisibilidadFiltroAvanzadoPopup}

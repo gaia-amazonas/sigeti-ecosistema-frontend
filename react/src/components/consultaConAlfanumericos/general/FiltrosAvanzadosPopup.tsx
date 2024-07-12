@@ -53,12 +53,14 @@ const Track = styled.div<TrackProps>`
 `;
 
 interface FiltrosAvanzadosProps {
+  edadMinima: number;
+  edadMaxima: number;
   establecerEdadMinima: (edad: number) => void;
   establecerEdadMaxima: (edad: number) => void;
 }
 
-const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ establecerEdadMinima, establecerEdadMaxima }) => {
-  const [values, setValues] = useState<[number, number]>([0, 120]);
+const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima }) => {
+  const [values, setValues] = useState<[number, number]>([edadMinima, edadMaxima]);
 
   const controlarCambio = (newValues: number | readonly number[]) => {
     if (Array.isArray(newValues)) {
@@ -92,18 +94,20 @@ const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ establecerEdad
 
 interface PopupProps {
   esVisible: boolean;
+  edadMinima: number;
+  edadMaxima: number;
   establecerEdadMinima: React.Dispatch<React.SetStateAction<number>>;
   establecerEdadMaxima: React.Dispatch<React.SetStateAction<number>>;
   onClose: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({ esVisible, establecerEdadMinima, establecerEdadMaxima, onClose }) => {
+const Popup: React.FC<PopupProps> = ({ esVisible, edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima, onClose }) => {
   if (!esVisible) return null;
 
   return (
     <PopupOverlay onClick={onClose}>
       <PopupContent onClick={(e) => e.stopPropagation()}>
-        <FiltrosAvanzadosPopup establecerEdadMinima={establecerEdadMinima} establecerEdadMaxima={establecerEdadMaxima} />
+        <FiltrosAvanzadosPopup edadMinima = {edadMinima} edadMaxima = {edadMaxima} establecerEdadMinima={establecerEdadMinima} establecerEdadMaxima={establecerEdadMaxima} />
         <button onClick={onClose} style={{ marginTop: '1rem' }}>Close</button>
       </PopupContent>
     </PopupOverlay>
