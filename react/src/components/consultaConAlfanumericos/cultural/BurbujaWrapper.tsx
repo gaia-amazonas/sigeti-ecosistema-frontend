@@ -3,16 +3,18 @@
 import React from 'react';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
-import CulturalComunidadesEnTerritorios from 'tipos/cultural/datosConsultados';
+import CulturalComunidadesEnTerritorios, {TerritoriosGeoJson, ComunidadesGeoJson} from 'tipos/cultural/datosConsultados';
 
 import { CajaTitulo } from '../estilos';
+import QueEstoyViendo from '../general/QueEstoyViendo';
 
 interface CulturalGraficoBurbujaWrapperImp {
   datos: CulturalComunidadesEnTerritorios;
+  queEstoyViendo: {comunidadesGeoJson: ComunidadesGeoJson | null, territoriosGeoJson: TerritoriosGeoJson | null};
 }
 
-const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos }) => {
-    if (datosCulturalesInvalidos(datos)) {
+const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos, queEstoyViendo }) => {
+    if (datosCulturalesInvalidos(datos, queEstoyViendo)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
                 <div className={estilos.spinner}></div>
             </div>;
@@ -37,14 +39,20 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
                     <CulturalGraficoBurbuja datos={datos.clanes.rows} labelKey="clan" valueKey="conteo" />
                 </>
             )}
+            <QueEstoyViendo
+                comunidades={queEstoyViendo.comunidadesGeoJson}
+                territorios={queEstoyViendo.territoriosGeoJson}
+            />
         </>
     );
 };
 
 export default CulturalGraficoBurbujaWrapper;
 
-const datosCulturalesInvalidos = (datosCulturales: CulturalComunidadesEnTerritorios) => {
+const datosCulturalesInvalidos = (datosCulturales: CulturalComunidadesEnTerritorios, queEstoyViendo: {comunidadesGeoJson: ComunidadesGeoJson | null, territoriosGeoJson: TerritoriosGeoJson | null}) => {
     return !datosCulturales.clanes ||
     !datosCulturales.etnias ||
-    !datosCulturales.sexosPorLengua
+    !datosCulturales.sexosPorLengua ||
+    !queEstoyViendo.comunidadesGeoJson ||
+    !queEstoyViendo.territoriosGeoJson
 }

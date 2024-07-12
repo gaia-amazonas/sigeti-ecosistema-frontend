@@ -10,7 +10,7 @@ import Educacional from './educacional/Contenido';
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 
-import CulturalComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+import CulturalComunidadesEnTerritorioDatosConsultados, { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
 import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
@@ -96,25 +96,33 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 const culturalComunidadesEnTerritorioDatosIniciales: CulturalComunidadesEnTerritorioDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
-  clanes: null
+  clanes: null,
+  comunidadesGeoJson: null,
+  territoriosGeoJson: null
 };
 
 const culturalTodasComunidadesEnTerritorioDatosIniciales: CulturalTodasComunidadesEnTerritorioDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
-  clanes: null
+  clanes: null,
+  comunidadesGeoJson: null,
+  territoriosGeoJson: null
 };
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
-  clanes: null
+  clanes: null,
+  comunidadesGeoJson: null,
+  territoriosGeoJson: null
 };
 
 const culturalTodasComunidadesEnTerritoriosDatosIniciales: CulturalTodasComunidadesEnTerritoriosDatosConsultados = {
   sexosPorLengua: null,
   etnias: null,
-  clanes: null
+  clanes: null,
+  comunidadesGeoJson: null,
+  territoriosGeoJson: null
 };
 
 const educacionalComunidadesEnTerritorioDatosIniciales: EducacionalComunidadesEnTerritorioDatosConsultados = {
@@ -287,19 +295,45 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   };
 
   const renderizaContenidoCultural = () => {
-    return tipoConsulta === 'enTerritorio' ? (
-      <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} />
-    ) : (
-      <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} />
-    );
+    let queEstoyViendo: {
+      comunidadesGeoJson: ComunidadesGeoJson | null;
+      territoriosGeoJson: TerritoriosGeoJson | null;
+    };
+    if (tipoConsulta === 'enTerritorio') {
+      queEstoyViendo = {
+        comunidadesGeoJson: datosPorPestanhaEnTerritorio.cultural.comunidadesGeoJson,
+        territoriosGeoJson: datosPorPestanhaEnTerritorio.cultural.territoriosGeoJson
+      };
+      return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} queEstoyViendo={queEstoyViendo} />;
+    }
+    if (tipoConsulta === 'enTerritorios') {
+      queEstoyViendo = {
+        comunidadesGeoJson: datosPorPestanhaEnTerritorios.cultural.comunidadesGeoJson,
+        territoriosGeoJson: datosPorPestanhaEnTerritorios.cultural.territoriosGeoJson
+      }
+      return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} queEstoyViendo={queEstoyViendo} />;
+    }
   };
 
   const renderizaContenidoEducacional = () => {
-    return tipoConsulta === 'enTerritorio' ? (
-      <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} modo={modo}></Educacional>
-    ) : (
-      <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} modo={modo}></Educacional>
-    );
+    let queEstoyViendo: {
+      comunidadesGeoJson: ComunidadesGeoJson | null;
+      territoriosGeoJson: TerritoriosGeoJson | null;
+    };
+    if (tipoConsulta === 'enTerritorio') {
+      queEstoyViendo = {
+        comunidadesGeoJson: datosPorPestanhaEnTerritorio.educacion.comunidadesGeoJson,
+        territoriosGeoJson: datosPorPestanhaEnTerritorio.educacion.territoriosGeoJson
+      };
+      return <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
+    }
+    if (tipoConsulta === 'enTerritorios') {
+      queEstoyViendo = {
+        comunidadesGeoJson: datosPorPestanhaEnTerritorios.educacion.comunidadesGeoJson,
+        territoriosGeoJson: datosPorPestanhaEnTerritorios.educacion.territoriosGeoJson
+      }
+      return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
+    }
   };
 
   return (

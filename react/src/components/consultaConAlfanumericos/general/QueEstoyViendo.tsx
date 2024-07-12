@@ -1,12 +1,14 @@
 // QueEstoyViendo.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
+
+import { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
 
 interface QueEstoyViendoImp {
-  comunidades: FeatureCollection<Geometry, GeoJsonProperties>;
-  territorios: FeatureCollection<Geometry, GeoJsonProperties>;
+  comunidades: ComunidadesGeoJson | null;
+  territorios: TerritoriosGeoJson | null;
 }
+
 
 const BotonFijo = styled.button`
   position: fixed;
@@ -80,7 +82,7 @@ const QueEstoyViendo: React.FC<QueEstoyViendoImp> = ({comunidades, territorios})
             !esPopupVisible && <BotonFijo onClick={alternarPopup}>?</BotonFijo>
         }     
         {
-            esPopupVisible && (
+            esPopupVisible && comunidades && territorios && (
                 <Popup>
                 <CabeceraPopup>¿Qué estoy viendo?</CabeceraPopup>
                 <Filtro>{comunidades.features.length > 1 ? 'Comunidades': 'Comunidad'}</Filtro>
