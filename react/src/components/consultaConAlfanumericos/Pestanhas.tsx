@@ -288,9 +288,9 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
 
   const renderizaContenidoGeneral = () => {
     return tipoConsulta === 'enTerritorio' ? (
-      <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} modo={modo} />
+      <GeneralTerritorio datosGenerales={datosPorPestanhaEnTerritorio.general} datosParaConsulta={datosParaConsultar} modo={modo} />
     ) : (
-      <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} modo={modo} />
+      <GeneralTerritorios datosGenerales={datosPorPestanhaEnTerritorios.general} datosParaConsulta={datosParaConsultar} modo={modo} />
     );
   };
 

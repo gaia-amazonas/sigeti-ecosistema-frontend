@@ -1,4 +1,5 @@
-// src/components/consultas/generales/todosTerritorios.ts
+// src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios.ts
+
 const porTodasComunidadesEnTodosTerritorios = {
     sexo: `
         SELECT
@@ -23,13 +24,16 @@ const porTodasComunidadesEnTodosTerritorios = {
         SELECT
             COUNT(*) as familias
         FROM
-            \`sigeti.censo_632.BD_familias\`;`
+            \`sigeti.censo_632.BD_familias\`
+        GROUP BY
+            numero_id;`
     ,
     familiasPorComunidad: `
         SELECT
             COUNT(*) AS familias,
             c.comunidad AS comunidadNombre,
-            c.id_cnida AS comunidadId
+            c.id_cnida AS comunidadId,
+            f.numero_id AS lider
         FROM
             \`sigeti.censo_632.BD_familias\` f
         JOIN
@@ -37,12 +41,13 @@ const porTodasComunidadesEnTodosTerritorios = {
         ON
             f.id_cnida = c.id_cnida
         GROUP BY
-            c.comunidad, c.id_cnida;`
+            c.comunidad, c.id_cnida, f.numero_id;`
     ,
     familiasConElectricidadPorComunidad: `
         SELECT
             COUNT(*) AS familias,
-            f.id_cnida AS comunidadId
+            f.id_cnida AS comunidadId,
+            f.numero_id AS lider
         FROM
             \`sigeti.censo_632.BD_familias\` f
         JOIN
@@ -52,7 +57,7 @@ const porTodasComunidadesEnTodosTerritorios = {
         WHERE
             LOWER(f.vv_elect) IN ('sí', 'si')
         GROUP BY
-            f.id_cnida;`
+            f.id_cnida, f.numero_id;`
     ,
     sexoEdad: `
         SELECT 

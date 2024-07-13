@@ -1,6 +1,8 @@
+// src/components/consultaConAlfanumericos/general/comunidadesEnTerritorios/Contenido.tsx
+
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
-import buscarPorTodasComunidadesEnTodosTerritorios from 'buscadores/paraAlfanumerica/dinamicas/General';
+import { buscarPorTodasComunidadesEnTodosTerritorios, buscarPorTodasComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica/dinamicas/General';
 import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
@@ -16,12 +18,18 @@ import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
 
+interface DatosParaConsultar {
+  territoriosId: string[];
+  comunidadesId: string[];
+}
+
 interface ComponenteGeneralComunidadesEnTerritorioImp {
   datosGenerales: ComunidadesEnTerritoriosDatosConsultados;
+  datosParaConsulta: DatosParaConsultar;
   modo: string | string[];
 }
 
-export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, modo }) => {
+export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, datosParaConsulta, modo }) => {
   const [popupVisible, establecerPopupVisible] = useState(false);
   const [edadMinima, establecerEdadMinima] = useState(0);
   const [edadMaxima, establecerEdadMaxima] = useState(120);
@@ -41,20 +49,28 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
   }, [datosGenerales]);
 
   useEffect(() => {
+    let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
     const fetchData = async () => {
-      const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
-      const datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      if (datosParaConsulta.territoriosId[0] == 'Todos' && datosParaConsulta.comunidadesId[0] == 'Todas') {
+        const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
+        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      } else if (datosParaConsulta.comunidadesId[0] == 'Todas' && datosParaConsulta.territoriosId[0] != 'Todos') {
+        const datos = await buscarPorTodasComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
+        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      }
       establecerDatosExtraidos(prev => ({
         ...prev,
+        sexo: datosDinamicos.sexo,
+        poblacionPorComunidad: datosDinamicos.poblacionPorComunidad,
         sexoEdad: datosDinamicos.sexoEdad,
       }));
       establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
     };
-    
     fetchData();
   }, [edadMaxima, edadMinima, modo]);
 
   useEffect(() => {
+    if (!datosExtraidos.sexo) return;
     const sexoPorEdades = calcularSexosPorEdades(datosExtraidos.sexo);
     establecerMujerContador(sexoPorEdades.mujerContador);
     establecerHombreContador(sexoPorEdades.hombreContador);
@@ -149,7 +165,12 @@ const extraerDatosEntrantes = (datosGenerales: ComunidadesEnTerritoriosDatosCons
 
 const extraerDatosEntrantesDinamicos = (datosGenerales: ComunidadesEnTerritoriosDatosConsultadosDinamicos) => {
   return {
-    sexoEdad: datosGenerales.sexoEdad
+    sexo: datosGenerales.sexo,
+    familias: datosGenerales.familias,
+    sexoEdad: datosGenerales.sexoEdad,
+    familiasPorComunidad: datosGenerales.familiasPorComunidad,
+    poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
+    familiasConElectricidadPorComunidad: datosGenerales.familiasConElectricidadPorComunidad
   };
 };
 
