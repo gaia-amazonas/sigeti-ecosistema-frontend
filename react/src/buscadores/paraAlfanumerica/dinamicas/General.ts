@@ -133,12 +133,12 @@ export const buscarPorTodasComunidadesEnTerritorios = async ({datosParaConsulta,
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async ({ edadMinima, edadMaxima, modo }: PTCETTImp): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
   const [sexo, familias, sexoEdad, familiasPorComunidad, poblacionPorComunidad, familiasConElectricidadPorComunidad] = await Promise.all([
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.sexo(edadMinima, edadMaxima), modo),
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familias(edadMinima, edadMaxima), modo),
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.sexoEdad(edadMinima, edadMaxima), modo),
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familiasPorComunidad(edadMinima, edadMaxima), modo),
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.poblacionPorComunidad(edadMinima, edadMaxima), modo),
-    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familiasConElectricidadPorComunidad(edadMinima, edadMaxima), modo)
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.sexo({edadMinima, edadMaxima}), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familias({edadMinima, edadMaxima}), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.sexoEdad({edadMinima, edadMaxima}), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familiasPorComunidad({edadMinima, edadMaxima}), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.poblacionPorComunidad({edadMinima, edadMaxima}), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTodosTerritorios.familiasConElectricidadPorComunidad({edadMinima, edadMaxima}), modo)
   ]);
   return {
     sexo,

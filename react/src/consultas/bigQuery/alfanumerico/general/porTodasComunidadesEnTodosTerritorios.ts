@@ -24,16 +24,13 @@ const porTodasComunidadesEnTodosTerritorios = {
         SELECT
             COUNT(*) as familias
         FROM
-            \`sigeti.censo_632.BD_familias\`
-        GROUP BY
-            numero_id;`
+            \`sigeti.censo_632.BD_familias\`;`
     ,
     familiasPorComunidad: `
         SELECT
             COUNT(*) AS familias,
             c.comunidad AS comunidadNombre,
-            c.id_cnida AS comunidadId,
-            f.numero_id AS lider
+            c.id_cnida AS comunidadId
         FROM
             \`sigeti.censo_632.BD_familias\` f
         JOIN
@@ -41,13 +38,12 @@ const porTodasComunidadesEnTodosTerritorios = {
         ON
             f.id_cnida = c.id_cnida
         GROUP BY
-            c.comunidad, c.id_cnida, f.numero_id;`
+            c.comunidad, c.id_cnida;`
     ,
     familiasConElectricidadPorComunidad: `
         SELECT
             COUNT(*) AS familias,
-            f.id_cnida AS comunidadId,
-            f.numero_id AS lider
+            f.id_cnida AS comunidadId
         FROM
             \`sigeti.censo_632.BD_familias\` f
         JOIN
@@ -57,7 +53,7 @@ const porTodasComunidadesEnTodosTerritorios = {
         WHERE
             LOWER(f.vv_elect) IN ('sí', 'si')
         GROUP BY
-            f.id_cnida, f.numero_id;`
+            f.id_cnida;`
     ,
     sexoEdad: `
         SELECT 
