@@ -1,5 +1,5 @@
 // src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorio.ts
-import haceClausulasWhere from "../clausulas";
+import haceClausulasWhere from "../../clausulas";
 
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
@@ -13,7 +13,7 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            id_cnida, sexo;`
+            sexo;`
     ,
     poblacionPorComunidad: ({territoriosId}) => `
         SELECT
@@ -153,8 +153,7 @@ const funciones: Record<string, Query> = {
         ON
             a.id_cnida = g.id_cnida
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
-    
+            ${haceClausulasWhere({territoriosId}, 'a.id_ti')};`
 };
 
 export default funciones;

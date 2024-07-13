@@ -1,4 +1,5 @@
 // src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios.ts
+
 import haceClausulasWhere from "../clausulas";
 
 interface DatosParaConsultar {

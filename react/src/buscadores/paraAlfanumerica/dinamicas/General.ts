@@ -3,6 +3,8 @@ import ComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsu
 import { buscarDatos } from 'buscadores/datosSQL';
 import consultasDinamicasPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/dinamicas/porTodasComunidadesEnTodosTerritorios';
 import consultasDinamicasPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/dinamicas/porTodasComunidadesEnTerritorios';
+import consultasDinamicasPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/dinamicas/porTodasComunidadesEnTerritorio';
+
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -21,6 +23,32 @@ interface PTCETTImp {
   edadMaxima: number,
   modo: string | string[]
 }
+
+export const buscarPorTodasComunidadesEnTerritorio = async ({ datosParaConsulta, edadMinima, edadMaxima, modo }: TCETImp): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
+  const [
+    sexo,
+    familias,
+    sexoEdad,
+    familiasPorComunidad,
+    poblacionPorComunidad,
+    familiasConElectricidadPorComunidad
+  ] = await Promise.all([
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.sexo(datosParaConsulta, { edadMinima, edadMaxima }), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.familias(datosParaConsulta, { edadMinima, edadMaxima }), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.sexoEdad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.familiasPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
+    buscarDatos(consultasDinamicasPorTodasComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
+  ]);
+  return {
+    sexo,
+    familias,
+    sexoEdad,
+    familiasPorComunidad,
+    poblacionPorComunidad,
+    familiasConElectricidadPorComunidad
+  };
+};
 
 export const buscarPorTodasComunidadesEnTerritorios = async ({datosParaConsulta, edadMinima, edadMaxima, modo }: TCETImp): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
   const [
