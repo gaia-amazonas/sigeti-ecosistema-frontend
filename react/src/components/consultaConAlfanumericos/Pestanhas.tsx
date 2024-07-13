@@ -336,6 +336,12 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     }
   };
 
+  const renderizaContenidoSalud = () => {
+    tipoConsulta === 'enTerritorio' ?
+      <Salud datosEducacionales={datosPorPestanhaEnTerritorio.salud} modo={modo}></Salud> :
+      <Salud datosEducacionales={datosPorPestanhaEnTerritorios.salud} modo={modo}></Salud>;
+  }
+
   return (
     <Contenedor>
       <BotonReiniciar onClick={reiniciar} />
@@ -344,11 +350,13 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>General</EstiloPestanha>
         <EstiloPestanha $activo={activo === 'pestanhaCultural'} onClick={() => establecerActivo('pestanhaCultural')}>Cultural</EstiloPestanha>
         <EstiloPestanha $activo={activo === 'pestanhaEducacional'} onClick={() => establecerActivo('pestanhaEducacional')}>Educación</EstiloPestanha>
+        <EstiloPestanha $activo={activo === 'pestanhaSalud'} onClick={() => establecerActivo('pestanhaSalud')}>Salud</EstiloPestanha>
       </ListaPestanhas>
       <PanelPestanhas>
         { activo === 'pestanhaGeneral' && renderizaContenidoGeneral() }
         { activo === 'pestanhaCultural' && renderizaContenidoCultural() }
         { activo === 'pestanhaEducacional' && renderizaContenidoEducacional() }
+        { activo === 'pestanhaSalud' && renderizaContenidoSalud() }
       </PanelPestanhas>
     </Contenedor>
   );
