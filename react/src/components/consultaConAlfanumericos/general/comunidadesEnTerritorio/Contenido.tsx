@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
-import { buscarPorTodasComunidadesEnTerritorio } from 'buscadores/paraAlfanumerica/dinamicas/General';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import { buscarPorTodasComunidadesEnTerritorio, buscarPorComunidadesEnTerritorio } from 'buscadores/paraAlfanumerica/dinamicas/General';
+import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, TerritorioGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
 import Mujer from '../sexo/Mujer';
@@ -52,7 +52,12 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
     let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
     const fetchFilteredData = async () => {
       if (datosParaConsulta.comunidadesId[0] === 'Todas') {
+        console.log("ssssssssssssssssssss", edadMinima, edadMaxima);
         const datos = await buscarPorTodasComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
+        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+        establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+      } else {
+        const datos = await buscarPorComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
         datosDinamicos = extraerDatosEntrantesDinamicos(datos);
         establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
       }
