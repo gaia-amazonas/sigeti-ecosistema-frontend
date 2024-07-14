@@ -276,7 +276,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
   };
-
+  
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorio({
       general: generalComunidadesEnTerritorioDatosConsultados,
@@ -294,30 +294,40 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     establecerDatosPorPestanhaEnTerritorio({
       general: generalTodasComunidadesEnTerritorioDatosConsultados,
       cultural: culturalTodasComunidadesEnTerritorioDatosConsultados,
-      educacion: educacionalTodasComunidadesEnTerritorioDatosConsultados
+      educacion: educacionalTodasComunidadesEnTerritorioDatosConsultados,
+      salud: saludComunidadesEnTerritoriosDatosIniciales
     });
     establecerTipoConsulta('enTerritorio');
   }, [generalTodasComunidadesEnTerritorioDatosConsultados,
     culturalTodasComunidadesEnTerritorioDatosConsultados,
-    educacionalTodasComunidadesEnTerritorioDatosConsultados]);
+    educacionalTodasComunidadesEnTerritorioDatosConsultados,
+    saludTodasComunidadesEnTerritorioDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
       general: generalComunidadesEnTerritoriosDatosConsultados,
       cultural: culturalComunidadesEnTerritoriosDatosConsultados,
-      educacion: educacionalComunidadesEnTerritoriosDatosConsultados
+      educacion: educacionalComunidadesEnTerritoriosDatosConsultados,
+      salud: saludComunidadesEnTerritoriosDatosConsultados
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalComunidadesEnTerritoriosDatosConsultados, culturalComunidadesEnTerritoriosDatosConsultados, educacionalComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalComunidadesEnTerritoriosDatosConsultados,
+    culturalComunidadesEnTerritoriosDatosConsultados,
+    educacionalComunidadesEnTerritoriosDatosConsultados,
+    saludComunidadesEnTerritoriosDatosConsultados]);
 
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorios({
       general: generalTodasComunidadesEnTerritoriosDatosConsultados,
       cultural: culturalTodasComunidadesEnTerritoriosDatosConsultados,
-      educacion: educacionalTodasComunidadesEnTerritoriosDatosConsultados
+      educacion: educacionalTodasComunidadesEnTerritoriosDatosConsultados,
+      salud: saludTodasComunidadesEnTerritoriosDatosConsultados
     });
     establecerTipoConsulta('enTerritorios');
-  }, [generalTodasComunidadesEnTerritoriosDatosConsultados, culturalTodasComunidadesEnTerritoriosDatosConsultados, educacionalTodasComunidadesEnTerritoriosDatosConsultados]);
+  }, [generalTodasComunidadesEnTerritoriosDatosConsultados,
+    culturalTodasComunidadesEnTerritoriosDatosConsultados,
+    educacionalTodasComunidadesEnTerritoriosDatosConsultados,
+    saludTodasComunidadesEnTerritoriosDatosConsultados]);
 
   const renderizaContenidoGeneral = () => {
     return tipoConsulta === 'enTerritorio' ? (
@@ -370,9 +380,12 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   };
 
   const renderizaContenidoSalud = () => {
-    return (
-      <Salud datos={saludComunidadesEnTerritorioDatosConsultados} />
-    );
+    const territorio = tipoConsulta === 'enTerritorio'
+    if (territorio) {
+      console.log(datosPorPestanhaEnTerritorio, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+      return <Salud datos={datosPorPestanhaEnTerritorio.salud} />;
+    }
+    return <Salud datos={datosPorPestanhaEnTerritorios.salud} />;
   }
 
   return (
