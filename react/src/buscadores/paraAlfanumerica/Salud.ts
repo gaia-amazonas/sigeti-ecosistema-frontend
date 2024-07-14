@@ -1,5 +1,6 @@
 import ComunidadesEnTerritoriosDatosConsultados from 'tipos/salud/datosConsultados';
-import consultasSaludPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/salud/porComunidadesEnTerritorios';
+import consultasPorComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/salud/porComunidadesEnTerritorios';
+import consultasPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/salud/porTodasComunidadesEnTerritorios';
 
 import { buscarDatos } from 'buscadores/datosSQL';
 import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
@@ -15,9 +16,26 @@ export const buscarPorComunidadesEnTerritorios = async (
   territoriosPrivados?: string[]
 ): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
   const [mujeresEnEdadFertil, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
-    buscarDatos(consultasSaludPorComunidadesEnTerritorios.mujeresEnEdadFertil(datosParaConsultar, territoriosPrivados), modo),
-    buscarTerritorios(consultasSaludPorComunidadesEnTerritorios.territorios(datosParaConsultar, territoriosPrivados), modo),
-    buscarComunidades(consultasSaludPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar, territoriosPrivados), modo)
+    buscarDatos(consultasPorComunidadesEnTerritorios.mujeresEnEdadFertil(datosParaConsultar, territoriosPrivados), modo),
+    buscarTerritorios(consultasPorComunidadesEnTerritorios.territorios(datosParaConsultar, territoriosPrivados), modo),
+    buscarComunidades(consultasPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar, territoriosPrivados), modo)
+  ]);
+  return {
+    mujeresEnEdadFertil: mujeresEnEdadFertil,
+    territoriosGeoJson: territoriosGeoJson,
+    comunidadesGeoJson: comunidadesGeoJson
+  };
+};
+
+export const buscarPorTodasComunidadesEnTerritorios = async (
+  datosParaConsultar: DatosParaConsultar,
+  modo: string | string[],
+  territoriosPrivados?: string[]
+): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
+  const [mujeresEnEdadFertil, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
+    buscarDatos(consultasPorTodasComunidadesEnTerritorios.mujeresEnEdadFertil(datosParaConsultar, territoriosPrivados), modo),
+    buscarTerritorios(consultasPorTodasComunidadesEnTerritorios.territorios(datosParaConsultar, territoriosPrivados), modo),
+    buscarComunidades(consultasPorTodasComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar, territoriosPrivados), modo)
   ]);
   return {
     mujeresEnEdadFertil: mujeresEnEdadFertil,

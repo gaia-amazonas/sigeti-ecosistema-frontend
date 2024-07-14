@@ -1,3 +1,5 @@
+// src/pages/api/logout.ts
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import cookie from 'cookie';
 

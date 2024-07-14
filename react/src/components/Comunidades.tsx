@@ -8,7 +8,7 @@ const Circle = dynamic(() => import('react-leaflet').then(mod => mod.Circle), { 
 
 interface ComunidadesImp {
   comunidadesGeoJson: FeatureCollection;
-  enCadaComunidad?: (id: string, circle: any) => void; // updated type
+  enCadaComunidad?: (id: string, circle: any) => void;
 }
 
 const Comunidades: React.FC<ComunidadesImp> = ({ comunidadesGeoJson, enCadaComunidad }) => {

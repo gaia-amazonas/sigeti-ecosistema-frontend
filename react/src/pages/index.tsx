@@ -63,7 +63,9 @@ const Home: React.FC = () => {
             <LogoutButton />
           </>
         ) : (
-          <Link href="/login">Login</Link>
+          <nav>
+            <Link href="/login">Login</Link>
+          </nav>
         )}
       </Container>
     </>

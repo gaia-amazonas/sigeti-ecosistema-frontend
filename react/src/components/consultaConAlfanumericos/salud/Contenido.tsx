@@ -19,6 +19,8 @@ interface MapComponentProps {
 
 const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
 
+    console.log("·~~~~~~~~~~~~", datos);
+
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const { user } = useUser();
 
