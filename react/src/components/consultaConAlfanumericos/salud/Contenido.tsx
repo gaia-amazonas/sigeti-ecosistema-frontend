@@ -1,27 +1,42 @@
-// src/components/MapComponent.tsx
 import React, { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, GeoJSON, useMapEvents } from 'react-leaflet';
 import L, { Layer } from 'leaflet';
+
+import { useUser } from '../../../context/UserContext';
 
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import styles from './MapComponent.module.css';
 import { CajaTitulo } from '../estilos';
 
 import DatosConsultados from 'tipos/salud/datosConsultados';
+import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 interface MapComponentProps {
   datos: DatosConsultados;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
+
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
+    const { user } = useUser();
+
+    if (!user) {
+        return <div><p>Ingrese al sistema para ver el mapa.</p></div>;
+    }
+
     if (datosSaludInvalidos(datos)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
                 <div className={estilos.spinner}></div>
             </div>;
     }
     const { mujeresEnEdadFertil, comunidadesGeoJson } = datos;
+
+    if (!mujeresEnEdadFertil?.rows || mujeresEnEdadFertil?.rows.length === 0) {
+        return <div><p>No cuenta con permisos necesarios para ver el mapa.</p></div>;
+    }
+
     const getColor = (value: number): string => {
         let red: number, green: number = 200, blue: number = 0;
         if (value < 66) {
@@ -46,8 +61,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
             return [];
         }
     };
+    
     return (
-        <>
+        <>  
             <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
             <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%' }}>
                 <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
@@ -55,7 +71,10 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                {mujeresEnEdadFertil?.rows.map((row, idx) => {
+                {datos.territoriosGeoJson && (
+                    <GeoJSON data={datos.territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
+                )}
+                {mujeresEnEdadFertil.rows.map((row, idx) => {
                     const community = comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
                     if (!community) return null;
                     const coordinates = getCoordinates(community.geometry);

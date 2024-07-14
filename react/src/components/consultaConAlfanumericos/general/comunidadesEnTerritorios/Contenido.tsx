@@ -59,7 +59,6 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         datosDinamicos = extraerDatosEntrantesDinamicos(datos);
       } else if (datosParaConsulta.comunidadesId[0] !== 'Todas') {
         const datos = await buscarPorComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
-        console.log(datos, edadMinima, edadMaxima);
         datosDinamicos = extraerDatosEntrantesDinamicos(datos);
       }
       establecerDatosExtraidos(prev => ({

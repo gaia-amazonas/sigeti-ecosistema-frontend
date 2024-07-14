@@ -81,8 +81,8 @@ const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ edadMinima, ed
         min={0}
         max={120}
         onChange={controlarCambio}
-        renderTrack={(props, state) => <Track {...props} $index={state.index} key={state.index} />}
-        renderThumb={(props, state) => <Thumb {...props} key={state.index} />}
+        renderTrack={(props, state) => <Track key={state.index} {...props} $index={state.index} />}
+        renderThumb={(props, state) => <Thumb key={state.index} {...props} />}
       />
       <div style={{ marginTop: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
         {values[0]} - {values[1]}

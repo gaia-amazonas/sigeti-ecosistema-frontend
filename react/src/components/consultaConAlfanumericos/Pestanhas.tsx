@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 
+import { useUser } from '../../context/UserContext';
+
 import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
 import CulturalGraficoBurbuja from './cultural/BurbujaWrapper';
@@ -163,6 +165,7 @@ const saludComunidadesEnTerritoriosDatosIniciales: SaludComunidadesEnTerritorios
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {
   
+  const territoriosPrivados = useUser().user?.territoriosPrivados;
   const [activo, establecerActivo] = useState('pestanhaGeneral');
   const [tipoConsulta, establecerTipoConsulta] = useState('');
 
@@ -234,7 +237,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       if (buscarGeneral) establecerGeneralComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorComunidadesEnTerritorio(datos, modo));
       if (buscarCultural) establecerCulturalComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorComunidadesEnTerritorio(datos, modo));
       if (buscarEducacional) establecerEducacionalComunidadesEnTerritorioDatosConsultados(await buscarEducacionalPorComunidadesEnTerritorio(datos, modo));
-      if (buscarSalud) establecerSaludComunidadesEnTerritorioDatosConsultados(await buscarSaludPorComunidadesEnTerritorios(datos, modo));
+      if (buscarSalud) establecerSaludComunidadesEnTerritorioDatosConsultados(await buscarSaludPorComunidadesEnTerritorios(datos, modo, territoriosPrivados));
     } else {
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorio(datos, modo));
@@ -251,7 +254,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTerritorios(datos, modo));
       if (buscarCultural) establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
       if (buscarEducacional) establecerEducacionalComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorComunidadesEnTerritorios(datos, modo));
-      if (buscarSalud) establecerSaludComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorComunidadesEnTerritorios(datos, modo));
+      if (buscarSalud) establecerSaludComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorComunidadesEnTerritorios(datos, modo, territoriosPrivados));
     } else {
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
@@ -276,7 +279,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
   };
-  
+
   useEffect(() => {
     establecerDatosPorPestanhaEnTerritorio({
       general: generalComunidadesEnTerritorioDatosConsultados,
@@ -349,13 +352,11 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       };
       return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} queEstoyViendo={queEstoyViendo} />;
     }
-    if (tipoConsulta === 'enTerritorios') {
-      queEstoyViendo = {
-        comunidadesGeoJson: datosPorPestanhaEnTerritorios.cultural.comunidadesGeoJson,
-        territoriosGeoJson: datosPorPestanhaEnTerritorios.cultural.territoriosGeoJson
-      }
-      return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} queEstoyViendo={queEstoyViendo} />;
+    queEstoyViendo = {
+      comunidadesGeoJson: datosPorPestanhaEnTerritorios.cultural.comunidadesGeoJson,
+      territoriosGeoJson: datosPorPestanhaEnTerritorios.cultural.territoriosGeoJson
     }
+    return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} queEstoyViendo={queEstoyViendo} />;
   };
 
   const renderizaContenidoEducacional = () => {
@@ -370,21 +371,16 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       };
       return <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
     }
-    if (tipoConsulta === 'enTerritorios') {
-      queEstoyViendo = {
-        comunidadesGeoJson: datosPorPestanhaEnTerritorios.educacion.comunidadesGeoJson,
-        territoriosGeoJson: datosPorPestanhaEnTerritorios.educacion.territoriosGeoJson
-      }
-      return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
+    queEstoyViendo = {
+      comunidadesGeoJson: datosPorPestanhaEnTerritorios.educacion.comunidadesGeoJson,
+      territoriosGeoJson: datosPorPestanhaEnTerritorios.educacion.territoriosGeoJson
     }
+    return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
   };
 
   const renderizaContenidoSalud = () => {
     const territorio = tipoConsulta === 'enTerritorio'
-    if (territorio) {
-      console.log(datosPorPestanhaEnTerritorio, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-      return <Salud datos={datosPorPestanhaEnTerritorio.salud} />;
-    }
+    if (territorio) return <Salud datos={datosPorPestanhaEnTerritorio.salud} />;
     return <Salud datos={datosPorPestanhaEnTerritorios.salud} />;
   }
 

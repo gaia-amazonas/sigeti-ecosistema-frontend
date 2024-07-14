@@ -52,7 +52,6 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
     let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
     const fetchFilteredData = async () => {
       if (datosParaConsulta.comunidadesId[0] === 'Todas') {
-        console.log("ssssssssssssssssssss", edadMinima, edadMaxima);
         const datos = await buscarPorTodasComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
         datosDinamicos = extraerDatosEntrantesDinamicos(datos);
         establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));

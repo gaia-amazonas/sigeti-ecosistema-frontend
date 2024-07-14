@@ -1,10 +1,9 @@
-// src/consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorios.ts
 import haceClausulasWhere from "../clausulas";
 
-type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
+type Query = (datosParaConsultar: { comunidadesId: string[], territoriosId: string[] }, territoriosPrivados?: string[]) => string;
 
 const funciones: Record<string, Query> = {
-    mujeresEnEdadFertil: ({comunidadesId}) => `
+    mujeresEnEdadFertil: ({ comunidadesId }, territoriosPrivados) => `
         SELECT
             id_cnida AS comunidadId,
             id_ti AS territorioId,
@@ -14,27 +13,26 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'id_cnida')};`
-    ,
-    territorios: ({territoriosId}) => `
+            ${haceClausulasWhere({ comunidadesId }, 'id_cnida')} AND
+            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
+    territorios: ({ territoriosId }, territoriosPrivados) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+        ST_AsGeoJSON(geometry) AS geometry,
+        id_ti AS id,
+        territorio AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+        \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
-    ,
-    comunidadesEnTerritorios: ({comunidadesId}) => `
+        ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
+    comunidadesEnTerritorios: ({ comunidadesId }, territoriosPrivados) => `
         SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_cnida AS id,
-            nomb_cnida AS nombre
+        ST_AsGeoJSON(geometry) AS geometry,
+        id_cnida AS id,
+        nomb_cnida AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\`
+        \`sigeti.unidades_de_analisis.comunidades_censo632\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'id_cnida')};`
-    };
+        ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
+};
 
 export default funciones;

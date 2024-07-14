@@ -9,11 +9,15 @@ interface DatosParaConsultar {
   comunidadesId: string[];
 }
 
-export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
+export const buscarPorComunidadesEnTerritorios = async (
+  datosParaConsultar: DatosParaConsultar,
+  modo: string | string[],
+  territoriosPrivados?: string[]
+): Promise<ComunidadesEnTerritoriosDatosConsultados> => {
   const [mujeresEnEdadFertil, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
-    buscarDatos(consultasSaludPorComunidadesEnTerritorios.mujeresEnEdadFertil(datosParaConsultar), modo),
-    buscarTerritorios(consultasSaludPorComunidadesEnTerritorios.territorios(datosParaConsultar), modo),
-    buscarComunidades(consultasSaludPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo)
+    buscarDatos(consultasSaludPorComunidadesEnTerritorios.mujeresEnEdadFertil(datosParaConsultar, territoriosPrivados), modo),
+    buscarTerritorios(consultasSaludPorComunidadesEnTerritorios.territorios(datosParaConsultar, territoriosPrivados), modo),
+    buscarComunidades(consultasSaludPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar, territoriosPrivados), modo)
   ]);
   return {
     mujeresEnEdadFertil: mujeresEnEdadFertil,

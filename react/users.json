@@ -1,0 +1,31 @@
+[
+  {
+    "username": "admin",
+    "password": "123",
+    "role": "admin",
+    "territoriosPrivados": [
+      "IS",
+      "TQ",
+      "PN",
+      "BC",
+      "GA",
+      "GM",
+      "GB",
+      "AT",
+      "CM",
+      "UI",
+      "AR",
+      "PP",
+      "YA",
+      "MP"
+    ],
+    "email": "admin@example.com"
+  },
+  {
+    "username": "user",
+    "password": "123",
+    "role": "territorial",
+    "territoriosPrivados": ["AR"],
+    "email": "user@example.com"
+  }
+]
