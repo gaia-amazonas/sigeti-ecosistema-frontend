@@ -40,16 +40,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
     }
 
     const getColor = (value: number): string => {
-        let red: number, green: number = 200, blue: number = 0;
-        if (value < 66) {
-            red = 200;
-        } else {
-            const transitionValue = (value - 66) / (100 - 66);
-            red = Math.round(1 - transitionValue);
-            green = 255;
-        }
+        const red = 200;
+        const green = value < 66 ? 200 : Math.round(255 * (1 - (Math.log(value - 66 + 1) / Math.log(34 + 1))));
+        const blue = 0;
         return `rgb(${red}, ${green}, ${blue})`;
-    }
+    };
+
     const getCoordinates = (geometry: any): number[][] => {
         if (geometry.type === 'Polygon') {
             return geometry.coordinates[0];

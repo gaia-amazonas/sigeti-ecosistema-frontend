@@ -22,7 +22,6 @@ interface DatosJerarquicos {
 
 const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, valueKey }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-
   useEffect(() => {
     if (!svgRef.current) return;
     const datosBurbuja = creaDatosBurbuja(datos, labelKey, valueKey);
@@ -39,8 +38,6 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, 
       .sum((d) => d.valor || 0);
     const nodos = pack(root).leaves();
     agregaNodos(svg, nodos);
-    agregaZoom(svg);
-    agregaLeyenda(svg, datosBurbuja, grosor);
 
   }, [datos, labelKey, valueKey]);
 
@@ -83,32 +80,4 @@ const agregaNodos = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     .style('font-family', 'Arial')
     .style('font-size', '12px')
     .style('font-weight', 'bold');
-};
-
-const agregaZoom = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) => {
-  svg.call(d3.zoom<SVGSVGElement, unknown>().on('zoom', (event) => {
-    svg.attr('transform', event.transform);
-  }));
-};
-
-const agregaLeyenda = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, datosBurbuja: DatosBurbuja[], width: number) => {
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
-  const leyenda = svg.append('g')
-    .attr('transform', `translate(${width - 150}, 20)`);
-  leyenda.selectAll('rect')
-    .data(datosBurbuja)
-    .enter().append('rect')
-    .attr('x', 0)
-    .attr('y', (d, i) => i * 25)
-    .attr('width', 20)
-    .attr('height', 20)
-    .attr('fill', (d, i) => color(i.toString()));
-  leyenda.selectAll('text')
-    .data(datosBurbuja)
-    .enter().append('text')
-    .attr('x', 30)
-    .attr('y', (d, i) => i * 25 + 15)
-    .text((d) => `${d.label}: ${d.valor}`)
-    .style('font-family', 'Arial')
-    .style('font-size', '14px');
 };

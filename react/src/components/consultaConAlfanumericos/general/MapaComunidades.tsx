@@ -28,7 +28,7 @@ const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) 
 };
 
 const getColor = (value: number, min: number, max: number): string => {
-  const normalizedValue = (value - min) / (max - min);
+  const normalizedValue = (Math.log(value + 1) - Math.log(min + 1)) / (Math.log(max + 1) - Math.log(min + 1));
   const red = 255;
   const green = 255 * (1 - normalizedValue);
   const blue = 0;
@@ -94,14 +94,13 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     });
   };
 
-  // Find min and max values for the total population for the color scale
-  const totalPopulations = comunidadesGeoJson.features.map(comunidad => {
+  const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
     const id = comunidad.properties?.id;
     const datos = sexosPorComunidad[id] || { hombres: 0, mujeres: 0 };
     return datos.hombres + datos.mujeres;
   });
-  const minPopulation = Math.min(...totalPopulations);
-  const maxPopulation = Math.max(...totalPopulations);
+  const minPopulation = totalPopulations ? Math.min(...totalPopulations) : 0;
+  const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
 
   return (
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>

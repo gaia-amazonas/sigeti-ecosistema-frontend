@@ -15,7 +15,7 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({ comunidadesId }, 'id_cnida')} AND
             (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
-    territorios: ({ territoriosId }, territoriosPrivados) => `
+    territorios: ({ territoriosId }) => `
         SELECT DISTINCT
         ST_AsGeoJSON(geometry) AS geometry,
         id_ti AS id,
@@ -24,7 +24,7 @@ const funciones: Record<string, Query> = {
         \`sigeti.unidades_de_analisis.territorios_censo632\`
         WHERE
         ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
-    comunidadesEnTerritorios: ({ comunidadesId }, territoriosPrivados) => `
+    comunidadesEnTerritorios: ({ comunidadesId }) => `
         SELECT
         ST_AsGeoJSON(geometry) AS geometry,
         id_cnida AS id,
