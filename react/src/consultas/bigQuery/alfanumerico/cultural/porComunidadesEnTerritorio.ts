@@ -6,7 +6,9 @@ type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: strin
 const funciones: Record<string, Query> = {
     pueblosPorTerritorio: ({territoriosId}) => `
         SELECT
-            cpt.id_ti, cp.PUEBLO, cp.CONTEO
+            cpt.id_ti AS territorioId,
+            cp.PUEBLO AS pueblo,
+            cp.CONTEO AS conteo
         FROM
             \`sigeti.censo_632.Conteo_Pueblos\` cp
         JOIN

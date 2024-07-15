@@ -18,6 +18,7 @@ interface MapaCulturalImp {
   agregador: string;
   variable: string;
   mostrarMenosRepresentativo: boolean;
+  tipo: 'lenguas' | 'etnias' | 'clanes' | 'pueblos';
 }
 
 const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
@@ -51,7 +52,7 @@ const getCoordinates = (geometry: any): number[][] => {
   }
 };
 
-const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo }) => {
+const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo, tipo }) => {
   const centroMapa = [0.969793, -70.830454];
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const [popupInfo, setPopupInfo] = useState<{ position: [number, number], datosComunidad: any[], total: number } | null>(null);
@@ -76,13 +77,22 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       className: ''
     });
   };
-  const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
-    const id = comunidad.properties?.id;
-    const total = datos.filter(d => d[agregador] === id).reduce((sum, item) => sum + 1, 0);
-    return total;
-  });
+
+  const totalPopulations = tipo === 'pueblos'
+    ? territoriosGeoJson?.features.map(territorio => {
+        const id = territorio.properties?.id;
+        const total = datos.filter(d => d.territorioId === id).reduce((sum, item) => sum + item.conteo, 0);
+        return total;
+      })
+    : comunidadesGeoJson?.features.map(comunidad => {
+        const id = comunidad.properties?.id;
+        const total = datos.filter(d => d[agregador] === id).reduce((sum, item) => sum + item.conteo, 0);
+        return total;
+      });
+
   const minPopulation = totalPopulations ? Math.min(...totalPopulations) : 0;
   const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
+
   return (
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
@@ -93,31 +103,32 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       {territoriosGeoJson && (
         <GeoJSON data={territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
       )}
-      {comunidadesGeoJson && (
+      {(tipo === 'pueblos' ? territoriosGeoJson : comunidadesGeoJson) && (
         <>
-          {comunidadesGeoJson.features.map((comunidad, index) => {
-            const centroide = turf.centroid(comunidad).geometry.coordinates;
-            const id = comunidad.properties?.id;
-            const datosComunidad = datos.filter(d => d[agregador] === id);
-            const total = datosComunidad.length;
+          {(tipo === 'pueblos' ? territoriosGeoJson.features : comunidadesGeoJson.features).map((feature, index) => {
+            const centroide = turf.centroid(feature).geometry.coordinates;
+            const id = feature.properties?.id;
+            const datosFeature = datos.filter(d => d[tipo === 'pueblos' ? 'territorioId' : agregador] === id);
+            const total = datosFeature.reduce((sum, item) => sum + 1, 0);
             const color = getColor(total, minPopulation, maxPopulation);
-            const coordinates = getCoordinates(comunidad.geometry);
+            const coordinates = getCoordinates(feature.geometry);
+            const markerPosition = tipo === 'pueblos' ? [centroide[1], centroide[0]] : [coordinates[0][1], coordinates[0][0]];
             if (coordinates.length === 0) return null;
             return (
               <React.Fragment key={index}>
                 <CustomCircleMarker
-                  center={[coordinates[0][1], coordinates[0][0]]}
+                  center={[markerPosition[0], markerPosition[1]]}
                   baseRadius={2}
                   color={color}
                   proporcion={total}
                   total={total}
                   zoomNivel={zoomNivel}
-                  onClick={() => handleMarkerClick([centroide[1], centroide[0]], datosComunidad, total)}
+                  onClick={() => handleMarkerClick([markerPosition[0], markerPosition[1]], datosFeature, total)}
                 />
                 {zoomNivel > 9 && (
                   <Marker
-                    position={[centroide[1] - 0.07, centroide[0]]}
-                    icon={crearMarcadorNombre(comunidad.properties?.nombre)}
+                    position={tipo === 'pueblos' ? [centroide[1] - 0.07, centroide[0]] : [coordinates[0][1] - 0.07, coordinates[0][0]]}
+                    icon={crearMarcadorNombre(feature.properties?.nombre)}
                   />
                 )}
               </React.Fragment>
@@ -134,8 +145,8 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
             <CulturalGraficoBurbuja
               datos={popupInfo.datosComunidad}
               labelKey={variable}
-              valueKey="conteo"
-              groupKey={agregador}
+              valueKey='conteo'
+              groupKey={tipo === 'pueblos' ? 'territorioId' : agregador}
               mostrarMenosRepresentativo={mostrarMenosRepresentativo}
             />
           </div>

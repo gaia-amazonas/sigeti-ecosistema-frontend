@@ -47,7 +47,7 @@ interface DatosConsultados {
   lenguas: SexosPorLenguaEnComunidades | null;
   etnias: EtniasEnComunidades | null;
   clanes: ClanesEnComunidades | null;
-  // pueblosPorTerritorio: PueblosPorTerritorio | null;
+  pueblosPorTerritorio: PueblosPorTerritorio | null;
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territoriosGeoJson: TerritoriosGeoJson | null;
 }
