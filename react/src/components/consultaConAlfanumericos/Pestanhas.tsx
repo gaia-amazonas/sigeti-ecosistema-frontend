@@ -333,7 +333,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         comunidadesGeoJson: datosPorPestanhaEnTerritorio.cultural.comunidadesGeoJson,
         territoriosGeoJson: datosPorPestanhaEnTerritorio.cultural.territoriosGeoJson
       };
-      console.log(datosPorPestanhaEnTerritorio.cultural);
+      console.log(datosPorPestanhaEnTerritorio.cultural, "aaaaaa");
       return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} queEstoyViendo={queEstoyViendo} />;
     }
     queEstoyViendo = {

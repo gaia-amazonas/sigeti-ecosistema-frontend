@@ -21,11 +21,11 @@ interface DatosParaConsultar {
 }
 
 export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [sexosPorLengua, etnias, clanes, pueblosPorTerritorio, comunidadesGeoJson, territorioGeoJson] = await Promise.all([
+  const [sexosPorLengua, etnias, clanes, comunidadesGeoJson, territorioGeoJson] = await Promise.all([
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.clanes(datosParaConsultar), modo),
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.pueblosPorTerritorio(datosParaConsultar), modo),
+    // buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.pueblosPorTerritorio(datosParaConsultar), modo),
     buscarComunidades(consultasGeneralesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
     buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
@@ -33,7 +33,7 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
     sexosPorLengua: sexosPorLengua,
     etnias: etnias,
     clanes: clanes,
-    pueblosPorTerritorio: pueblosPorTerritorio,
+    // pueblosPorTerritorio: pueblosPorTerritorio,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territorioGeoJson
   };
@@ -52,7 +52,6 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
     sexosPorLengua: sexosPorLengua,
     etnias: etnias,
     clanes: clanes,
-    pueblosPorTerritorio: null,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territorioGeoJson
   };
@@ -70,7 +69,7 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
     sexosPorLengua: sexosPorLengua,
     etnias: etnias,
     clanes: clanes,
-    pueblosPorTerritorio: null,
+    // pueblosPorTerritorio: null,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territoriosGeoJson
   };
@@ -88,7 +87,7 @@ export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string |
     sexosPorLengua: sexosPorLengua,
     etnias: etnias,
     clanes: clanes,
-    pueblosPorTerritorio: null,
+    // pueblosPorTerritorio: null,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territoriosGeoJson
   };

@@ -5,13 +5,19 @@ type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: strin
 
 const funciones: Record<string, Query> = {
     pueblosPorTerritorio: ({territoriosId}) => `
-        SELECT cpt.id_ti, cp.PUEBLO, cp.CONTEO
-        FROM \`sigeti.censo_632.Conteo_Pueblos\` cp
-        JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON cpt.id_cnida = cp.ID_CNIDA
-        WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`,
+        SELECT
+            cpt.id_ti, cp.PUEBLO, cp.CONTEO
+        FROM
+            \`sigeti.censo_632.Conteo_Pueblos\` cp
+        JOIN
+            \`sigeti.censo_632.comunidades_por_territorio\` cpt
+        ON
+            cpt.id_cnida = cp.ID_CNIDA
+        WHERE
+            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`,
     sexoYLengua: ({comunidadesId}) => `
         SELECT
+            ID_CNIDA,
             LENGUA_HAB AS lengua,
             SUM(NUM_HAB) AS conteo
         FROM
@@ -19,7 +25,7 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'ID_CNIDA')}
         GROUP BY
-            LENGUA_HAB;`,
+            ID_CNIDA, LENGUA_HAB;`,
     etnias: ({comunidadesId}) => `
         SELECT
             ETNIA AS etnia,

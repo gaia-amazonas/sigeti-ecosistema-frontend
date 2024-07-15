@@ -12,6 +12,7 @@ interface CustomCircleMarkerProps {
   proporcion: number;
   total: number;
   zoomNivel: number;
+  onClick?: () => void;
 }
 
 const calculateAdjustedRadius = (zoomNivel: number): number => {
@@ -31,13 +32,11 @@ const devuelveTexto = (expandido: boolean, total: number): string => {
   return `<div class="${styles['text-icon-container']}">${total}</div>`;
 }
 
-const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRadius, color, proporcion, total, zoomNivel }) => {
+const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRadius, color, proporcion, total, zoomNivel, onClick }) => {
   const deberiaMostrarTextExpandido = (): boolean => {
     return zoomNivel >= 12;
   }
-
   const map = useMap();
-
   useEffect(() => {
     const adjustedRadius = calculateAdjustedRadius(zoomNivel);
     const circleMarker = L.circleMarker(center, {
@@ -46,6 +45,9 @@ const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRad
       fillColor: color,
       fillOpacity: 0.5,
     }).addTo(map) as L.CircleMarker;
+    if (onClick) {
+      circleMarker.on('click', onClick);
+    }
     let textMarker: L.Marker | null = null;
     if (shouldDisplayText(zoomNivel)) {
       const textIcon = L.divIcon({
@@ -60,7 +62,7 @@ const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRad
         map.removeLayer(textMarker);
       }
     };
-  }, [map, center, baseRadius, color, proporcion, total, zoomNivel]);
+  }, [map, center, baseRadius, color, proporcion, total, zoomNivel, onClick]);
   return null;
 };
 
