@@ -15,9 +15,9 @@ const funciones: Record<string, Query> = {
             cpt.id_cnida = cp.ID_CNIDA
         WHERE
             ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`,
-    sexoYLengua: ({comunidadesId}) => `
+    lenguas: ({comunidadesId}) => `
         SELECT
-            ID_CNIDA,
+            ID_CNIDA as comunidadId,
             LENGUA_HAB AS lengua,
             SUM(NUM_HAB) AS conteo
         FROM
@@ -28,6 +28,7 @@ const funciones: Record<string, Query> = {
             ID_CNIDA, LENGUA_HAB;`,
     etnias: ({comunidadesId}) => `
         SELECT
+            id_cnida as comunidadId,
             ETNIA AS etnia,
             SUM(CONTEO) AS conteo
         FROM
@@ -35,17 +36,18 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
-            etnia;`,
+            etnia, id_cnida;`,
     clanes: ({comunidadesId}) => `
         SELECT
-            COUNT(*) AS conteo,
-            clan
+            id_cnida as comunidadId,
+            clan,
+            COUNT(*) AS conteo
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
-            clan;`,
+            clan, id_cnida;`,
     territorios: ({ territoriosId }) => `
         SELECT DISTINCT
         ST_AsGeoJSON(geometry) AS geometry,

@@ -106,7 +106,7 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 };
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
-  sexosPorLengua: null,
+  lenguas: null,
   etnias: null,
   clanes: null,
   comunidadesGeoJson: null,
@@ -333,14 +333,13 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         comunidadesGeoJson: datosPorPestanhaEnTerritorio.cultural.comunidadesGeoJson,
         territoriosGeoJson: datosPorPestanhaEnTerritorio.cultural.territoriosGeoJson
       };
-      console.log(datosPorPestanhaEnTerritorio.cultural, "aaaaaa");
-      return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} queEstoyViendo={queEstoyViendo} />;
+      return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorio.cultural} queEstoyViendo={queEstoyViendo} modo={modo} />;
     }
     queEstoyViendo = {
       comunidadesGeoJson: datosPorPestanhaEnTerritorios.cultural.comunidadesGeoJson,
       territoriosGeoJson: datosPorPestanhaEnTerritorios.cultural.territoriosGeoJson
     }
-    return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} queEstoyViendo={queEstoyViendo} />;
+    return <CulturalGraficoBurbuja datos={datosPorPestanhaEnTerritorios.cultural} queEstoyViendo={queEstoyViendo} modo={modo} />;
   };
 
   const renderizaContenidoEducacional = () => {

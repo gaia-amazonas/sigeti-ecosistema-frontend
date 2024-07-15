@@ -44,7 +44,7 @@ export interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonP
 export interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
 
 interface DatosConsultados {
-  sexosPorLengua: SexosPorLenguaEnComunidades | null;
+  lenguas: SexosPorLenguaEnComunidades | null;
   etnias: EtniasEnComunidades | null;
   clanes: ClanesEnComunidades | null;
   // pueblosPorTerritorio: PueblosPorTerritorio | null;

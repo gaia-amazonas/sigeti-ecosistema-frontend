@@ -15,6 +15,9 @@ interface MapaCulturalImp {
   comunidadesGeoJson: FeatureCollection;
   modo: string | string[];
   datos: any[];
+  agregador: string;
+  variable: string;
+  mostrarMenosRepresentativo: boolean;
 }
 
 const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
@@ -48,43 +51,38 @@ const getCoordinates = (geometry: any): number[][] => {
   }
 };
 
-const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos }) => {
+const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo }) => {
   const centroMapa = [0.969793, -70.830454];
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const [popupInfo, setPopupInfo] = useState<{ position: [number, number], datosComunidad: any[], total: number } | null>(null);
-
   const handleMarkerClick = (position: [number, number], datosComunidad: any[], total: number) => {
     setPopupInfo({ position, datosComunidad, total });
   };
-
   const crearMarcadorNombre = (nombre: string) => {
     return L.divIcon({
       html: `<div style="z-index: 10;
-        font-size: 1rem;
-        font-weight: bold;
-        color: black;
-        background: white;
-        margin-left: 0rem;
-        margin-right: 0;
-        border-radius: 1rem;
-        padding-left: 1rem;
-        padding-right: 5rem">${nombre}
-      </div>`,
+            font-size: 1rem;
+            font-weight: bold;
+            color: black;
+            background: white;
+            margin-left: 0rem;
+            margin-right: 0;
+            border-radius: 1rem;
+            padding-left: 1rem;
+            padding-right: 5rem">${nombre}
+        </div>`,
       iconSize: [nombre.length * 6, 20],
       iconAnchor: [nombre.length * 3, 10],
       className: ''
     });
   };
-
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
     const id = comunidad.properties?.id;
-    const total = datos.filter(d => d.ID_CNIDA === id).reduce((sum, item) => sum + 1, 0);
+    const total = datos.filter(d => d[agregador] === id).reduce((sum, item) => sum + 1, 0);
     return total;
   });
-
   const minPopulation = totalPopulations ? Math.min(...totalPopulations) : 0;
   const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
-
   return (
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
@@ -100,7 +98,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
           {comunidadesGeoJson.features.map((comunidad, index) => {
             const centroide = turf.centroid(comunidad).geometry.coordinates;
             const id = comunidad.properties?.id;
-            const datosComunidad = datos.filter(d => d.ID_CNIDA === id);
+            const datosComunidad = datos.filter(d => d[agregador] === id);
             const total = datosComunidad.length;
             const color = getColor(total, minPopulation, maxPopulation);
             const coordinates = getCoordinates(comunidad.geometry);
@@ -128,16 +126,17 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
         </>
       )}
       {popupInfo && (
-        <Popup 
-          position={popupInfo.position} 
+        <Popup
+          position={popupInfo.position}
           eventHandlers={{ remove: () => setPopupInfo(null) }}
         >
-          <div style={{ width: `${Math.min(popupInfo.total * 100, 300)}px`, height: `${Math.min(popupInfo.total * 100, 300)}px` }}>
+          <div style={{ width: `${Math.min(popupInfo.total * 150, 300)}px`, height: `${Math.min(popupInfo.total * 150, 300)}px` }}>
             <CulturalGraficoBurbuja
               datos={popupInfo.datosComunidad}
-              labelKey="lengua"
+              labelKey={variable}
               valueKey="conteo"
-              groupKey="ID_CNIDA"
+              groupKey={agregador}
+              mostrarMenosRepresentativo={mostrarMenosRepresentativo}
             />
           </div>
         </Popup>
