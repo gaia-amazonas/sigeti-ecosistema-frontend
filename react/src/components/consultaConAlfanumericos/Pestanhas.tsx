@@ -54,7 +54,8 @@ import {
 
 import {
   buscarPorComunidadesEnTerritorios as buscarSaludPorComunidadesEnTerritorios,
-  buscarPorTodasComunidadesEnTerritorios as buscarSaludPorTodasComunidadesEnTerritorios
+  buscarPorTodasComunidadesEnTerritorios as buscarSaludPorTodasComunidadesEnTerritorios,
+  buscarPorTodasComunidadesEnTodosTerritorios as buscarSaludPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Salud';
 
 interface DatosParaConsultar {
@@ -261,7 +262,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
       if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorios(datos, modo));
-      if (buscarSalud) establecerSaludTodasComunidadesEnTerritorioDatosConsultados(await buscarSaludPorTodasComunidadesEnTerritorios(datos, modo, territoriosPrivados));
+      if (buscarSalud) establecerSaludTodasComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorTodasComunidadesEnTerritorios(datos, modo, territoriosPrivados));
     }
   };
 
@@ -269,18 +270,22 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     const buscarGeneral = activo === 'pestanhaGeneral';
     const buscarCultural = activo === 'pestanhaCultural';
     const buscarEducacional = activo === 'pestanhaEducacional';
+    const buscarSalud = activo === 'pestanhaSalud';
     if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorComunidadesEnTodosTerritorios(datos, modo));
     if (buscarCultural) establecerCulturalComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorComunidadesEnTerritorios(datos, modo));
     if (buscarEducacional) establecerEducacionalComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorComunidadesEnTodosTerritorios(datos, modo));
+    if (buscarSalud) establecerSaludComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorComunidadesEnTerritorios(datos, modo, territoriosPrivados));
   }
 
   const consultarTodosTerritoriosConTodasComunidades = async (modo: string | string[]) => {
     const buscarGeneral = activo === 'pestanhaGeneral';
     const buscarCultural = activo === 'pestanhaCultural';
     const buscarEducacional = activo === 'pestanhaEducacional';
+    const buscarSalud = activo === 'pestanhaSalud';
     if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
+    if (buscarSalud) establecerSaludTodasComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorTodasComunidadesEnTodosTerritorios(modo, territoriosPrivados));
   };
 
   useEffect(() => {

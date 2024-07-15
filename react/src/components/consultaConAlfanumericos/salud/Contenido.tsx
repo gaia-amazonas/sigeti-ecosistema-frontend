@@ -1,3 +1,5 @@
+// src/components/consultaConAlfanumericos/salud/Contenido.tsx
+
 import React, { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMap, GeoJSON, useMapEvents } from 'react-leaflet';
@@ -6,7 +8,7 @@ import L, { Layer } from 'leaflet';
 import { useUser } from '../../../context/UserContext';
 
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
-import styles from './MapComponent.module.css';
+import styles from '../MapComponent.module.css';
 import { CajaTitulo } from '../estilos';
 
 import DatosConsultados from 'tipos/salud/datosConsultados';
@@ -18,8 +20,6 @@ interface MapComponentProps {
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
-
-    console.log("·~~~~~~~~~~~~", datos);
 
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const { user } = useUser();

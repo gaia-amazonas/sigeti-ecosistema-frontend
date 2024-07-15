@@ -109,7 +109,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
       </ContenedorGrafico>
       <CajaTitulo>Sexo y Edad</CajaTitulo>
       <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo="Hombre" labelDerecho="Mujer" />
-      <CajaTitulo>Mapa</CajaTitulo>
+      <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}

@@ -6,11 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { traeSexosPorComunidad } from 'buscadores/paraMapa';
-import Comunidades from '../../Comunidades';
-import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 import logger from 'utilidades/logger';
 import isClient from 'utilidades/isClient';
-import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker } from 'react-leaflet';
+import CustomCircleMarker from './CustomCircleMarker';
+import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta'; // Adjust the import path as needed
 
 interface MapaImp {
   territoriosGeoJson: FeatureCollection;
@@ -25,6 +25,28 @@ const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) 
     }
   });
   return null;
+};
+
+const getColor = (value: number, min: number, max: number): string => {
+  const normalizedValue = (value - min) / (max - min);
+  const red = 255;
+  const green = 255 * (1 - normalizedValue);
+  const blue = 0;
+  return `rgb(${red}, ${green}, ${blue})`;
+};
+
+const getCoordinates = (geometry: any): number[][] => {
+  if (geometry.type === 'Polygon') {
+    return geometry.coordinates[0];
+  } else if (geometry.type === 'MultiPolygon') {
+    return geometry.coordinates[0][0];
+  } else if (geometry.type === 'Point') {
+    return [geometry.coordinates];
+  } else if (geometry.type === 'MultiPoint') {
+    return [geometry.coordinates[0]];
+  } else {
+    return [];
+  }
 };
 
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
@@ -72,6 +94,15 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     });
   };
 
+  // Find min and max values for the total population for the color scale
+  const totalPopulations = comunidadesGeoJson.features.map(comunidad => {
+    const id = comunidad.properties?.id;
+    const datos = sexosPorComunidad[id] || { hombres: 0, mujeres: 0 };
+    return datos.hombres + datos.mujeres;
+  });
+  const minPopulation = Math.min(...totalPopulations);
+  const maxPopulation = Math.max(...totalPopulations);
+
   return (
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
@@ -79,29 +110,42 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
         url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
         attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
       />
-      { territoriosGeoJson && (
+      {territoriosGeoJson && (
         <GeoJSON data={territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
       )}
-      { comunidadesGeoJson && (
+      {comunidadesGeoJson && (
         <>
-          <Comunidades comunidadesGeoJson={comunidadesGeoJson} />
           {comunidadesGeoJson.features.map((comunidad, index) => {
             const centroide = turf.centroid(comunidad).geometry.coordinates;
             const id = comunidad.properties?.id;
             const datos = sexosPorComunidad[id] || { hombres: 0, mujeres: 0 };
-            const estaCargando = cargando[id];
-            const nombre = comunidad.properties?.nombre || '';
+            const total = datos.hombres + datos.mujeres;
+            const color = getColor(total, minPopulation, maxPopulation);
+            const coordinates = getCoordinates(comunidad.geometry);
+            if (coordinates.length === 0) return null;
             return (
               <React.Fragment key={index}>
-                <MarcadorConSexosPorComunidadGraficoTorta
-                  posicion={[centroide[1], centroide[0]]}
-                  datos={datos}
-                  estaCargando={estaCargando}
-                />
-                {zoomNivel >= 13 && crearMarcadorNombre(nombre) && (
+                {(zoomNivel > 10) && (
+                  <MarcadorConSexosPorComunidadGraficoTorta
+                    posicion={[centroide[1], centroide[0]]}
+                    datos={datos}
+                    estaCargando={cargando[id]}
+                  />
+                )}
+                {(zoomNivel <= 10) && (
+                  <CustomCircleMarker
+                    center={[coordinates[0][1], coordinates[0][0]]}
+                    baseRadius={2}
+                    color={color}
+                    proporcion={total}
+                    total={total}
+                    zoomNivel={zoomNivel}
+                  />
+                )}
+                {zoomNivel >= 13 && crearMarcadorNombre(comunidad.properties?.nombre) && (
                   <Marker
                     position={[centroide[1], centroide[0] - centroide[0] * 0.00015]}
-                    icon={crearMarcadorNombre(nombre)}
+                    icon={crearMarcadorNombre(comunidad.properties?.nombre)}
                   />
                 )}
               </React.Fragment>

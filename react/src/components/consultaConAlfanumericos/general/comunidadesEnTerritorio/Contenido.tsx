@@ -118,7 +118,7 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
       </ContenedorGrafico>
       <CajaTitulo>Sexo y Edad</CajaTitulo>
       <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo='Hombre' labelDerecho='Mujer' />
-      <CajaTitulo>Mapa</CajaTitulo>
+      <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
       <MapaComunidadesPorTerritorio
         territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}

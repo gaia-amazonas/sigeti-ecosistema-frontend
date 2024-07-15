@@ -39,8 +39,8 @@ const MarcadorConSexosPorComunidadGraficoTorta: React.FC<{ posicion: [number, nu
             style={{
                 position: 'absolute',
                 width: `${nivelDeZoom / 2}rem`,
-                left: `${posicionDePixel[0] - 4 * nivelDeZoom}px`,
-                top: `${posicionDePixel[1] - 6 * nivelDeZoom}px`,
+                left: `${posicionDePixel[0]}px`,
+                top: `${posicionDePixel[1]}px`,
                 transform: 'translate(-50%, -50%)',
                 zIndex: 400,
             }}
