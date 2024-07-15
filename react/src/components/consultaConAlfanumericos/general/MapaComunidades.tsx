@@ -10,7 +10,7 @@ import logger from 'utilidades/logger';
 import isClient from 'utilidades/isClient';
 import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker } from 'react-leaflet';
 import CustomCircleMarker from './CustomCircleMarker';
-import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta'; // Adjust the import path as needed
+import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 
 interface MapaImp {
   territoriosGeoJson: FeatureCollection;
