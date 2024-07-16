@@ -8,7 +8,7 @@ const funciones: Record<string, Query> = {
         SELECT
             cpt.id_ti AS territorioId,
             cp.PUEBLO AS pueblo,
-            cp.CONTEO AS conteo
+            SUM(cp.CONTEO) AS conteo
         FROM
             \`sigeti.censo_632.Conteo_Pueblos\` cp
         JOIN
@@ -16,7 +16,9 @@ const funciones: Record<string, Query> = {
         ON
             cpt.id_cnida = cp.ID_CNIDA
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`,
+            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
+        GROUP BY
+            cp.PUEBLO, cpt.id_ti;`,
     lenguas: ({comunidadesId}) => `
         SELECT
             ID_CNIDA as comunidadId,
