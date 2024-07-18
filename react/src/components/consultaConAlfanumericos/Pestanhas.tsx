@@ -14,9 +14,7 @@ import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDato
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 
 import CulturalComunidadesEnTerritorioDatosConsultados, { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
-import CulturalTodasComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
-import CulturalTodasComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
 
 import EducacionalComunidadesEnTerritorioDatosConsultados from 'tipos/educacional/datosConsultados';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
@@ -263,7 +261,6 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
-    console.log(educacionalTodasComunidadesEnTerritoriosDatosConsultados, "$$$$$$$$$$$$$$$#################");
     if (buscarSalud) establecerSaludTodasComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorTodasComunidadesEnTodosTerritorios(modo, territoriosPrivados));
   };
 
@@ -356,14 +353,13 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         comunidadesGeoJson: datosPorPestanhaEnTerritorio.educacion.comunidadesGeoJson,
         territoriosGeoJson: datosPorPestanhaEnTerritorio.educacion.territoriosGeoJson
       };
-      return <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
+      return <Educacional datosEducacionales={datosPorPestanhaEnTerritorio.educacion} datosParaConsulta={datosParaConsultar} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
     }
     queEstoyViendo = {
       comunidadesGeoJson: datosPorPestanhaEnTerritorios.educacion.comunidadesGeoJson,
       territoriosGeoJson: datosPorPestanhaEnTerritorios.educacion.territoriosGeoJson
     }
-    console.log("#################", datosParaConsultar);
-    return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
+    return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} datosParaConsulta={datosParaConsultar} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
   };
 
   const renderizaContenidoSalud = () => {

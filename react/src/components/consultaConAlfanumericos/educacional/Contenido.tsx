@@ -12,23 +12,76 @@ import { CajaTitulo } from '../estilos';
 import isClient from 'utilidades/isClient';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
+import {
+    buscarPorComunidadesEnTerritorios,
+    buscarPorTodasComunidadesEnTerritorios,
+    buscarPorTodasComunidadesEnTodosTerritorios
+} from 'buscadores/paraAlfanumerica/dinamicas/Educacional';
 
 import MapaInfraestructura from 'components/consultaConAlfanumericos/educacional/MapaInfraestructuraPorComunidades';
-import EducacionalComunidadesEnTerritoriosDatosConsultados, { Escolaridad, EscolaridadFila, EscolaridadPrimariaYSecundaria } from 'tipos/educacional/datosConsultados';
+import EducacionalComunidadesEnTerritoriosDatosConsultados, {
+    Escolaridad,
+    EscolaridadFila,
+    EscolaridadPrimariaYSecundaria
+} from 'tipos/educacional/datosConsultados';
 import { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
 import QueEstoyViendo from '../general/QueEstoyViendo';
 import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolaridadPorComunidadGraficoTorta';
+import { Slider, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 
 interface ComponenteCulturalComunidadesEnTerritoriosImp {
     datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados;
+    datosParaConsulta: { territoriosId: string[], comunidadesId: string[] };
     queEstoyViendo: { comunidadesGeoJson: ComunidadesGeoJson | null, territoriosGeoJson: TerritoriosGeoJson | null };
     modo: string | string[];
 }
 
-const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({ datosEducacionales, queEstoyViendo, modo }) => {
+const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
 
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
+    const [opcionEscolaridad, setOpcionEscolaridad] = useState<string>('Primaria');
+    const [sliderValue, setSliderValue] = useState<number[]>([5, 13]);
+    const [escolaridadFiltrada, setEscolaridadFiltrada] = useState<EscolaridadPrimariaYSecundaria | null>(null);
+
+    useEffect(() => {
+        if (opcionEscolaridad === 'Primaria') {
+            setSliderValue([5, 13]);
+        } else if (opcionEscolaridad === 'Secundaria') {
+            setSliderValue([14, 20]);
+        }
+    }, [opcionEscolaridad]);
+
+    useEffect(() => {
+        if (!sliderValue) return;
+        const edadMinima = sliderValue.at(0);
+        const edadMaxima = sliderValue.at(1);
+        if (!edadMaxima || !edadMinima) return;
+        const fetchFilteredData = async () => {
+            let escolaridadPrimariaYSecundariaFiltrada: EscolaridadPrimariaYSecundaria | null = null;
+            if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] === 'Todos') {
+                escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTodosTerritorios(
+                    datosParaConsulta,
+                    modo,
+                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                    opcionEscolaridad);
+            } else if (datosParaConsulta.comunidadesId[0] === 'Todas') {
+                escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTerritorios(
+                    datosParaConsulta,
+                    modo,
+                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                    opcionEscolaridad);
+            } else if (datosParaConsulta.comunidadesId[0] !== 'Todas' && datosParaConsulta.comunidadesId.length > 0) {
+                escolaridadPrimariaYSecundariaFiltrada = await buscarPorComunidadesEnTerritorios(
+                    datosParaConsulta,
+                    modo,
+                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                    opcionEscolaridad);
+            }
+            setEscolaridadFiltrada(escolaridadPrimariaYSecundariaFiltrada);
+        };
+        fetchFilteredData();
+    }, [sliderValue]);
 
     if (datosCulturalesInvalidos(datosEducacionales)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -36,7 +89,17 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
         </div>;
     }
 
-    const calculatePercentage = (data: EscolaridadPrimariaYSecundaria) => {
+    const handleSliderChange = (event: any, newValue: number | number[]) => {
+        setSliderValue(newValue as number[]);
+    };
+
+    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setOpcionEscolaridad((event.target as HTMLInputElement).value);
+    };
+
+    const calculatePercentage = (data: EscolaridadPrimariaYSecundaria | null) => {
+        if (!data) return;
+        console.log("~~~~~~~~~~~~~~~~~", data);
         const totalByCommunity: { [key: string]: number } = {};
         const yesByCommunity: { [key: string]: number } = {};
 
@@ -80,32 +143,46 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
         }
     };
 
-    const percentages = calculatePercentage(datosEducacionales.escolaridadPrimariaYSecundaria?);
+    const percentages = calculatePercentage(escolaridadFiltrada || datosEducacionales.escolaridadPrimariaYSecundaria);
 
     return (
         <>
-            <CajaTitulo>Escolaridad Joven</CajaTitulo>
-            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-            <CajaTitulo>Escolaridad General</CajaTitulo>
-            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-            <CajaTitulo>Infraestructura</CajaTitulo>
-            <MapaInfraestructura datos={datosEducacionales} modo={modo} />
             <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
+            <FormControl component="fieldset">
+                <FormLabel component="legend">Seleccione Escolaridad</FormLabel>
+                <RadioGroup row aria-label="escolaridad" name="escolaridad" value={opcionEscolaridad} onChange={handleRadioChange}>
+                    <FormControlLabel value="Primaria" control={<Radio />} label="Primaria" />
+                    <FormControlLabel value="Secundaria" control={<Radio />} label="Secundaria" />
+                </RadioGroup>
+            </FormControl>
+            <div style={{ width: '80%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <a style={{ textAlign: 'left' }}>{sliderValue.at(0)}</a>
+                <a style={{ textAlign: 'right' }}>{sliderValue.at(1)}</a>
+            </div>
+            <div style={{ width: '80%' }}>
+                <Slider
+                    value={sliderValue}
+                    onChange={handleSliderChange}
+                    valueLabelDisplay="auto"
+                    min={opcionEscolaridad === 'Primaria' ? 5 : 14}
+                    max={opcionEscolaridad === 'Primaria' ? 13 : 20}
+                />
+            </div>
             <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%' }}>
                 <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
                 <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+                    attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
                 />
                 {queEstoyViendo.territoriosGeoJson && (
                     <GeoJSON data={queEstoyViendo.territoriosGeoJson as GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJsonProperties>} style={estiloTerritorio} />
                 )}
-                { queEstoyViendo.comunidadesGeoJson && (
+                {queEstoyViendo.comunidadesGeoJson && (
                     <>
                         {queEstoyViendo.comunidadesGeoJson.features.map((comunidad, index) => {
                             const centroide = turf.centroid(comunidad).geometry.coordinates;
                             const id = comunidad.properties?.id;
-                            const datos = datosEducacionales.escolaridadPrimariaYSecundaria?.rows.filter(row => row.comunidadId === id).reduce((acc, row) => {
+                            const datos = escolaridadFiltrada?.rows.filter(row => row.comunidadId === id).reduce((acc, row) => {
                                 acc[row.escolarizacion.toLowerCase() as 'sí' | 'no'] += row.conteo;
                                 return acc;
                             }, { sí: 0, no: 0 });
@@ -124,15 +201,15 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
                                         <CustomCircleMarker
                                             center={[coordinates[0][1], coordinates[0][0]]}
                                             baseRadius={2}
-                                            color={getColor(percentages[id])}
-                                            proporcion={percentages[id]}
+                                            color={getColor(percentages ? percentages[id] : 0)}
+                                            proporcion={percentages ? percentages[id] : 0}
                                             total={datos.sí + datos.no}
                                             zoomNivel={zoomNivel}
                                         />
                                     )}
                                     {zoomNivel >= 12 && crearMarcadorNombre(comunidad.properties?.nombre) && (
                                         <Marker
-                                            position={[centroide[1], centroide[0] + 0.25 / zoomNivel]}
+                                            position={[centroide[1], centroide[0] - centroide[0] * 0.001 / zoomNivel]}
                                             icon={crearMarcadorNombre(comunidad.properties?.nombre)}
                                             zIndexOffset={1000}
                                         />
@@ -143,23 +220,29 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
                     </>
                 )}
             </MapContainer>
+            <CajaTitulo>Escolaridad Joven</CajaTitulo>
+            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+            <CajaTitulo>Escolaridad General</CajaTitulo>
+            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+            <CajaTitulo>Infraestructura</CajaTitulo>
+            <MapaInfraestructura datos={datosEducacionales} modo={modo} />
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}
                 territorios={queEstoyViendo.territoriosGeoJson}
             />
         </>
     );
-}
+};
 
 export default ComponenteCulturalComunidadesEnTerritorios;
 
 const datosCulturalesInvalidos = (datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados) => {
-    return !datosEducacionales.escolaridadPrimariaYSecundaria || 
-    !datosEducacionales.comunidadesGeoJson ||
-    !datosEducacionales.escolaridad ||
-    !datosEducacionales.escolaridadJoven ||
-    !datosEducacionales.territoriosGeoJson;
-}
+    return !datosEducacionales.escolaridadPrimariaYSecundaria ||
+        !datosEducacionales.comunidadesGeoJson ||
+        !datosEducacionales.escolaridad ||
+        !datosEducacionales.escolaridadJoven ||
+        !datosEducacionales.territoriosGeoJson;
+};
 
 const segmentarPorEdadYSexoParaGraficasPiramidales = (sexoEdadDatos: Escolaridad | null) => {
     if (!sexoEdadDatos) {
@@ -185,7 +268,7 @@ const shouldDisplayText = (zoomNivel: number): boolean => {
 
 const devuelveTexto = (proporcion: number): string => {
     return `<div class="${estilos['text-icon-container']}">${Math.round(proporcion)}%</div>`;
-}
+};
 
 interface CustomCircleMarkerProps {
     center: [number, number];
