@@ -63,13 +63,13 @@ const funciones: Record<string, Query> = {
         ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
     comunidadesEnTerritorios: ({ comunidadesId }) => `
         SELECT
-        ST_AsGeoJSON(geometry) AS geometry,
-        id_cnida AS id,
-        nomb_cnida AS nombre
+            ST_AsGeoJSON(geometry) AS geometry,
+            id_cnida AS id,
+            nomb_cnida AS nombre
         FROM
-        \`sigeti.unidades_de_analisis.comunidades_censo632\`
+            \`sigeti.unidades_de_analisis.comunidades_censo632\`
         WHERE
-        ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
+            ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
     };
 
 export default funciones;

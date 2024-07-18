@@ -81,12 +81,12 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
   const totalPopulations = tipo === 'pueblos'
     ? territoriosGeoJson?.features.map(territorio => {
         const id = territorio.properties?.id;
-        const total = datos.filter(d => d.territorioId === id).reduce((sum, item) => sum + 1, 0);
+        const total = datos.filter(d => d.territorioId === id).reduce((sum) => sum + 1, 0);
         return total;
       })
     : comunidadesGeoJson?.features.map(comunidad => {
         const id = comunidad.properties?.id;
-        const total = datos.filter(d => d[agregador] === id).reduce((sum, item) => sum + 1, 0);
+        const total = datos.filter(d => d[agregador] === id).reduce((sum) => sum + 1, 0);
         return total;
       });
 

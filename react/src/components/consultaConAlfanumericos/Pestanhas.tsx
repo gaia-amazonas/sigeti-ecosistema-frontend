@@ -105,6 +105,7 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 };
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
+  pueblosPorTerritorio: null,
   lenguas: null,
   etnias: null,
   clanes: null,
@@ -113,6 +114,7 @@ const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerri
 };
 
 const educacionalComunidadesEnTerritorioDatosIniciales: EducacionalComunidadesEnTerritorioDatosConsultados = {
+  escolaridadPrimariaYSecundaria: null,
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,
@@ -120,6 +122,7 @@ const educacionalComunidadesEnTerritorioDatosIniciales: EducacionalComunidadesEn
 };
 
 const educacionalComunidadesEnTerritoriosDatosIniciales: EducacionalComunidadesEnTerritoriosDatosConsultados = {
+  escolaridadPrimariaYSecundaria: null,
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,
@@ -127,6 +130,7 @@ const educacionalComunidadesEnTerritoriosDatosIniciales: EducacionalComunidadesE
 };
 
 const educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales: EducacionalComunidadesEnTerritoriosDatosConsultados = {
+  escolaridadPrimariaYSecundaria: null,
   escolaridadJoven: null,
   escolaridad: null,
   comunidadesGeoJson: null,

@@ -36,7 +36,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
     const { mujeresEnEdadFertil, comunidadesGeoJson } = datos;
 
     if (!mujeresEnEdadFertil?.rows || mujeresEnEdadFertil?.rows.length === 0) {
-        return <div><p>No cuenta con permisos necesarios para ver el mapa.</p></div>;
+        return <div><p>No cuentas con permisos necesarios para ver el mapa.</p></div>;
     }
 
     const getColor = (value: number): string => {

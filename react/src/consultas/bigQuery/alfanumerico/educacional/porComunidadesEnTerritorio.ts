@@ -5,6 +5,18 @@ import haceClausulasWhere from "../clausulas";
 type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]}) => string;
 
 const funciones: Record<string, Query> = {
+    escolaridadPrimariaYSecundaria: ({ comunidadesId }) => `
+        SELECT
+            comunidadId, escolarizacion, COUNT(*) conteo
+        FROM
+            \`sigeti.censo_632.escolarizacion_primaria_y_secundaria_segmentada\`
+        WHERE
+            educacion = 'Primaria' AND
+            edad >= 5 AND edad < 14 AND
+            ${haceClausulasWhere({comunidadesId}, 'comunidadId')}
+        GROUP BY
+            comunidadId, escolarizacion;
+    `,
     escolaridadJoven: ({comunidadesId}) => `
         SELECT
             sexo,
