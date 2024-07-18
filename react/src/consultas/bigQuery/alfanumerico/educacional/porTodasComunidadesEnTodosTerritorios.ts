@@ -1,6 +1,17 @@
 // src/consultas/bigQuery/alfanumerico/educacional/porTodasComunidadesEnTerritorio.ts
 
 const funciones = {
+    escolaridadPrimariaYSecundaria: `
+        SELECT
+            comunidadId, escolarizacion, COUNT(*) conteo
+        FROM
+            \`sigeti.censo_632.escolarizacion_primaria_y_secundaria_segmentada\`
+        WHERE
+            educacion = 'Primaria' AND
+            edad >= 5 AND edad < 14
+        GROUP BY
+            comunidadId, escolarizacion;
+    `,
     escolaridadJoven: `
         SELECT SUM(conteo) as conteo, sexo, nivelEducativo FROM (
             SELECT

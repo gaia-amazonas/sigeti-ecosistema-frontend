@@ -263,6 +263,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     if (buscarGeneral) establecerGeneralComunidadesEnTerritoriosDatosConsultados(await buscarGeneralPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarCultural) establecerCulturalTodasComunidadesEnTerritoriosDatosConsultados(await buscarCulturalPorTodasComunidadesEnTodosTerritorios(modo));
     if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritoriosDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTodosTerritorios(modo));
+    console.log(educacionalTodasComunidadesEnTerritoriosDatosConsultados, "$$$$$$$$$$$$$$$#################");
     if (buscarSalud) establecerSaludTodasComunidadesEnTerritoriosDatosConsultados(await buscarSaludPorTodasComunidadesEnTodosTerritorios(modo, territoriosPrivados));
   };
 
@@ -361,6 +362,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       comunidadesGeoJson: datosPorPestanhaEnTerritorios.educacion.comunidadesGeoJson,
       territoriosGeoJson: datosPorPestanhaEnTerritorios.educacion.territoriosGeoJson
     }
+    console.log("#################", datosParaConsultar);
     return <Educacional datosEducacionales={datosPorPestanhaEnTerritorios.educacion} queEstoyViendo={queEstoyViendo} modo={modo}></Educacional>;
   };
 

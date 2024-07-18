@@ -1,18 +1,23 @@
 // src/components/consultaConAlfanumericos/educacional/Contenido.tsx
+
+import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvents, Marker } from 'react-leaflet';
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import { GeoJsonProperties } from 'geojson';
+import * as turf from '@turf/turf';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 import SexoEdad from '../SexoEdad';
 import { CajaTitulo } from '../estilos';
+import isClient from 'utilidades/isClient';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 
 import MapaInfraestructura from 'components/consultaConAlfanumericos/educacional/MapaInfraestructuraPorComunidades';
-import EducacionalComunidadesEnTerritoriosDatosConsultados, { Escolaridad, EscolaridadFila } from 'tipos/educacional/datosConsultados';
+import EducacionalComunidadesEnTerritoriosDatosConsultados, { Escolaridad, EscolaridadFila, EscolaridadPrimariaYSecundaria } from 'tipos/educacional/datosConsultados';
 import { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
 import QueEstoyViendo from '../general/QueEstoyViendo';
+import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolaridadPorComunidadGraficoTorta';
 
 interface ComponenteCulturalComunidadesEnTerritoriosImp {
     datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados;
@@ -21,7 +26,9 @@ interface ComponenteCulturalComunidadesEnTerritoriosImp {
 }
 
 const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({ datosEducacionales, queEstoyViendo, modo }) => {
+
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
+    const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
 
     if (datosCulturalesInvalidos(datosEducacionales)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -29,7 +36,7 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
         </div>;
     }
 
-    const calculatePercentage = (data: any) => {
+    const calculatePercentage = (data: EscolaridadPrimariaYSecundaria) => {
         const totalByCommunity: { [key: string]: number } = {};
         const yesByCommunity: { [key: string]: number } = {};
 
@@ -73,7 +80,7 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
         }
     };
 
-    const percentages = calculatePercentage(datosEducacionales.escolaridadPrimariaYSecundaria);
+    const percentages = calculatePercentage(datosEducacionales.escolaridadPrimariaYSecundaria?);
 
     return (
         <>
@@ -91,26 +98,50 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 {queEstoyViendo.territoriosGeoJson && (
-                    <GeoJSON data={queEstoyViendo.territoriosGeoJson as GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>} style={estiloTerritorio} />
+                    <GeoJSON data={queEstoyViendo.territoriosGeoJson as GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJsonProperties>} style={estiloTerritorio} />
                 )}
-                {datosEducacionales.escolaridadPrimariaYSecundaria?.rows.map((row, idx) => {
-                    const community = queEstoyViendo.comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
-                    if (!community) return null;
-                    const coordinates = getCoordinates(community.geometry);
-                    if (coordinates.length === 0) return null;
-                    const percentage = percentages[row.comunidadId];
-                    return (
-                        <CustomCircleMarker
-                            key={idx}
-                            center={[coordinates[0][1], coordinates[0][0]]}
-                            baseRadius={2}
-                            color={getColor(percentage)}
-                            proporcion={Math.round(percentage)}
-                            total={row.conteo}
-                            zoomNivel={zoomNivel}
-                        />
-                    );
-                })}
+                { queEstoyViendo.comunidadesGeoJson && (
+                    <>
+                        {queEstoyViendo.comunidadesGeoJson.features.map((comunidad, index) => {
+                            const centroide = turf.centroid(comunidad).geometry.coordinates;
+                            const id = comunidad.properties?.id;
+                            const datos = datosEducacionales.escolaridadPrimariaYSecundaria?.rows.filter(row => row.comunidadId === id).reduce((acc, row) => {
+                                acc[row.escolarizacion.toLowerCase() as 'sí' | 'no'] += row.conteo;
+                                return acc;
+                            }, { sí: 0, no: 0 });
+                            const coordinates = getCoordinates(comunidad.geometry);
+                            if (coordinates.length === 0 || !datos) return null;
+                            return (
+                                <React.Fragment key={index}>
+                                    {(zoomNivel > 10) && (
+                                        <MarcadorConEscolaridadPorComunidadGraficoTorta
+                                            posicion={[centroide[1], centroide[0]]}
+                                            datos={datos}
+                                            estaCargando={cargando[id]}
+                                        />
+                                    )}
+                                    {(zoomNivel <= 10) && (
+                                        <CustomCircleMarker
+                                            center={[coordinates[0][1], coordinates[0][0]]}
+                                            baseRadius={2}
+                                            color={getColor(percentages[id])}
+                                            proporcion={percentages[id]}
+                                            total={datos.sí + datos.no}
+                                            zoomNivel={zoomNivel}
+                                        />
+                                    )}
+                                    {zoomNivel >= 12 && crearMarcadorNombre(comunidad.properties?.nombre) && (
+                                        <Marker
+                                            position={[centroide[1], centroide[0] + 0.25 / zoomNivel]}
+                                            icon={crearMarcadorNombre(comunidad.properties?.nombre)}
+                                            zIndexOffset={1000}
+                                        />
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
+                    </>
+                )}
             </MapContainer>
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}
@@ -152,24 +183,40 @@ const shouldDisplayText = (zoomNivel: number): boolean => {
     return zoomNivel >= 10;
 };
 
-const devuelveTexto = (expandido: boolean, proporcion: number, total: number): string => {
-    if (expandido) return `<div class="${estilos['text-icon-container']}">Proporción: ${proporcion}% </br> Escolarización: ${total}</div>`;
-    return `<div class="${estilos['text-icon-container']}">${proporcion}%</div>`;
+const devuelveTexto = (proporcion: number): string => {
+    return `<div class="${estilos['text-icon-container']}">${Math.round(proporcion)}%</div>`;
 }
 
 interface CustomCircleMarkerProps {
-  center: [number, number];
-  baseRadius: number;
-  color: string;
-  proporcion: number;
-  total: number;
-  zoomNivel: number;
+    center: [number, number];
+    baseRadius: number;
+    color: string;
+    proporcion: number;
+    total: number;
+    zoomNivel: number;
 }
 
+const crearMarcadorNombre = (nombre: string) => {
+    if (!isClient) return null;
+    const leaflet = require('leaflet');
+    return leaflet.divIcon({
+        html: `<div style="z-index: 10;
+            font-size: 1rem;
+            font-weight: bold;
+            color: black;
+            background: white;
+            margin-left: 0rem;
+            margin-right: 0;
+            border-radius: 1rem;
+            padding-left: 1rem;
+            padding-right: 5rem">${nombre}</div>`,
+        iconSize: [nombre.length * 6, 20],
+        iconAnchor: [nombre.length * 3, 10],
+        className: ''
+    });
+};
+
 const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRadius, color, proporcion, total, zoomNivel }) => {
-    const deberiaMostrarTextExpandido = (): boolean => {
-        return zoomNivel >= 12;
-    }
     const map = useMap();
     useEffect(() => {
         const adjustedRadius = calculateAdjustedRadius(zoomNivel);
@@ -183,7 +230,7 @@ const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRad
         if (shouldDisplayText(zoomNivel)) {
             const textIcon = L.divIcon({
                 className: 'text-icon',
-                html: devuelveTexto(deberiaMostrarTextExpandido(), proporcion, total),
+                html: devuelveTexto(proporcion),
             });
             textMarker = L.marker(center, { icon: textIcon }).addTo(map) as L.Marker;
         }
