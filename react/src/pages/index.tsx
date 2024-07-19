@@ -42,7 +42,7 @@ const Home: React.FC = () => {
       <EstiloGlobal />
       <Container>
         <Header>SIGETI</Header>
-        {!isOnline ? <p>Offline</p> : <p></p>}
+          {!isOnline ? <p>Offline</p> : <p></p>}
         <IconoHerramienta onClick={togglePopup}>
           <FaSearch size={50} />
         </IconoHerramienta>
@@ -54,12 +54,15 @@ const Home: React.FC = () => {
             <AnimatedLink href={{ pathname: '/consulta/espacial/inicio', query: { modo } }}>
               <Boton as="span">Gestión Documental Territorial</Boton>
             </AnimatedLink>
+            <AnimatedLink href={{ pathname: '/consulta/meteorologica/inicio', query: { modo } }}>
+              <Boton as="span">Meteorología</Boton>
+            </AnimatedLink>
           </BotonesContenedor>
         )}
         {user ? (
           <>
-            <p>Welcome, {user.username}!</p>
-            <p>Role: {user.role}</p>
+            <p>Bienvenido, {user.username}!</p>
+            <p>Su rol es: {user.role}</p>
             <LogoutButton />
           </>
         ) : (
@@ -136,6 +139,12 @@ const AnimatedLink = styled(Link)`
   &:nth-child(2) {
     --translate-x: 7rem;
     --translate-y: -10rem;
+    animation-delay: 0.1s;
+  }
+  
+  &:nth-child(3) {
+    --translate-x: 9.5rem;
+    --translate-y: 0.5rem;
     animation-delay: 0.1s;
   }
 `;

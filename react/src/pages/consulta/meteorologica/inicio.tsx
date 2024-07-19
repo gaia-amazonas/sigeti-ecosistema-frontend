@@ -1,10 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
+import IframeGEE from '../../../components/consultaMeteorologica/gee';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 import BotonReiniciar from 'components/BotonReiniciar';
-
-const Mapa = dynamic(() => import('components/consultaDocumentalConMapa/Mapa'), { ssr: false });
 
 const Espacial: React.FC = () => {
   const router = useRouter();
@@ -21,8 +19,8 @@ const Espacial: React.FC = () => {
       <EstiloGlobal />
       <BotonReiniciar onClick={reiniciarEstado} />
       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-        <Titulo>Consulta Documental con Mapa</Titulo>
-        <Mapa modo={modoString} />
+        <Titulo>El Amazonas <br></br> desde Satélites</Titulo>
+        <IframeGEE />
       </div>
     </>
   );
