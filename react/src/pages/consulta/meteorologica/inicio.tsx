@@ -19,7 +19,7 @@ const Espacial: React.FC = () => {
       <EstiloGlobal />
       <BotonReiniciar onClick={reiniciarEstado} />
       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-        <Titulo>El Amazonas <br></br> desde Satélites</Titulo>
+        <Titulo>El Amazonas<br></br>desde Satélites</Titulo>
         <IframeGEE />
       </div>
     </>

@@ -31,7 +31,7 @@ const GraficoTorta: React.FC<GraficoTortaProps> = ({ si, no }) => {
         color: 'white',
         formatter: (value: number) => value,
         font: {
-          weight: 'bold',
+          weight: 'bold' as 'bold',
         },
       },
     },

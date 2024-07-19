@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
 import BotonReiniciar from 'components/BotonReiniciar';
 
-const Mapa = dynamic(() => import('components/consultaDocumentalConMapa/Mapa'), { ssr: false });
+const Mapa = dynamic(() => import('components/consultaConMapa/Mapa'), { ssr: false });
 
 const Espacial: React.FC = () => {
   const router = useRouter();
