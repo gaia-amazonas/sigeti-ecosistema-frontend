@@ -2,18 +2,23 @@
 
 import haceClausulasWhere from "../clausulas";
 
-type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]}) => string;
+type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]}, territoriosPrivados?: string[]) => string;
 
 const funciones: Record<string, Query> = {
-    escolaridadPrimariaYSecundaria: ({ comunidadesId }) => `
+    escolaridadPrimariaYSecundaria: ({ comunidadesId }, territoriosPrivados) => `
         SELECT
-            comunidadId, escolarizacion, COUNT(*) conteo
+            epss.comunidadId, epss.escolarizacion, COUNT(*) conteo
         FROM
-            \`sigeti.censo_632.escolarizacion_primaria_y_secundaria_segmentada\`
+            \`sigeti.censo_632.escolarizacion_primaria_y_secundaria_segmentada\` epss
+        JOIN
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
+        ON
+            epss.comunidadId = rcpt.id_cnida
         WHERE
-            educacion = 'Primaria' AND
-            edad >= 5 AND edad < 14 AND
-            ${haceClausulasWhere({comunidadesId}, 'comunidadId')}
+            (${haceClausulasWhere({territoriosPrivados}, 'rcpt.id_ti')}) AND
+            epss.educacion = 'Primaria' AND
+            epss.edad >= 5 AND epss.edad < 14 AND
+            ${haceClausulasWhere({comunidadesId}, 'epss.comunidadId')}
         GROUP BY
             comunidadId, escolarizacion;
     `,

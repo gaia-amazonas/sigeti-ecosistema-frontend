@@ -15,9 +15,9 @@ interface DatosParaConsultar {
   comunidadesId: string[];
 }
 
-export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[], territoriosPrivados: string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const [escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar, territoriosPrivados), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
     buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
@@ -32,9 +32,9 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
   };
 };
 
-export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[], territoriosPrivados: string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const [escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar, territoriosPrivados), modo),
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorTodasComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
     buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
@@ -49,9 +49,9 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
   };
 };
 
-export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[], territoriosPrivados: string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const [escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar, territoriosPrivados), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
@@ -66,9 +66,9 @@ export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: Dato
   };
 };
 
-export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[], territoriosPrivados: string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const [escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar), modo),
+    buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadPrimariaYSecundaria(datosParaConsultar, territoriosPrivados), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridadJoven(datosParaConsultar), modo),
     buscarDatos(consultasEducacionalesPorComunidadesEnTerritorio.escolaridad(datosParaConsultar), modo),
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
@@ -83,14 +83,15 @@ export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar:
   };
 };
 
-export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
+export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[], territoriosPrivados: string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
   const [escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadPrimariaYSecundaria, modo),
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadJoven, modo),
-    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridad, modo),
-    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios, modo),
-    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.territorios, modo),
+    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadPrimariaYSecundaria(territoriosPrivados), modo),
+    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadJoven(), modo),
+    buscarDatos(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridad(), modo),
+    buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios(), modo),
+    buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.territorios(), modo),
   ]);
+  console.log("ASDFASFADSFDASDFAFA", consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadPrimariaYSecundaria(territoriosPrivados));
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,

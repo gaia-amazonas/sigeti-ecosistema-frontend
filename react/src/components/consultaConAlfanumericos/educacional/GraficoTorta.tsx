@@ -2,11 +2,15 @@
 
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+
+Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 interface GraficoTortaProps {
   si: number;
   no: number;
-} 
+}
 
 const GraficoTorta: React.FC<GraficoTortaProps> = ({ si, no }) => {
   const data = {
@@ -22,6 +26,15 @@ const GraficoTorta: React.FC<GraficoTortaProps> = ({ si, no }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    plugins: {
+      datalabels: {
+        color: 'white',
+        formatter: (value: number) => value,
+        font: {
+          weight: 'bold',
+        },
+      },
+    },
   };
 
   return <Pie data={data} options={options} />;

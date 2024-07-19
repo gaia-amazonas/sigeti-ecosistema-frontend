@@ -3,10 +3,10 @@
 import haceClausulasWhere from "../../clausulas";
 
 type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]},
-    edades: {edadMinima: number, edadMaxima: number}, educacion: string) => string;
+    edades: {edadMinima: number, edadMaxima: number}, educacion: string, territoriosPrivados: string[]) => string;
 
 const funciones: Record<string, Query> = {
-    escolaridadPrimariaYSecundaria: ({ territoriosId }, { edadMinima, edadMaxima }, educacion) => `
+    escolaridadPrimariaYSecundaria: ({ territoriosId }, { edadMinima, edadMaxima }, educacion, territoriosPrivados) => `
         SELECT
             comunidadId, escolarizacion, COUNT(*) conteo
         FROM
@@ -16,8 +16,9 @@ const funciones: Record<string, Query> = {
         ON
             epss.comunidadId = rcpt.id_cnida
         WHERE
-            educacion = '${educacion}' AND
-            edad >= ${edadMinima} AND edad < ${edadMaxima} AND
+            (${haceClausulasWhere({territoriosPrivados}, 'rcpt.id_ti')}) AND
+            epss.educacion = '${educacion}' AND
+            epss.edad >= ${edadMinima} AND epss.edad < ${edadMaxima} AND
             ${haceClausulasWhere({territoriosId}, 'rcpt.id_ti')}
         GROUP BY
             comunidadId, escolarizacion;

@@ -15,7 +15,7 @@ const funciones: Record<string, Query> = {
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
             (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
-    territorios: ( territoriosPrivados ) => `
+    territorios: () => `
         SELECT DISTINCT
             ST_AsGeoJSON(geometry) AS geometry,
             id_ti AS id,
