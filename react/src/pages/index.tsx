@@ -1,3 +1,5 @@
+// src/pages/index.tsx
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaSearch } from 'react-icons/fa';
