@@ -1,5 +1,6 @@
 // src/components/consultaConAlfanumericos/general/FamiliasYPoblacionYElectricidad.tsx
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,9 +13,11 @@ import {
   ChartData,
   ChartOptions,
 } from 'chart.js';
-
-import { FamiliasPorComunidad, PoblacionTotalPorComunidad, FamiliasConElectricidadPorComunidad } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
-
+import {
+  FamiliasPorComunidad,
+  PoblacionTotalPorComunidad,
+  FamiliasConElectricidadPorComunidad
+} from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 
 ChartJS.register(
   CategoryScale,
@@ -32,53 +35,70 @@ interface FamiliasYPoblacionYElectricidadImp {
   comunidadesPorTerritorio?: { rows: { territorioId: string, comunidadesId: string[] }[] } | null;
 }
 
+const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadImp> = ({
+  familiasPorComunidad,
+  poblacionPorComunidad,
+  familiasConElectricidadPorComunidad,
+  comunidadesPorTerritorio
+}) => {
+  const allTerritorios = comunidadesPorTerritorio?.rows.map(row => row.territorioId) || [];
+  const uniqueTerritorios = Array.from(new Set(allTerritorios));
+  const [selectedTerritorio, setSelectedTerritorio] = useState<string | null>(null);
 
-const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadImp> = ({ familiasPorComunidad, poblacionPorComunidad, familiasConElectricidadPorComunidad, comunidadesPorTerritorio }) => {
+  useEffect(() => {
+    if (!selectedTerritorio) {
+      setSelectedTerritorio(uniqueTerritorios[0]);
+    }
+  }, [uniqueTerritorios]);
+
   if (!familiasPorComunidad || !poblacionPorComunidad || !familiasConElectricidadPorComunidad) {
     return <div>Cargando...</div>;
   }
+
   const comunidades = familiasPorComunidad.rows.map(row => row.comunidadNombre);
   const familias = familiasPorComunidad.rows.map(row => row.familias);
   const poblacionTotal = poblacionPorComunidad.rows.map(row => row.poblacionTotal);
   const familiasConElectricidad = familiasConElectricidadPorComunidad.rows.map(row => row.familias);
 
-  if (!comunidadesPorTerritorio) {
-    const datosParaGraficoConTerritorio = estructuraGraficoConTerritorio({comunidades, familias, poblacionTotal, familiasConElectricidad});
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', paddingLeft: '1rem', paddingRight: '1rem', width: '100%' }}>
-        <div style={{ width: '80%', height: '80%' }}>
-          <Bar data={datosParaGraficoConTerritorio} options={estilizaGraficoConTerritorio()} />
-        </div>
-      </div>
-    );
-  }
+  const handleTerritorioChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTerritorio(event.target.value);
+  };
 
-  if (comunidadesPorTerritorio) {
+  let filteredData = { comunidades, familias, poblacionTotal, familiasConElectricidad };
 
+  if (comunidadesPorTerritorio && selectedTerritorio) {
     const comunidadTerritorioMap = mapeaComunidadesPorTerritorio(comunidadesPorTerritorio);
-    const datosAgrupados = agrupaDatosPorTerritorio(comunidades, familias, poblacionTotal, familiasConElectricidad, comunidadTerritorioMap);
-    const charts = Object.keys(datosAgrupados).map(territorio => {
-      const comunidadesPorTerritorio = datosAgrupados[territorio];
-      const datosComunitariosPorTerritorio = estructuraGraficoConTerritorios(comunidadesPorTerritorio);
-      return (
-        <div key={territorio} style={{ marginBottom: '2rem', width: '80%', height: '80%' }}>
-          <h3>{territorio}</h3>
-          <Bar data={datosComunitariosPorTerritorio} options={estilizaGraficoConTerritorios(datosComunitariosPorTerritorio, territorio)} />
-        </div>
-      );
-    });
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '1rem', paddingRight: '1rem', width: '100%' }}>
-        {charts}
-      </div>
-    );
+    const filteredIndices = comunidades
+      .map((comunidad, index) => (comunidadTerritorioMap.get(comunidad) === selectedTerritorio ? index : -1))
+      .filter(index => index !== -1);
 
+    filteredData = {
+      comunidades: filteredIndices.map(index => comunidades[index]),
+      familias: filteredIndices.map(index => familias[index]),
+      poblacionTotal: filteredIndices.map(index => poblacionTotal[index]),
+      familiasConElectricidad: filteredIndices.map(index => familiasConElectricidad[index]),
+    };
   }
 
+  const datosParaGraficoConTerritorio = estructuraGraficoConTerritorio(filteredData);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '1rem', paddingRight: '1rem', width: '100%' }}>
+      <select onChange={handleTerritorioChange} value={selectedTerritorio || ''}>
+        {uniqueTerritorios.map(territorio => (
+          <option key={territorio} value={territorio}>
+            {territorio}
+          </option>
+        ))}
+      </select>
+      <div style={{ width: '80%', height: '80%', marginTop: '2rem' }}>
+        <Bar data={datosParaGraficoConTerritorio} options={estilizaGraficoConTerritorio()} />
+      </div>
+    </div>
+  );
 };
 
 export default FamiliasYPoblacionYElectricidad;
-
 
 interface DatosAgrupados {
   comunidades: string[];
@@ -94,8 +114,13 @@ type DatosParaGraficoConTerritorio = {
   familiasConElectricidad: number[];
 };
 
-const estructuraGraficoConTerritorio = ({comunidades, familias, poblacionTotal, familiasConElectricidad}: DatosParaGraficoConTerritorio): ChartData<'bar'> => {
-    return {
+const estructuraGraficoConTerritorio = ({
+  comunidades,
+  familias,
+  poblacionTotal,
+  familiasConElectricidad
+}: DatosParaGraficoConTerritorio): ChartData<'bar'> => {
+  return {
     labels: comunidades,
     datasets: [
       {
@@ -124,40 +149,7 @@ const estructuraGraficoConTerritorio = ({comunidades, familias, poblacionTotal, 
       },
     ],
   };
-}
-
-const estructuraGraficoConTerritorios = (datosPorTerritorio: DatosAgrupados): ChartData<'bar'> => {
-  return {
-    labels: datosPorTerritorio.comunidades,
-    datasets: [
-      {
-        label: 'Familias',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-        barThickness: 20,
-        data: datosPorTerritorio.familias,
-      },
-      {
-        label: 'Población',
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-        borderColor: 'rgba(255, 206, 86, 1)',
-        borderWidth: 1,
-        barThickness: 20,
-        data: datosPorTerritorio.poblacionTotal,
-      },
-      {
-        label: 'Familias con Electricidad',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        barThickness: 20,
-        data: datosPorTerritorio.familiasConElectricidad,
-      },
-    ],
-  };
 };
-
 
 const estilizaGraficoConTerritorio = (): ChartOptions<'bar'> => {
   return {
@@ -173,33 +165,7 @@ const estilizaGraficoConTerritorio = (): ChartOptions<'bar'> => {
       },
     },
   };
-}
-
-const estilizaGraficoConTerritorios = (datosAgrupados: ChartData<'bar'>, territorio: string): ChartOptions<'bar'> => {
-  return {
-    responsive: true,
-    scales: {
-      x: {
-        beginAtZero: true,
-        stacked: true,
-      },
-      y: {
-        beginAtZero: true,
-        stacked: true,
-      },
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          title: function (tooltipItems) {
-            const index = tooltipItems[0].dataIndex;
-            return `${datosAgrupados.labels![index]} (${territorio})`;
-          },
-        },
-      },
-    },
-  };
-}
+};
 
 const mapeaComunidadesPorTerritorio = (comunidadesPorTerritorio: { rows: { territorioId: string, comunidadesId: string[] }[] }) => {
   const mapaEntreComunidadesYTerritorio = new Map<string, string>();
@@ -209,24 +175,4 @@ const mapeaComunidadesPorTerritorio = (comunidadesPorTerritorio: { rows: { terri
     });
   });
   return mapaEntreComunidadesYTerritorio;
-}
-
-const agrupaDatosPorTerritorio = (
-  comunidades: string[],
-  familias: number[],
-  poblacionTotal: number[],
-  familiasConElectricidad: number[],
-  comunidadTerritorioMap: Map<string, string>
-): Record<string, DatosAgrupados> => {
-  return comunidades.reduce((acc, comunidad, index) => {
-    const territorio = comunidadTerritorioMap.get(comunidad) || 'Unknown';
-    if (!acc[territorio]) {
-      acc[territorio] = { comunidades: [], familias: [], poblacionTotal: [], familiasConElectricidad: [] };
-    }
-    acc[territorio].comunidades.push(comunidad);
-    acc[territorio].familias.push(familias[index]);
-    acc[territorio].poblacionTotal.push(poblacionTotal[index]);
-    acc[territorio].familiasConElectricidad.push(familiasConElectricidad[index]);
-    return acc;
-  }, {} as Record<string, DatosAgrupados>);
 };

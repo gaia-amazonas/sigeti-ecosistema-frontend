@@ -1,7 +1,13 @@
-// src/consultas/bigQuery/alfanumerico/porTodasComunidadesEnTerritorios.ts
+// src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios.ts
+
 import haceClausulasWhere from "../clausulas";
 
-type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
+interface DatosParaConsultar {
+  territoriosId: string[];
+  comunidadesId: string[];
+}
+
+type Query = (datosParaConsultar: DatosParaConsultar) => string;
 
 const funciones: Record<string, Query> = {
     sexo: ({territoriosId}) => `

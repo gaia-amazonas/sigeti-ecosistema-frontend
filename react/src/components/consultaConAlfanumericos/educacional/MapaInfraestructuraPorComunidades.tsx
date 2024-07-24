@@ -47,8 +47,8 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
 
     useEffect(() => {
         establecerComunidadesId(datos.comunidadesGeoJson?.features
-                    .map((comunidad) => comunidad.properties?.id)
-                    .filter((id): id is string => typeof id === 'string') || []);
+        .map((comunidad) => comunidad.properties?.id)
+        .filter((id): id is string => typeof id === 'string') || []);
     }, [datos])
 
     useEffect(() => {

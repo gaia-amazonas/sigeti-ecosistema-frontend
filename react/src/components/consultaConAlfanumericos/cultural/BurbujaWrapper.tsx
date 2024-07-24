@@ -1,50 +1,124 @@
 // src/components/consultaConAlfanumericos/cultural/BurbujaWrapper.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
-import CulturalGraficoBurbuja from 'components/consultaConAlfanumericos/cultural/Contenido';
-import CulturalComunidadesEnTerritorios from 'tipos/cultural/datosConsultados';
-
+import MapaCultural from './MapaCultural';
 import { CajaTitulo } from '../estilos';
+import QueEstoyViendo from '../general/QueEstoyViendo';
 
 interface CulturalGraficoBurbujaWrapperImp {
-  datos: CulturalComunidadesEnTerritorios;
+  datos: any;
+  queEstoyViendo: { comunidadesGeoJson: any, territoriosGeoJson: any };
+  modo: string | string[];
 }
 
-const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos }) => {
-    if (datosCulturalesInvalidos(datos)) {
-        return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
-                <div className={estilos.spinner}></div>
-            </div>;
-    }
+const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos, queEstoyViendo, modo }) => {
+  const [mostrarMenosRepresentativoLenguas, setMostrarMenosRepresentativoLenguas] = useState(false);
+  const [mostrarMenosRepresentativoEtnias, setMostrarMenosRepresentativoEtnias] = useState(false);
+  const [mostrarMenosRepresentativoClanes, setMostrarMenosRepresentativoClanes] = useState(false);
+  const [mostrarMenosRepresentativoPueblos, setMostrarMenosRepresentativoPueblos] = useState(false);
+
+  const toggleRepresentacionLenguas = () => {
+    setMostrarMenosRepresentativoLenguas(!mostrarMenosRepresentativoLenguas);
+  };
+
+  const toggleRepresentacionEtnias = () => {
+    setMostrarMenosRepresentativoEtnias(!mostrarMenosRepresentativoEtnias);
+  };
+
+  const toggleRepresentacionClanes = () => {
+    setMostrarMenosRepresentativoClanes(!mostrarMenosRepresentativoClanes);
+  };
+
+  const toggleRepresentacionPueblos = () => {
+    setMostrarMenosRepresentativoPueblos(!mostrarMenosRepresentativoPueblos);
+  };
+
+  if (validaDatosCulturales(datos, queEstoyViendo)) {
     return (
-        <>
-            { datos.sexosPorLengua?.rows && (
-                <>
-                    <CajaTitulo>Distribución de Lenguas</CajaTitulo>
-                    <CulturalGraficoBurbuja datos={datos.sexosPorLengua.rows} labelKey="lengua" valueKey="conteo" />
-                </>
-            )}
-            { datos.etnias?.rows && (
-                <>
-                    <CajaTitulo>Distribución de Etnias</CajaTitulo>
-                    <CulturalGraficoBurbuja datos={datos.etnias.rows} labelKey="etnia" valueKey="conteo" />
-                </>
-            )}
-            { datos.clanes?.rows && (
-                <>
-                    <CajaTitulo>Distribución de Clanes</CajaTitulo>  
-                    <CulturalGraficoBurbuja datos={datos.clanes.rows} labelKey="clan" valueKey="conteo" />
-                </>
-            )}
-        </>
+      <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
+        <div className={estilos.spinner}></div>
+      </div>
     );
+  }
+  
+  return (
+    <>
+      <CajaTitulo>Distribución de Lenguas</CajaTitulo>
+      <button onClick={toggleRepresentacionLenguas}>
+        {mostrarMenosRepresentativoLenguas ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
+      </button>
+      <MapaCultural
+        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+        modo={modo}
+        datos={datos.lenguas.rows}
+        agregador='comunidadId'
+        variable='lengua'
+        mostrarMenosRepresentativo={mostrarMenosRepresentativoLenguas}
+        tipo='lenguas'
+      />
+
+      <CajaTitulo>Distribución de Etnias</CajaTitulo>
+      <button onClick={toggleRepresentacionEtnias}>
+        {mostrarMenosRepresentativoEtnias ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
+      </button>
+      <MapaCultural
+        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+        modo={modo}
+        datos={datos.etnias.rows}
+        agregador='comunidadId'
+        variable='etnia'
+        mostrarMenosRepresentativo={mostrarMenosRepresentativoEtnias}
+        tipo='etnias'
+      />
+
+      <CajaTitulo>Distribución de Clanes</CajaTitulo>
+      <button onClick={toggleRepresentacionClanes}>
+        {mostrarMenosRepresentativoClanes ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
+      </button>  
+      <MapaCultural
+        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+        modo={modo}
+        datos={datos.clanes.rows}
+        agregador='comunidadId'
+        variable='clan'
+        mostrarMenosRepresentativo={mostrarMenosRepresentativoClanes}
+        tipo='clanes'
+      />
+
+      <CajaTitulo>Distribución de Pueblos</CajaTitulo>
+      <button onClick={toggleRepresentacionPueblos}>
+        {mostrarMenosRepresentativoPueblos ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
+      </button>  
+      <MapaCultural
+        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+        modo={modo}
+        datos={datos.pueblosPorTerritorio.rows}
+        agregador='territorioId'
+        variable='pueblo'
+        mostrarMenosRepresentativo={mostrarMenosRepresentativoPueblos}
+        tipo='pueblos'
+      />
+
+      <QueEstoyViendo
+        comunidades={queEstoyViendo.comunidadesGeoJson}
+        territorios={queEstoyViendo.territoriosGeoJson}
+      />
+    </>
+  );
 };
 
 export default CulturalGraficoBurbujaWrapper;
 
-const datosCulturalesInvalidos = (datosCulturales: CulturalComunidadesEnTerritorios) => {
-    return !datosCulturales.clanes ||
-    !datosCulturales.etnias ||
-    !datosCulturales.sexosPorLengua
+const validaDatosCulturales = (datos: any, queEstoyViendo: { comunidadesGeoJson: any, territoriosGeoJson: any }) => {
+  return !datos.lenguas ||
+    !datos.etnias ||
+    !datos.clanes ||
+    !datos.pueblosPorTerritorio ||
+    !queEstoyViendo.comunidadesGeoJson ||
+    !queEstoyViendo.territoriosGeoJson;
 }

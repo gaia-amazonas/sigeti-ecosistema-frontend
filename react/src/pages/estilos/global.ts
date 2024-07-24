@@ -1,11 +1,15 @@
 // src/pages/estilos/global.ts
-import { createGlobalStyle } from 'styled-components';
+
 import styled from 'styled-components';
+
+import { createGlobalStyle } from 'styled-components';
 
 const EstiloGlobal = createGlobalStyle`
   body, html, #root {
     width: 100vw;
+    height: 100vh;
     margin: 0;
+    font-family: 'Roboto', sans-serif;
   }
 
   button.reset-button {

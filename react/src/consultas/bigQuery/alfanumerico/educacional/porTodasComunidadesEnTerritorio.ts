@@ -2,9 +2,26 @@
 
 import haceClausulasWhere from "../clausulas";
 
-type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]}) => string;
+type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: string[]}, territoriosPrivados?: string[]) => string;
 
 const funciones: Record<string, Query> = {
+    escolaridadPrimariaYSecundaria: ({ territoriosId }, territoriosPrivados) => `
+        SELECT
+            comunidadId, escolarizacion, COUNT(*) conteo
+        FROM
+            \`sigeti.censo_632.escolarizacion_primaria_y_secundaria_segmentada\` epss
+        JOIN
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
+        ON
+            epss.comunidadId = rcpt.id_cnida
+        WHERE
+            (${haceClausulasWhere({territoriosPrivados}, 'rcpt.id_ti')}) AND
+            educacion = 'Primaria' AND
+            edad >= 5 AND edad < 14 AND
+            ${haceClausulasWhere({territoriosId}, 'rcpt.id_ti')}
+        GROUP BY
+            comunidadId, escolarizacion;
+    `,
     escolaridadJoven: ({territoriosId}) => `
         SELECT SUM(conteo) as conteo, sexo, nivelEducativo FROM (
             SELECT
@@ -12,7 +29,7 @@ const funciones: Record<string, Query> = {
                 'Ninguna' AS nivelEducativo,
                 SUM(aes.Esc_Ninguna) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -23,7 +40,7 @@ const funciones: Record<string, Query> = {
                 'NSNR' AS nivelEducativo,
                 SUM(Esc_NSNR) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -34,7 +51,7 @@ const funciones: Record<string, Query> = {
                 'Preescolar' AS nivelEducativo,
                 SUM(Esc_Preescolar) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -45,7 +62,7 @@ const funciones: Record<string, Query> = {
                 'Primaria' AS nivelEducativo,
                 SUM(Esc_Primaria) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -56,7 +73,7 @@ const funciones: Record<string, Query> = {
                 'Media' AS nivelEducativo,
                 SUM(Esc_Media) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -67,7 +84,7 @@ const funciones: Record<string, Query> = {
                 'Secundaria' AS nivelEducativo,
                 SUM(Esc_Secundaria) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -78,7 +95,7 @@ const funciones: Record<string, Query> = {
                 'Tecnico' AS nivelEducativo,
                 SUM(Esc_Tecnico) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -89,7 +106,7 @@ const funciones: Record<string, Query> = {
                 'Tecnologico' AS nivelEducativo,
                 SUM(Esc_Tecnologica) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -100,7 +117,7 @@ const funciones: Record<string, Query> = {
                 'Universitaria Incompleta' AS nivelEducativo,
                 SUM(Esc_UniversitarioIncomp) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -111,7 +128,7 @@ const funciones: Record<string, Query> = {
                 'Universitaria Completa' AS nivelEducativo,
                 SUM(Esc_UniversitarioComp) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
                 AND edad < 30
@@ -124,7 +141,7 @@ const funciones: Record<string, Query> = {
                 'Ninguna' AS nivelEducativo,
                 SUM(aes.Esc_Ninguna) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -134,7 +151,7 @@ const funciones: Record<string, Query> = {
                 'NSNR' AS nivelEducativo,
                 SUM(Esc_NSNR) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -144,7 +161,7 @@ const funciones: Record<string, Query> = {
                 'Preescolar' AS nivelEducativo,
                 SUM(Esc_Preescolar) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -154,7 +171,7 @@ const funciones: Record<string, Query> = {
                 'Primaria' AS nivelEducativo,
                 SUM(Esc_Primaria) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -164,7 +181,7 @@ const funciones: Record<string, Query> = {
                 'Media' AS nivelEducativo,
                 SUM(Esc_Media) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -174,7 +191,7 @@ const funciones: Record<string, Query> = {
                 'Secundaria' AS nivelEducativo,
                 SUM(Esc_Secundaria) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -184,7 +201,7 @@ const funciones: Record<string, Query> = {
                 'Tecnico' AS nivelEducativo,
                 SUM(Esc_Tecnico) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -194,7 +211,7 @@ const funciones: Record<string, Query> = {
                 'Tecnologico' AS nivelEducativo,
                 SUM(Esc_Tecnologica) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -204,7 +221,7 @@ const funciones: Record<string, Query> = {
                 'Universitaria Incompleta' AS nivelEducativo,
                 SUM(Esc_UniversitarioIncomp) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -214,7 +231,7 @@ const funciones: Record<string, Query> = {
                 'Universitaria Completa' AS nivelEducativo,
                 SUM(Esc_UniversitarioComp) AS conteo
             FROM \`sigeti.censo_632.Alfabetismo_Edad_Sexo\` aes
-            JOIN \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            JOIN \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cpt
             ON cpt.territorio = aes.TERRITORIO
             WHERE ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
             GROUP BY aes.ID_CNIDA, aes.sexo
@@ -237,7 +254,7 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` AS cpt
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` AS cpt
         ON
             c.id_cnida = cpt.id_cnida
         WHERE

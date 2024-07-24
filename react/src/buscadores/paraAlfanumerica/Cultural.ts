@@ -1,12 +1,17 @@
 // src/buscadores/paraAlfanumerica/Cultural.ts
 
 import { buscarDatos } from 'buscadores/datosSQL';
+import { buscarComunidades, buscarTerritorios } from 'buscadores/geoJson';
 
 import ComunidadesEnTerritorioDatosConsultados from 'tipos/cultural/datosConsultados';
+
 import consultasCulturalesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porComunidadesEnTerritorio';
-import consultasCulturalesPorTodasComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorio';
 import consultasCulturalesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTerritorios';
 import consultasCulturalesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTodosTerritorios';
+
+import consultasGeneralesPorComunidadesEnTerritorio from 'consultas/bigQuery/alfanumerico/general/porComunidadesEnTerritorio';
+import consultasGeneralesPorTodasComunidadesEnTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios';
+import consultasGeneralesPorTodasComunidadesEnTodosTerritorios from 'consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -14,48 +19,59 @@ interface DatosParaConsultar {
 }
 
 export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [sexosPorLengua, etnias, clanes] = await Promise.all([
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo),
+  const [lenguas, etnias, clanes, pueblosPorTerritorio, comunidadesGeoJson, territorioGeoJson] = await Promise.all([
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.lenguas(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo),
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.clanes(datosParaConsultar), modo)
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.clanes(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.pueblosPorTerritorio(datosParaConsultar), modo),
+    buscarComunidades(consultasGeneralesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
+    buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
   return {
-    sexosPorLengua: sexosPorLengua,
+    lenguas: lenguas,
     etnias: etnias,
-    clanes: clanes
-  };
-};
-
-export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.sexoYLengua(datosParaConsultar), modo);
-  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.etnias(datosParaConsultar), modo);
-  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorio.clanes(datosParaConsultar), modo);
-  if (sexosPorLengua.rows.length === 0) sexosPorLengua.rows = [{lengua: 'Sin datos', conteo: 1}]
-  return {
-    sexosPorLengua: sexosPorLengua,
-    etnias: etnias,
-    clanes: clanes
+    clanes: clanes,
+    pueblosPorTerritorio: pueblosPorTerritorio,
+    comunidadesGeoJson: comunidadesGeoJson,
+    territoriosGeoJson: territorioGeoJson
   };
 };
 
 export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.sexoYLengua(datosParaConsultar), modo);
-  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etnias(datosParaConsultar), modo);
-  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.clanes(datosParaConsultar), modo);
+  const [pueblosPorTerritorio, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.pueblosPorTerritorio(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.lenguas(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etnias(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.clanes(datosParaConsultar), modo),
+    buscarComunidades(consultasGeneralesPorTodasComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo),
+    buscarTerritorios(consultasGeneralesPorTodasComunidadesEnTerritorios.territorios(datosParaConsultar), modo),
+  ]);
+  if (lenguas.rows.length === 0) lenguas.rows = [{lengua: 'Sin datos', conteo: 1}]
   return {
-    sexosPorLengua: sexosPorLengua,
+    pueblosPorTerritorio: pueblosPorTerritorio,
+    lenguas: lenguas,
     etnias: etnias,
-    clanes: clanes
+    clanes: clanes,
+    comunidadesGeoJson: comunidadesGeoJson,
+    territoriosGeoJson: territoriosGeoJson
   };
 };
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const sexosPorLengua = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.sexoYLengua, modo);
-  const etnias = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etnias, modo);
-  const clanes = await buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.clanes, modo);
+  const [pueblosPorTerritorio, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.pueblosPorTerritorio, modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.lenguas, modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etnias, modo),
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.clanes, modo),
+    buscarComunidades(consultasGeneralesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios, modo),
+    buscarTerritorios(consultasGeneralesPorTodasComunidadesEnTodosTerritorios.territorios, modo)
+  ]);
   return {
-    sexosPorLengua: sexosPorLengua,
+    pueblosPorTerritorio: pueblosPorTerritorio,
+    lenguas: lenguas,
     etnias: etnias,
-    clanes: clanes
+    clanes: clanes,
+    comunidadesGeoJson: comunidadesGeoJson,
+    territoriosGeoJson: territoriosGeoJson
   };
 };

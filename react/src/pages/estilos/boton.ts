@@ -1,4 +1,4 @@
-// src/components/estilos/Boton.ts
+// src/pages/estilos/boton.ts
 import styled from 'styled-components';
 
 const Boton = styled.button`
@@ -7,15 +7,16 @@ const Boton = styled.button`
   margin: 10px 0;
   font-size: 1.2em;
   color: #fff;
-  background-color: #4682b4; /* Sky Blue */
+  background-color: rgba(70, 130, 180, 0.8);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, opacity 0.5s;
   font-family: 'Roboto', sans-serif;
+  opacity: 0;
 
   &:hover {
-    background-color: #0056b3; /* Darker Blue */
+    background-color: rgba(0, 86, 179, 0.8);
   }
 
   &:focus {
@@ -26,6 +27,18 @@ const Boton = styled.button`
   justify-content: center;
   align-items: center;
   text-decoration: none;
+  animation: fadeIn 0.5s forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 `;
 
 export const BotonesContenedor = styled.div`
@@ -33,14 +46,9 @@ export const BotonesContenedor = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
-`;
-
-export const Titulo = styled.h1`
-  font-family: 'Lora', serif;
-  color: #2F4F4F;
-  text-align: center;
-  margin-top: 20px;
+  position: absolute;
+  bottom: 10rem;
+  right: 20px;
 `;
 
 export default Boton;

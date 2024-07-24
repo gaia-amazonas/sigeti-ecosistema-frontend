@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 const Boton = styled.button`
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1001;
 `;
 
 export default Boton;

@@ -21,7 +21,7 @@ const Espacial: React.FC = () => {
       <EstiloGlobal />
       <BotonReiniciar onClick={reiniciarEstado} />
       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-        <Titulo>Consultar con Mapa</Titulo>
+        <Titulo>Consulta Documental con Mapa</Titulo>
         <Mapa modo={modoString} />
       </div>
     </>

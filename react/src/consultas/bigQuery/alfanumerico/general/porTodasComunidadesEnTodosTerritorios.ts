@@ -1,4 +1,5 @@
-// src/components/consultas/generales/todosTerritorios.ts
+// src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTodosTerritorios.ts
+
 const porTodasComunidadesEnTodosTerritorios = {
     sexo: `
         SELECT
