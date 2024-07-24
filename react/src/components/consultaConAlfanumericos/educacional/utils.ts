@@ -3,7 +3,6 @@
 import DatosConsultados, { Escolaridad, EscolaridadFila } from 'tipos/educacional/datosConsultados';
 
 export const datosCulturalesInvalidos = (datosEducacionales: DatosConsultados) => {
-    console.log("!!!!!!!!!!!!!!!!!!!!!", datosEducacionales);
     return !datosEducacionales.escolaridadPrimariaYSecundaria ||
         !datosEducacionales.comunidadesGeoJson ||
         !datosEducacionales.escolaridad ||

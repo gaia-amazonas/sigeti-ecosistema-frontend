@@ -19,7 +19,7 @@ import {
 } from 'buscadores/paraAlfanumerica/dinamicas/Educacional';
 
 import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolaridadPorComunidadGraficoTorta';
-import GraficoTorta from './GraficoTorta';
+// import GraficoTorta from './GraficoTorta';
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import isClient from 'utilidades/isClient';
@@ -28,7 +28,7 @@ interface MapaConControlesProps {
     datosEducacionales: DatosConsultados;
     datosParaConsulta: { territoriosId: string[], comunidadesId: string[] };
     queEstoyViendo: { comunidadesGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null,
-        territoriosGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null };
+    territoriosGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null };
     modo: string | string[];
 }
 
@@ -88,7 +88,7 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
         fetchFilteredData();
     }, [sliderValue]);
 
-    const handleSliderChange = (event: any, newValue: number | number[]) => {
+    const handleSliderChange = (_event: any, newValue: number | number[]) => {
         setSliderValue(newValue as number[]);
     };
 
@@ -152,11 +152,11 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
                     <FormControlLabel value="Secundaria" control={<Radio />} label="Secundaria" />
                 </RadioGroup>
             </FormControl>
-            <div style={{ width: '80%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <a style={{ textAlign: 'left' }}>{sliderValue.at(0)}</a>
                 <a style={{ textAlign: 'right' }}>{sliderValue.at(1)}</a>
             </div>
-            <div style={{ width: '80%' }}>
+            <div style={{ width: '100%' }}>
                 <Slider
                     value={sliderValue}
                     onChange={handleSliderChange}

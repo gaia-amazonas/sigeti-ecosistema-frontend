@@ -92,16 +92,13 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
-      {seleccionados.length > 0 && (
-        <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>
-      )}
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton
           key={opcion.idTi}
           onClick={() => manejarSeleccion(opcion.idTi)}
           $seleccionado={seleccionados.includes(opcion.idTi)}
         >
-          {opcion.territorio}
+          { opcion.territorio }
         </OpcionComoBoton>
       ))}
     </Contenedor>

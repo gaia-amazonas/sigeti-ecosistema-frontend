@@ -89,9 +89,6 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
     );
   }
 
-  const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
-  const territorios = extraerTerritorio(datosExtraidos.territorioGeoJson);
-
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <FiltrosAvanzadosPopup
@@ -113,8 +110,6 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
           <TotalYFamilias
             contadorTotal={totalContador}
             contadorFamilias={datosExtraidos.familias}
-            comunidades={comunidades}
-            territorios={territorios}
           />
           <Mujer contador={mujerContador} />
         </ContenedorGrafico>
@@ -129,6 +124,14 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
           territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           modo={modo}
+        />
+      </WrapperAnimadoParaHistorias>
+      <WrapperAnimadoParaHistorias>
+        <CajaTitulo>Familias y Población</CajaTitulo>
+        <FamiliasYPoblacionYElectricidad
+          familiasPorComunidad={datosExtraidos.familiasPorComunidad}
+          poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+          familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
         />
       </WrapperAnimadoParaHistorias>
     </div>

@@ -30,14 +30,13 @@ interface ClanesEnComunidades {
   rows: ClanesEnComunidadFila[];
 }
 
-interface PueblosPorTerritorioFila {
-  territorioId: string;
+interface PueblosEnComunidadesFila {
   pueblo: string;
   conteo: number;
 }
 
-interface PueblosPorTerritorio {
-  rows: PueblosPorTerritorioFila[];
+interface PueblosEnComunidades {
+  rows: PueblosEnComunidadesFila[];
 }
 
 export interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
@@ -47,7 +46,7 @@ interface DatosConsultados {
   lenguas: SexosPorLenguaEnComunidades | null;
   etnias: EtniasEnComunidades | null;
   clanes: ClanesEnComunidades | null;
-  pueblosPorTerritorio: PueblosPorTerritorio | null;
+  pueblos: PueblosEnComunidades | null;
   comunidadesGeoJson: ComunidadesGeoJson | null;
   territoriosGeoJson: TerritoriosGeoJson | null;
 }

@@ -89,9 +89,6 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
     );
   }
 
-  const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
-  const territorios = extraerTerritorio(datosExtraidos.territoriosGeoJson);
-
   return (
     <div style={{ width: '100%', overflow: 'auto' }}>
       <QueEstoyViendo
@@ -104,8 +101,6 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
           <TotalYFamilias
             contadorTotal={totalContador}
             contadorFamilias={datosExtraidos.familias}
-            comunidades={comunidades}
-            territorios={territorios}
           />
           <Mujer contador={mujerContador} />
         </ContenedorGrafico>
@@ -123,7 +118,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         />
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
-      <CajaTitulo>Familias y Población</CajaTitulo>
+        <CajaTitulo>Familias y Población</CajaTitulo>
         <FamiliasYPoblacionYElectricidad
             familiasPorComunidad={datosExtraidos.familiasPorComunidad}
             poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
@@ -184,20 +179,6 @@ const extraerDatosEntrantesDinamicos = (datosGenerales: ComunidadesEnTerritorios
     poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
     familiasConElectricidadPorComunidad: datosGenerales.familiasConElectricidadPorComunidad
   };
-};
-
-const extraerComunidades = (comunidadesGeoJson: ComunidadesGeoJson | null): string[] | null => {
-  if (comunidadesGeoJson) {
-    return comunidadesGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
-  }
-  return null;
-};
-
-const extraerTerritorio = (territoriosGeoJson: TerritoriosGeoJson | null): string[] | null => {
-  if (territoriosGeoJson) {
-    return territoriosGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
-  }
-  return null;
 };
 
 const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {

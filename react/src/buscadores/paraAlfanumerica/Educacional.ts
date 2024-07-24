@@ -91,7 +91,6 @@ export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string |
     buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios(), modo),
     buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.territorios(), modo),
   ]);
-  console.log("ASDFASFADSFDASDFAFA", consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.escolaridadPrimariaYSecundaria(territoriosPrivados));
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,

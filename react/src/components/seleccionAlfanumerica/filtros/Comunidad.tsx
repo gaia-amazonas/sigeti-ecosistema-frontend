@@ -1,7 +1,7 @@
 // src/components/seleccion_inicial/filtros/Comunidad.tsx
 import React, { useState, useEffect } from 'react';
-import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
-
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccionAlfanumerica/estilos/Filtros';
+import BotonSiguiente from 'components/seleccionAlfanumerica/estilos/BotonSiguiente';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -18,6 +18,7 @@ interface ComunidadImp {
   establecerDatosParaConsultar: (datosParaConsultar: DatosParaConsultar) => void;
   siguientePaso: () => void;
   modo: 'online' | 'offline';
+  haySeleccionados: boolean;
 }
 
 const consultas = {
@@ -37,8 +38,7 @@ const consultas = {
   `
 };
 
-
-const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatosParaConsultar, siguientePaso, modo }) => {
+const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatosParaConsultar, siguientePaso, modo, haySeleccionados }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
   const [filtro, establecerFiltro] = useState<string>('');
@@ -60,7 +60,6 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
       establecerOpcionesFiltradas(opcionesConTodas);
     }
     buscarDatos(datosParaConsultar.territoriosId);
-
   }, [datosParaConsultar.territoriosId, modo]);
 
   useEffect(() => {
@@ -98,9 +97,6 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
-      {seleccionados.length > 0 && (
-        <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>
-      )}
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton
           key={opcion.id_cnida}

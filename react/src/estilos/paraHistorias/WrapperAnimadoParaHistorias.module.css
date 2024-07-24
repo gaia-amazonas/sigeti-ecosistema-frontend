@@ -1,7 +1,7 @@
 /* src/components/WrapperAnimadoParaHistorias.module.css */
 
 .wrapper {
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    transition: transform 0.5s ease-out, opacity 1s ease-out;
     will-change: transform, opacity;
   }
   

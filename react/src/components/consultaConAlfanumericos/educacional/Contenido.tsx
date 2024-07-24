@@ -1,6 +1,6 @@
 // src/components/consultaConAlfanumericos/educacional/Contenido.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { CajaTitulo } from '../estilos';
 import estilos from 'estilosParaMapas/ParaMapas.module.css'
 import SexoEdad from '../SexoEdad';
@@ -9,6 +9,7 @@ import QueEstoyViendo from '../general/QueEstoyViendo';
 import { datosCulturalesInvalidos, segmentarPorEdadYSexoParaGraficasPiramidales } from './utils';
 import MapaConControles from './MapaConControles';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
+import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
 
 interface ComponenteCulturalComunidadesEnTerritoriosImp {
     datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados;
@@ -18,6 +19,12 @@ interface ComponenteCulturalComunidadesEnTerritoriosImp {
 }
 
 const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
+    const [selectedGraph, setSelectedGraph] = useState<'escolaridadJoven' | 'escolaridad' | null>('escolaridadJoven');
+
+    const handleSelect = (graphType: 'escolaridadJoven' | 'escolaridad') => {
+        setSelectedGraph(selectedGraph === graphType ? null : graphType);
+    };
+
     if (datosCulturalesInvalidos(datosEducacionales)) {
         return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
             <div className={estilos.spinner}></div>
@@ -26,19 +33,46 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
 
     return (
         <>
-            <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
-            <MapaConControles 
-                datosEducacionales={datosEducacionales}
-                datosParaConsulta={datosParaConsulta}
-                queEstoyViendo={queEstoyViendo}
-                modo={modo}
-            />
-            <CajaTitulo>Infraestructura para la Educación</CajaTitulo>
-            <MapaInfraestructura datos={datosEducacionales} modo={modo} />
-            <CajaTitulo>Escolaridad Joven</CajaTitulo>
-            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-            <CajaTitulo>Escolaridad General</CajaTitulo>
-            <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+            <WrapperAnimadoParaHistorias>
+                <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
+                <MapaConControles
+                    datosEducacionales={datosEducacionales}
+                    datosParaConsulta={datosParaConsulta}
+                    queEstoyViendo={queEstoyViendo}
+                    modo={modo}
+                />
+            </WrapperAnimadoParaHistorias>
+            <WrapperAnimadoParaHistorias>
+                <CajaTitulo>Infraestructura para la Educación</CajaTitulo>
+                <MapaInfraestructura datos={datosEducacionales} modo={modo} />
+            </WrapperAnimadoParaHistorias>
+            <WrapperAnimadoParaHistorias>
+                <CajaTitulo>Selecciona Tipo de Escolaridad</CajaTitulo>
+                <div className={estilos.toggleContainer}>
+                    <div 
+                        className={`${estilos.toggleBox} ${selectedGraph === 'escolaridadJoven' ? estilos.selected : ''}`} 
+                        onClick={() => handleSelect('escolaridadJoven')}
+                    >
+                        Escolaridad Joven
+                    </div>
+                    <div 
+                        className={`${estilos.toggleBox} ${selectedGraph === 'escolaridad' ? estilos.selected : ''}`} 
+                        onClick={() => handleSelect('escolaridad')}
+                    >
+                        Escolaridad General
+                    </div>
+                </div>
+            </WrapperAnimadoParaHistorias>
+            {selectedGraph === 'escolaridadJoven' && (
+                <>
+                    <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+                </>
+            )}
+            {selectedGraph === 'escolaridad' && (
+                <>
+                    <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+                </>
+            )}
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}
                 territorios={queEstoyViendo.territoriosGeoJson}
