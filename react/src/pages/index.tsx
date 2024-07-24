@@ -128,26 +128,25 @@ const radialAppear = keyframes`
 
 const AnimatedLink = styled(Link)`
   position: fixed;
+  right: 1rem;
+  bottom: 10rem;
   --translate-x: 0;
   --translate-y: 0;
   animation: ${radialAppear} 0.5s ease-out forwards;
 
   &:nth-child(1) {
-    --translate-x: 7rem;
-    --translate-y: -4rem;
-    animation-delay: 0s;
+    right: 1rem;
+    bottom: 14rem;
   }
 
   &:nth-child(2) {
-    --translate-x: 7rem;
-    --translate-y: -10rem;
-    animation-delay: 0.1s;
+    right: 3rem;
+    bottom: 9rem;
   }
   
   &:nth-child(3) {
-    --translate-x: 9.5rem;
-    --translate-y: 0.5rem;
-    animation-delay: 0.1s;
+    right: 1rem;
+    bottom: 5rem;
   }
 `;
 

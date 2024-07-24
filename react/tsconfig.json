@@ -28,7 +28,8 @@
       "estilosParaConsultaConMapas/*": ["./src/components/consultaConMapa/estilos.ts"],
       "utilidades/*": ["./src/utilidades/*"],
       "tipos/*": ["./src/tipos/*"],
-      "estilosParaMapas/*": ["./src/estilos/paraMapas/*"]
+      "estilosParaMapas/*": ["./src/estilos/paraMapas/*"],
+      "estilosParaHistorias/*": ["./src/estilos/paraHistorias/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

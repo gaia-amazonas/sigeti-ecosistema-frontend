@@ -17,6 +17,7 @@ import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import { ContenedorGrafico, CajaTitulo } from '../../estilos';
+import WrapperAnimadoParaHistorias from '../../WrapperAnimadoParaHistorias';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -97,31 +98,39 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         territorios={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
       />
-      <ContenedorGrafico>
-        <Hombre contador={hombreContador} />
-        <TotalYFamilias
-          contadorTotal={totalContador}
-          contadorFamilias={datosExtraidos.familias}
-          comunidades={comunidades}
-          territorios={territorios}
+      <WrapperAnimadoParaHistorias>
+        <ContenedorGrafico>
+          <Hombre contador={hombreContador} />
+          <TotalYFamilias
+            contadorTotal={totalContador}
+            contadorFamilias={datosExtraidos.familias}
+            comunidades={comunidades}
+            territorios={territorios}
+          />
+          <Mujer contador={mujerContador} />
+        </ContenedorGrafico>
+      </WrapperAnimadoParaHistorias>
+      <WrapperAnimadoParaHistorias>
+        <CajaTitulo>Sexo y Edad</CajaTitulo>
+        <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo="Hombre" labelDerecho="Mujer" />
+      </WrapperAnimadoParaHistorias>
+      <WrapperAnimadoParaHistorias>
+        <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
+        <MapaComunidadesPorTerritorio
+          territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+          comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+          modo={modo}
         />
-        <Mujer contador={mujerContador} />
-      </ContenedorGrafico>
-      <CajaTitulo>Sexo y Edad</CajaTitulo>
-      <ComponenteSexoEdad datosPiramidalesSexoEdad={datosPiramidalesSexoEdad} labelIzquierdo="Hombre" labelDerecho="Mujer" />
-      <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
-      <MapaComunidadesPorTerritorio
-        territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        modo={modo}
-      />
+      </WrapperAnimadoParaHistorias>
+      <WrapperAnimadoParaHistorias>
       <CajaTitulo>Familias y Población</CajaTitulo>
-      <FamiliasYPoblacionYElectricidad
-        familiasPorComunidad={datosExtraidos.familiasPorComunidad}
-        poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
-        familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
-        comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
-      />
+        <FamiliasYPoblacionYElectricidad
+            familiasPorComunidad={datosExtraidos.familiasPorComunidad}
+            poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+            familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
+            comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
+          />
+      </WrapperAnimadoParaHistorias>
       <FiltrosAvanzadosPopup
         esVisible={popupVisible}
         edadMinima={edadMinima}
