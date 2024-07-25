@@ -11,14 +11,14 @@ import MapaConControles from './MapaConControles';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
 import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
 
-interface ComponenteCulturalComunidadesEnTerritoriosImp {
+interface ComponenteEducacionalComunidadesEnTerritoriosImp {
     datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados;
     datosParaConsulta: { territoriosId: string[], comunidadesId: string[] };
     queEstoyViendo: { comunidadesGeoJson: any | null, territoriosGeoJson: any | null };
     modo: string | string[];
 }
 
-const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalComunidadesEnTerritoriosImp> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
+const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacionalComunidadesEnTerritoriosImp> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
     const [selectedGraph, setSelectedGraph] = useState<'escolaridadJoven' | 'escolaridad' | null>('escolaridadJoven');
 
     const handleSelect = (graphType: 'escolaridadJoven' | 'escolaridad') => {
@@ -62,17 +62,17 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
                         Escolaridad General
                     </button>
                 </div>
+                {selectedGraph === 'escolaridadJoven' && (
+                    <>
+                        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+                    </>
+                )}
+                {selectedGraph === 'escolaridad' && (
+                    <>
+                        <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
+                    </>
+                )}
             </WrapperAnimadoParaHistorias>
-            {selectedGraph === 'escolaridadJoven' && (
-                <>
-                    <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridadJoven)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-                </>
-            )}
-            {selectedGraph === 'escolaridad' && (
-                <>
-                    <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
-                </>
-            )}
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}
                 territorios={queEstoyViendo.territoriosGeoJson}
@@ -81,4 +81,4 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
     );
 }
 
-export default ComponenteCulturalComunidadesEnTerritorios;
+export default ComponenteEducacionalComunidadesEnTerritorios;

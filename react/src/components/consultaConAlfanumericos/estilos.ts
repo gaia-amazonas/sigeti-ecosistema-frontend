@@ -1,26 +1,28 @@
-// src/components/consultaConAlfanumericos/estilos.ts
 import styled from 'styled-components';
 
 export const ContenedorGrafico = styled.div`
   font-family: 'Roboto', sans-serif;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row; 
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: auto;
   box-sizing: border-box;
   margin-bottom: 2rem;
   @media (max-width: 48rem) {
     flex-direction: row;
+    flex-wrap: nowrap; /* Ensure no wrap on smaller screens as well */
     height: auto;
   }
 `;
 
 export const ContenedorImagen = styled.div`
   position: relative;
-  width: 29vw;
+  width: auto;
+  min-width: 6rem;
   height: auto;
   display: flex;
   flex-direction: column;

@@ -1,10 +1,8 @@
-// src/components/consultaConAlfanumericos/general/comunidadesEnTerritorios/Contenido.tsx
-
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { buscarPorTodasComunidadesEnTodosTerritorios, buscarPorTodasComunidadesEnTerritorios, buscarPorComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica/dinamicas/General';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
-import ComunidadesEnTerritoriosDatosConsultados, { TerritoriosGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
+import { Sexo, SexoEdad, SexoEdadFila } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import ComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
 import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
@@ -90,7 +88,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
   }
 
   return (
-    <div style={{ width: '100%', overflow: 'auto' }}>
+    <>
       <QueEstoyViendo
         comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
         territorios={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
@@ -135,7 +133,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         onClose={cambiaVisibilidadFiltroAvanzadoPopup}
       />
       <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
-    </div>
+    </>
   );
 };
 

@@ -19,7 +19,6 @@ import {
 } from 'buscadores/paraAlfanumerica/dinamicas/Educacional';
 
 import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolaridadPorComunidadGraficoTorta';
-// import GraficoTorta from './GraficoTorta';
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import isClient from 'utilidades/isClient';
@@ -96,8 +95,8 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
         setOpcionEscolaridad((event.target as HTMLInputElement).value);
     };
 
-    const calculatePercentage = (data: any | null) => {
-        if (!data) return;
+    const calculatePercentage = (data: any) => {
+        if (!data.rows) return;
         const totalByCommunity: { [key: string]: number } = {};
         const yesByCommunity: { [key: string]: number } = {};
 
@@ -165,7 +164,7 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
                     max={opcionEscolaridad === 'Primaria' ? 13 : 20}
                 />
             </div>
-            <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%' }}>
+            <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
                 <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
                 <TileLayer
                     url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}

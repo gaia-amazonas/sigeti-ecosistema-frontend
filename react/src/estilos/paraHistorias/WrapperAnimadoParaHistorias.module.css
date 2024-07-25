@@ -1,7 +1,20 @@
 /* src/components/WrapperAnimadoParaHistorias.module.css */
 
 .wrapper {
-    transition: transform 0.5s ease-out, opacity 1s ease-out;
-    will-change: transform, opacity;
-  }
-  
+  transition: transform 0.5s ease-out, opacity 1s ease-out;
+  will-change: transform, opacity;
+}
+
+.card {
+  background-color: white;
+  border-radius: 5rem;
+  margin: 1rem;
+  padding-right: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 25rem;
+  width: 90%;
+  box-sizing: border-box;
+}
