@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { FaSearch } from 'react-icons/fa';
 import styled, { keyframes } from 'styled-components';
 import EstiloGlobal from './estilos/global';
-import Header from './estilos/header';
 import Boton, { BotonesContenedor } from './estilos/boton';
 import LogoutButton from '../components/LogoutButton';
 import { useUser } from '../context/UserContext';
@@ -62,7 +61,24 @@ const Home: React.FC = () => {
     <>
       <EstiloGlobal />
       <HeaderContainer>
-        <img className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+        <Spacer />
+        <img style={{marginRight: '3rem'}} className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+        <UserSection>
+          {user ? (
+            <>
+              <p>Bienvenido, {user.username}!</p>
+              <LogoutButton />
+            </>
+          ) : (
+            <LoginContainer>
+              <img className="login_logo" src="logos/login.png" alt="Login Logo" />
+              <nav>
+                <StyledLink href="/login">Entrar</StyledLink>
+              </nav>
+            </LoginContainer>
+          )}
+        </UserSection>
+        <Spacer />
       </HeaderContainer>
       <ContainerSintesis>
         <h1>Por la gobernanza de los territorios indígenas</h1>
@@ -86,25 +102,25 @@ const Home: React.FC = () => {
             Selecciona el consejo de tu interés para iniciar la consulta:
           </div>
           <LogosTerritorios>
-            <a href="tiquie.html">
+            <a href="tiquie">
               <ContenedorLogo>
                 <img src="logos/comunidadesIndigenas/AATIZOT.png" />
                 <p>Tiquie</p>
               </ContenedorLogo>
             </a>
-            <a href="pira_parana.html">
+            <a href="piraParana">
               <ContenedorLogo>
                 <img src="logos/comunidadesIndigenas/ACAIPI.png" />
                 <p>Pirá Paraná</p>
               </ContenedorLogo>
             </a>
-            <a href="miriti_parana_amazonas.html">
+            <a href="miritiParana">
               <ContenedorLogo>
                 <img src="logos/comunidadesIndigenas/CITMA.png" />
                 <p>Mirití Paraná Amazonas</p>
               </ContenedorLogo>
             </a>
-            <a href="yaigoje_apaporis.html">
+            <a href="yaigojeApaporis">
               <ContenedorLogo>
                 <img src="logos/comunidadesIndigenas/CITYA.png" />
                 <p>Yaigojé Apaporis</p>
@@ -126,6 +142,22 @@ const Home: React.FC = () => {
           <p>Desarrollado por <a href="https://gaiaamazonas.org/"><img src="logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" /></a> 2024</p>
         </div>
       </Footer>
+      <IconoHerramienta onClick={togglePopup}>
+        <FaSearch size={50} />
+      </IconoHerramienta>
+      {showPopup && (
+        <BotonesContenedor>
+          <AnimatedLink href={{ pathname: '/consulta/alfanumerica/inicio', query: { modo } }}>
+            <Boton as="span">Temáticas</Boton>
+          </AnimatedLink>
+          <AnimatedLink href={{ pathname: '/consulta/espacial/inicio', query: { modo } }}>
+            <Boton as="span">Gestión Documental Territorial</Boton>
+          </AnimatedLink>
+          <AnimatedLink href={{ pathname: '/consulta/meteorologica/inicio', query: { modo } }}>
+            <Boton as="span">Meteorología</Boton>
+          </AnimatedLink>
+        </BotonesContenedor>
+      )}
     </>
   );
 };
@@ -133,17 +165,47 @@ const Home: React.FC = () => {
 const HeaderContainer = styled.header`
   width: 100%;
   display: flex;
-  justify-content: center;
-  background-color: #006a7c;
+  justify-content: space-between;
   align-items: center;
+  background-color: #006a7c;
   box-shadow: 2px 2px 5px #000000;
   border: 1px solid #ccc;
-  padding: 10px 0;
+  padding: 10px 20px;
 
   .sigeti_logo {
     width: 200px;
     filter: invert(100%);
   }
+`;
+
+const UserSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const LoginContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  .login_logo {
+    width: 2rem;
+    margin-right: 10px;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const Spacer = styled.div`
+  flex: 1;
 `;
 
 const ContainerSintesis = styled.div`
@@ -286,6 +348,70 @@ const Footer = styled.footer`
   .creditos {
     align-items: center;
     color: #ffffff;
+  }
+`;
+
+const pulsate = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const IconoHerramienta = styled.div`
+  position: fixed;
+  bottom: 10rem;
+  right: 1rem;
+  cursor: pointer;
+  animation: ${pulsate} 1.5s infinite;
+
+  svg {
+    color: #4682b4;
+    transition: color 0.3s;
+  }
+
+  &:hover svg {
+    color: #0056b3;
+  }
+`;
+
+const radialAppear = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.5) translate(0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(var(--translate-x), var(--translate-y));
+  }
+`;
+
+const AnimatedLink = styled(Link)`
+  position: fixed;
+  right: 1rem;
+  bottom: 10rem;
+  --translate-x: 0;
+  --translate-y: 0;
+  animation: ${radialAppear} 0.5s ease-out forwards;
+
+  &:nth-child(1) {
+    right: 1rem;
+    bottom: 14rem;
+  }
+
+  &:nth-child(2) {
+    right: 3rem;
+    bottom: 9rem;
+  }
+  
+  &:nth-child(3) {
+    right: 1rem;
+    bottom: 5rem;
   }
 `;
 
