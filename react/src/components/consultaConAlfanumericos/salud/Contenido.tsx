@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMap, GeoJSON, useMapEvents } from 'react-leaflet';
 import L, { Layer } from 'leaflet';
+import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
 
 import { useUser } from '../../../context/UserContext';
 
@@ -62,34 +63,36 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
     
     return (
         <>  
-            <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
-            <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%' }}>
-                <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {datos.territoriosGeoJson && (
-                    <GeoJSON data={datos.territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
-                )}
-                {mujeresEnEdadFertil.rows.map((row, idx) => {
-                    const community = comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
-                    if (!community) return null;
-                    const coordinates = getCoordinates(community.geometry);
-                    if (coordinates.length === 0) return null;
-                    return (
-                        <CustomCircleMarker
-                            key={idx}
-                            center={[coordinates[0][1], coordinates[0][0]]}
-                            baseRadius={2}
-                            color={getColor(row.proporcionMujeresEnEdadFertil)}
-                            proporcion={Math.round(row.proporcionMujeresEnEdadFertil)}
-                            total={row.mujeresEnEdadFertil}
-                            zoomNivel={zoomNivel}
-                        />
-                    );
-                })}
-            </MapContainer>
+            <WrapperAnimadoParaHistorias>
+                <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
+                <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
+                    <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    {datos.territoriosGeoJson && (
+                        <GeoJSON data={datos.territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
+                    )}
+                    {mujeresEnEdadFertil.rows.map((row, idx) => {
+                        const community = comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
+                        if (!community) return null;
+                        const coordinates = getCoordinates(community.geometry);
+                        if (coordinates.length === 0) return null;
+                        return (
+                            <CustomCircleMarker
+                                key={idx}
+                                center={[coordinates[0][1], coordinates[0][0]]}
+                                baseRadius={2}
+                                color={getColor(row.proporcionMujeresEnEdadFertil)}
+                                proporcion={Math.round(row.proporcionMujeresEnEdadFertil)}
+                                total={row.mujeresEnEdadFertil}
+                                zoomNivel={zoomNivel}
+                            />
+                        );
+                    })}
+                </MapContainer>
+            </WrapperAnimadoParaHistorias>
         </>
     );
 };

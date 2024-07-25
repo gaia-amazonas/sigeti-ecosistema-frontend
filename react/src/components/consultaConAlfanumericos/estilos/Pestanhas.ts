@@ -6,7 +6,7 @@ export const Contenedor = styled.div`
   display: grid;
   height: 100vh;
   width: 100vw;
-  background-color: #f5f5f5;
+  background-color: transparent;
 `;
 
 export const Titulo = styled.h1`
@@ -36,7 +36,7 @@ export const EstiloPestanha = styled.button<{ $activo: boolean }>`
 `;
 
 export const PanelPestanhas = styled.div`
-  background-color: white;
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;

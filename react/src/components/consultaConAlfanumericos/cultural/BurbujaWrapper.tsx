@@ -5,6 +5,7 @@ import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import MapaCultural from './MapaCultural';
 import { CajaTitulo } from '../estilos';
 import QueEstoyViendo from '../general/QueEstoyViendo';
+import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
 
 interface CulturalGraficoBurbujaWrapperImp {
   datos: any;
@@ -61,7 +62,7 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
 
     return (
       <>
-        <div className={estilos.wrapper}>
+        <WrapperAnimadoParaHistorias>
           <CajaTitulo>{titulo}</CajaTitulo>
           <div className={estilos.controls}>
             <select onChange={handleOptionChange} value={selectedOption}>
@@ -74,20 +75,20 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
               {mostrarMenosRepresentativo ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
             </button>
           </div>
-        </div>
+          <MapaCultural
+            territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+            comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+            modo={modo}
+            datos={datosFiltrados}
+            agregador={agregador}
+            variable={variable}
+            mostrarMenosRepresentativo={mostrarMenosRepresentativo}
+            tipo={selectedOption}
+          />
+        </WrapperAnimadoParaHistorias>
         <QueEstoyViendo
           comunidades={queEstoyViendo.comunidadesGeoJson}
           territorios={queEstoyViendo.territoriosGeoJson}
-        />
-        <MapaCultural
-          territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
-          comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
-          modo={modo}
-          datos={datosFiltrados}
-          agregador={agregador}
-          variable={variable}
-          mostrarMenosRepresentativo={mostrarMenosRepresentativo}
-          tipo={selectedOption}
         />
       </>
     );
