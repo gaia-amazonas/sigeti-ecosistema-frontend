@@ -9,7 +9,7 @@ export const Contenedor = styled.div`
   overflow: hidden;
   align-items: center;
   margin: 0 auto;
-  background-color: #f9f9f9;
+  background-color: transparent;
   border-radius: 5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
