@@ -6,7 +6,7 @@ type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: strin
     edades: {edadMinima: number, edadMaxima: number}, educacion: string, territoriosPrivados: string[]) => string;
 
 const funciones: Record<string, Query> = {
-    escolaridadPrimariaYSecundaria: ({}, { edadMinima, edadMaxima }, educacion, territoriosPrivados) => `
+    escolaridadPrimariaYSecundaria: ({territoriosId}, { edadMinima, edadMaxima }, educacion, territoriosPrivados) => `
         SELECT
             comunidadId, escolarizacion, COUNT(*) conteo
         FROM

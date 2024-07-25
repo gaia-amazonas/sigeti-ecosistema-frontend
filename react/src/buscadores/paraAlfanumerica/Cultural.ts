@@ -19,11 +19,11 @@ interface DatosParaConsultar {
 }
 
 export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [lenguas, etnias, clanes, pueblosPorTerritorio, comunidadesGeoJson, territorioGeoJson] = await Promise.all([
+  const [lenguas, etnias, clanes, pueblos, comunidadesGeoJson, territorioGeoJson] = await Promise.all([
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.lenguas(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.etnias(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.clanes(datosParaConsultar), modo),
-    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.pueblosPorTerritorio(datosParaConsultar), modo),
+    buscarDatos(consultasCulturalesPorComunidadesEnTerritorio.pueblos(datosParaConsultar), modo),
     buscarComunidades(consultasGeneralesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
     buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
@@ -31,15 +31,15 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
     lenguas: lenguas,
     etnias: etnias,
     clanes: clanes,
-    pueblosPorTerritorio: pueblosPorTerritorio,
+    pueblos: pueblos,
     comunidadesGeoJson: comunidadesGeoJson,
     territoriosGeoJson: territorioGeoJson
   };
 };
 
 export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar: DatosParaConsultar, modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [pueblosPorTerritorio, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
-    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.pueblosPorTerritorio(datosParaConsultar), modo),
+  const [pueblos, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.pueblos(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.lenguas(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.etnias(datosParaConsultar), modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTerritorios.clanes(datosParaConsultar), modo),
@@ -48,7 +48,7 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
   ]);
   if (lenguas.rows.length === 0) lenguas.rows = [{lengua: 'Sin datos', conteo: 1}]
   return {
-    pueblosPorTerritorio: pueblosPorTerritorio,
+    pueblos: pueblos,
     lenguas: lenguas,
     etnias: etnias,
     clanes: clanes,
@@ -58,8 +58,8 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
 };
 
 export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string | string[]): Promise<ComunidadesEnTerritorioDatosConsultados> => {
-  const [pueblosPorTerritorio, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
-    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.pueblosPorTerritorio, modo),
+  const [pueblos, lenguas, etnias, clanes, comunidadesGeoJson, territoriosGeoJson] = await Promise.all([
+    buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.pueblos, modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.lenguas, modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.etnias, modo),
     buscarDatos(consultasCulturalesPorTodasComunidadesEnTodosTerritorios.clanes, modo),
@@ -67,7 +67,7 @@ export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string |
     buscarTerritorios(consultasGeneralesPorTodasComunidadesEnTodosTerritorios.territorios, modo)
   ]);
   return {
-    pueblosPorTerritorio: pueblosPorTerritorio,
+    pueblos: pueblos,
     lenguas: lenguas,
     etnias: etnias,
     clanes: clanes,

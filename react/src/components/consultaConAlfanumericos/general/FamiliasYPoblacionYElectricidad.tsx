@@ -83,15 +83,19 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
   const datosParaGraficoConTerritorio = estructuraGraficoConTerritorio(filteredData);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '1rem', paddingRight: '1rem', width: '100%' }}>
-      <select onChange={handleTerritorioChange} value={selectedTerritorio || ''}>
-        {uniqueTerritorios.map(territorio => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem', width: '100%', height: '100vh' }}>
+      { comunidadesPorTerritorio ? (
+        <select onChange={handleTerritorioChange} value={selectedTerritorio || ''} style={{ marginBottom: '1rem' }}>
+        { uniqueTerritorios.map(territorio => (
           <option key={territorio} value={territorio}>
             {territorio}
           </option>
-        ))}
-      </select>
-      <div style={{ width: '80%', height: '80%', marginTop: '2rem' }}>
+        )) }
+        </select>
+        ) : (<p></p>)
+      }
+
+      <div style={{ width: '80%', flexGrow: 1 }}>
         <Bar data={datosParaGraficoConTerritorio} options={estilizaGraficoConTerritorio()} />
       </div>
     </div>
@@ -154,6 +158,8 @@ const estructuraGraficoConTerritorio = ({
 const estilizaGraficoConTerritorio = (): ChartOptions<'bar'> => {
   return {
     responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
     scales: {
       x: {
         beginAtZero: true,

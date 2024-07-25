@@ -53,6 +53,7 @@ import {
   buscarPorTodasComunidadesEnTerritorios as buscarSaludPorTodasComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTodosTerritorios as buscarSaludPorTodasComunidadesEnTodosTerritorios
 } from 'buscadores/paraAlfanumerica/Salud';
+import EstiloGlobal from 'estilos_paginas/global';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -103,7 +104,7 @@ const generalComunidadesEnTerritoriosDatosIniciales: GeneralComunidadesEnTerrito
 };
 
 const culturalComunidadesEnTerritoriosDatosIniciales: CulturalComunidadesEnTerritoriosDatosConsultados = {
-  pueblosPorTerritorio: null,
+  pueblos: null,
   lenguas: null,
   etnias: null,
   clanes: null,
@@ -369,22 +370,25 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   }
 
   return (
-    <Contenedor>
-      <BotonReiniciar onClick={reiniciar} />
-      <Titulo>Temáticas</Titulo>
-      <ListaPestanhas>
-        <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>Cuántos somos?</EstiloPestanha>
-        <EstiloPestanha $activo={activo === 'pestanhaCultural'} onClick={() => establecerActivo('pestanhaCultural')}>Cultural</EstiloPestanha>
-        <EstiloPestanha $activo={activo === 'pestanhaEducacional'} onClick={() => establecerActivo('pestanhaEducacional')}>Educación</EstiloPestanha>
-        <EstiloPestanha $activo={activo === 'pestanhaSalud'} onClick={() => establecerActivo('pestanhaSalud')}>Salud</EstiloPestanha>
-      </ListaPestanhas>
-      <PanelPestanhas>
-        { activo === 'pestanhaGeneral' && renderizaContenidoGeneral() }
-        { activo === 'pestanhaCultural' && renderizaContenidoCultural() }
-        { activo === 'pestanhaEducacional' && renderizaContenidoEducacional() }
-        { activo === 'pestanhaSalud' && renderizaContenidoSalud() }
-      </PanelPestanhas>
-    </Contenedor>
+    <>
+      <EstiloGlobal />
+      <Contenedor>
+        <BotonReiniciar onClick={reiniciar} />
+        <Titulo>Temáticas</Titulo>
+        <ListaPestanhas>
+          <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>Cuántos somos?</EstiloPestanha>
+          <EstiloPestanha $activo={activo === 'pestanhaCultural'} onClick={() => establecerActivo('pestanhaCultural')}>Cultural</EstiloPestanha>
+          <EstiloPestanha $activo={activo === 'pestanhaEducacional'} onClick={() => establecerActivo('pestanhaEducacional')}>Educación</EstiloPestanha>
+          <EstiloPestanha $activo={activo === 'pestanhaSalud'} onClick={() => establecerActivo('pestanhaSalud')}>Salud</EstiloPestanha>
+        </ListaPestanhas>
+        <PanelPestanhas>
+          { activo === 'pestanhaGeneral' && renderizaContenidoGeneral() }
+          { activo === 'pestanhaCultural' && renderizaContenidoCultural() }
+          { activo === 'pestanhaEducacional' && renderizaContenidoEducacional() }
+          { activo === 'pestanhaSalud' && renderizaContenidoSalud() }
+        </PanelPestanhas>
+      </Contenedor>
+    </>
   );
 };
 

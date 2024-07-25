@@ -1,6 +1,7 @@
 // src/pages/login.tsx
 
 import React from 'react';
+import Image from 'next/image';
 import styled, { createGlobalStyle } from 'styled-components';
 import LoginForm from '../components/LoginForm';
 import Head from 'next/head';
@@ -14,10 +15,24 @@ const LoginPage: React.FC = () => {
       </Head>
       <GlobalStyle />
       <ImageContainer>
-        <img src="/img/fondo.jpg" alt="Background" />
+        <Image
+          className="background"
+          src="/img/fondo.jpg"
+          alt="Logotipo del sistema SIGETI"
+          width={4000}
+          height={5000}
+          style={{ width: '100%', height: '100%' }}
+        />
       </ImageContainer>
       <LoginContainer>
-        <img src="/logos/sigeti_logo_negro.png" alt="SIGETI Logo" />
+        <Image
+          className="sigeti_logo"
+          src="/logos/sigeti_logo_negro.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+          style={{ width: 'auto' }}
+        />
         <Subtitle>Sistema de Información para la <br />Gestión Territorial Indígena</Subtitle>
         <h3>Ingrese con sus credenciales</h3>
         <LoginForm />
@@ -28,7 +43,14 @@ const LoginPage: React.FC = () => {
           enfatiza en la importancia de su participación, contribución y generación de datos que benefician
           tanto a sus comunidades como a la sociedad en general.
         </p>
-        <img src="/logos/logo_gaia.png" alt="Gaia Amazonas Logo" />
+        <Image
+          className="gaia_logo"
+          src="/logos/logo_gaia.png"
+          alt="Logotipo del GAIA"
+          width={200}
+          height={50}
+          style={{ width: 'auto' }}
+        />
       </LoginContainer>
     </Container>
   );

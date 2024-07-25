@@ -13,25 +13,84 @@ interface CulturalGraficoBurbujaWrapperImp {
 }
 
 const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> = ({ datos, queEstoyViendo, modo }) => {
-  const [mostrarMenosRepresentativoLenguas, setMostrarMenosRepresentativoLenguas] = useState(false);
-  const [mostrarMenosRepresentativoEtnias, setMostrarMenosRepresentativoEtnias] = useState(false);
-  const [mostrarMenosRepresentativoClanes, setMostrarMenosRepresentativoClanes] = useState(false);
-  const [mostrarMenosRepresentativoPueblos, setMostrarMenosRepresentativoPueblos] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('lenguas');
+  const [mostrarMenosRepresentativo, setMostrarMenosRepresentativo] = useState(false);
 
-  const toggleRepresentacionLenguas = () => {
-    setMostrarMenosRepresentativoLenguas(!mostrarMenosRepresentativoLenguas);
+  const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
   };
 
-  const toggleRepresentacionEtnias = () => {
-    setMostrarMenosRepresentativoEtnias(!mostrarMenosRepresentativoEtnias);
+  const toggleRepresentacion = () => {
+    setMostrarMenosRepresentativo(!mostrarMenosRepresentativo);
   };
 
-  const toggleRepresentacionClanes = () => {
-    setMostrarMenosRepresentativoClanes(!mostrarMenosRepresentativoClanes);
-  };
+  const renderMapaCultural = () => {
+    let titulo = '';
+    let datosFiltrados = [];
+    let variable = '';
+    let agregador = '';
+    
+    switch (selectedOption) {
+      case 'lenguas':
+        titulo = 'Distribución de Lenguas';
+        datosFiltrados = datos.lenguas.rows;
+        variable = 'lengua';
+        agregador = 'comunidadId';
+        break;
+      case 'etnias':
+        titulo = 'Distribución de Etnias';
+        datosFiltrados = datos.etnias.rows;
+        variable = 'etnia';
+        agregador = 'comunidadId';
+        break;
+      case 'clanes':
+        titulo = 'Distribución de Clanes';
+        datosFiltrados = datos.clanes.rows;
+        variable = 'clan';
+        agregador = 'comunidadId';
+        break;
+      case 'pueblos':
+        titulo = 'Distribución de Pueblos';
+        datosFiltrados = datos.pueblos.rows;
+        variable = 'pueblo';
+        agregador = 'comunidadId';
+        break;
+      default:
+        return null;
+    }
 
-  const toggleRepresentacionPueblos = () => {
-    setMostrarMenosRepresentativoPueblos(!mostrarMenosRepresentativoPueblos);
+    return (
+      <>
+        <div className={estilos.wrapper}>
+          <CajaTitulo>{titulo}</CajaTitulo>
+          <div className={estilos.controls}>
+            <select onChange={handleOptionChange} value={selectedOption}>
+              <option value="lenguas">Lenguas</option>
+              <option value="etnias">Etnias</option>
+              <option value="clanes">Clanes</option>
+              <option value="pueblos">Pueblos</option>
+            </select>
+            <button onClick={toggleRepresentacion}>
+              {mostrarMenosRepresentativo ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
+            </button>
+          </div>
+        </div>
+        <QueEstoyViendo
+          comunidades={queEstoyViendo.comunidadesGeoJson}
+          territorios={queEstoyViendo.territoriosGeoJson}
+        />
+        <MapaCultural
+          territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
+          comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
+          modo={modo}
+          datos={datosFiltrados}
+          agregador={agregador}
+          variable={variable}
+          mostrarMenosRepresentativo={mostrarMenosRepresentativo}
+          tipo={selectedOption}
+        />
+      </>
+    );
   };
 
   if (validaDatosCulturales(datos, queEstoyViendo)) {
@@ -41,73 +100,10 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       </div>
     );
   }
-  
+
   return (
     <>
-      <CajaTitulo>Distribución de Lenguas</CajaTitulo>
-      <button onClick={toggleRepresentacionLenguas}>
-        {mostrarMenosRepresentativoLenguas ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
-      </button>
-      <MapaCultural
-        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
-        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
-        modo={modo}
-        datos={datos.lenguas.rows}
-        agregador='comunidadId'
-        variable='lengua'
-        mostrarMenosRepresentativo={mostrarMenosRepresentativoLenguas}
-        tipo='lenguas'
-      />
-
-      <CajaTitulo>Distribución de Etnias</CajaTitulo>
-      <button onClick={toggleRepresentacionEtnias}>
-        {mostrarMenosRepresentativoEtnias ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
-      </button>
-      <MapaCultural
-        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
-        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
-        modo={modo}
-        datos={datos.etnias.rows}
-        agregador='comunidadId'
-        variable='etnia'
-        mostrarMenosRepresentativo={mostrarMenosRepresentativoEtnias}
-        tipo='etnias'
-      />
-
-      <CajaTitulo>Distribución de Clanes</CajaTitulo>
-      <button onClick={toggleRepresentacionClanes}>
-        {mostrarMenosRepresentativoClanes ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
-      </button>  
-      <MapaCultural
-        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
-        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
-        modo={modo}
-        datos={datos.clanes.rows}
-        agregador='comunidadId'
-        variable='clan'
-        mostrarMenosRepresentativo={mostrarMenosRepresentativoClanes}
-        tipo='clanes'
-      />
-
-      <CajaTitulo>Distribución de Pueblos</CajaTitulo>
-      <button onClick={toggleRepresentacionPueblos}>
-        {mostrarMenosRepresentativoPueblos ? 'Mostrar Más Representativo' : 'Mostrar Menos Representativo'}
-      </button>  
-      <MapaCultural
-        territoriosGeoJson={queEstoyViendo.territoriosGeoJson}
-        comunidadesGeoJson={queEstoyViendo.comunidadesGeoJson}
-        modo={modo}
-        datos={datos.pueblosPorTerritorio.rows}
-        agregador='territorioId'
-        variable='pueblo'
-        mostrarMenosRepresentativo={mostrarMenosRepresentativoPueblos}
-        tipo='pueblos'
-      />
-
-      <QueEstoyViendo
-        comunidades={queEstoyViendo.comunidadesGeoJson}
-        territorios={queEstoyViendo.territoriosGeoJson}
-      />
+      {renderMapaCultural()}
     </>
   );
 };
@@ -118,7 +114,7 @@ const validaDatosCulturales = (datos: any, queEstoyViendo: { comunidadesGeoJson:
   return !datos.lenguas ||
     !datos.etnias ||
     !datos.clanes ||
-    !datos.pueblosPorTerritorio ||
+    !datos.pueblos ||
     !queEstoyViendo.comunidadesGeoJson ||
     !queEstoyViendo.territoriosGeoJson;
-}
+};

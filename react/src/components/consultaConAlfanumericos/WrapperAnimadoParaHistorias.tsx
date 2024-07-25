@@ -44,7 +44,9 @@ const WrapperAnimadoParaHistorias: React.FC<WrapperAnimadoParaHistoriasProps> = 
       className={estilos.wrapper}
       style={{ opacity }}
     >
-      {children}
+      <div className={estilos.card}>
+        {children}
+      </div>
     </div>
   );
 };

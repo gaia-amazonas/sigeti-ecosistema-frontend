@@ -21,7 +21,7 @@ const funciones: Record<string, Query> = {
             epss.edad >= ${edadMinima} AND epss.edad < ${edadMaxima} AND
             ${haceClausulasWhere({comunidadesId}, 'epss.comunidadId')}
         GROUP BY
-            epss.comunidadId;
+            epss.comunidadId, epss.escolarizacion;
     `
 };
 

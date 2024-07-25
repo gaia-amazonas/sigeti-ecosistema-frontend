@@ -9,10 +9,11 @@ interface MujerComponentImp {
 const MujerComponent: React.FC<MujerComponentImp> = ({ contador }) => {
   return (
     <ContenedorImagen>
-      <Imagen src="/logos/Mujer_001.png" alt="Mujer" />
+      <Imagen src="/logos/Mujer_001.png" alt="Mujer" style={{maxWidth: '6rem'}} />
       <CajaReductor>MUJERES<br />{contador === null? '-' : contador}</CajaReductor>
     </ContenedorImagen>
   );
 };
 
 export default MujerComponent;
+

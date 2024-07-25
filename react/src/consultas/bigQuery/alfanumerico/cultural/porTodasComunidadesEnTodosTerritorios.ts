@@ -1,19 +1,15 @@
 // src/consultas/bigQuery/alfanumerico/cultural/porTodasComunidadesEnTodosTerritorios.ts
 
 const funciones = {
-    pueblosPorTerritorio: `
+    pueblos: `
         SELECT
-            cpt.id_ti AS territorioId,
+            cp.ID_CNIDA AS comunidadId,
             cp.PUEBLO AS pueblo,
             SUM(cp.CONTEO) AS conteo
         FROM
             \`sigeti.censo_632.Conteo_Pueblos\` cp
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            cpt.id_cnida = cp.ID_CNIDA
         GROUP BY
-            cp.PUEBLO, cpt.id_ti;`,
+            cp.PUEBLO, cp.ID_CNIDA;`,
     lenguas: `
         SELECT
             dl.ID_CNIDA as comunidadId,

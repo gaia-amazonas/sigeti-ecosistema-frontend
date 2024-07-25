@@ -78,13 +78,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
     });
   };
 
-  const totalPopulations = tipo === 'pueblos'
-    ? territoriosGeoJson?.features.map(territorio => {
-        const id = territorio.properties?.id;
-        const total = datos.filter(d => d.territorioId === id).reduce((sum) => sum + 1, 0);
-        return total;
-      })
-    : comunidadesGeoJson?.features.map(comunidad => {
+  const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
         const id = comunidad.properties?.id;
         const total = datos.filter(d => d[agregador] === id).reduce((sum) => sum + 1, 0);
         return total;
@@ -103,16 +97,16 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       {territoriosGeoJson && (
         <GeoJSON data={territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
       )}
-      {(tipo === 'pueblos' ? territoriosGeoJson : comunidadesGeoJson) && (
+      { comunidadesGeoJson  && (
         <>
-          {(tipo === 'pueblos' ? territoriosGeoJson.features : comunidadesGeoJson.features).map((feature, index) => {
+          { comunidadesGeoJson.features.map((feature, index) => {
             const centroide = turf.centroid(feature).geometry.coordinates;
             const id = feature.properties?.id;
-            const datosFeature = datos.filter(d => d[tipo === 'pueblos' ? 'territorioId' : agregador] === id);
-            const total = datosFeature.reduce((sum, item) => sum + 1, 0);
+            const datosFeature = datos.filter(d => d[agregador] === id);
+            const total = datosFeature.reduce((sum) => sum + 1, 0);
             const color = getColor(total, minPopulation, maxPopulation);
             const coordinates = getCoordinates(feature.geometry);
-            const markerPosition = tipo === 'pueblos' ? [centroide[1], centroide[0]] : [coordinates[0][1], coordinates[0][0]];
+            const markerPosition = [coordinates[0][1], coordinates[0][0]];
             if (coordinates.length === 0) return null;
             return (
               <React.Fragment key={index}>
@@ -146,7 +140,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
               datos={popupInfo.datosComunidad}
               labelKey={variable}
               valueKey='conteo'
-              groupKey={tipo === 'pueblos' ? 'territorioId' : agregador}
+              groupKey={ agregador }
               mostrarMenosRepresentativo={mostrarMenosRepresentativo}
             />
           </div>

@@ -4,21 +4,17 @@ import haceClausulasWhere from "../clausulas";
 type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
 
 const funciones: Record<string, Query> = {
-    pueblosPorTerritorio: ({territoriosId}) => `
+    pueblos: ({comunidadesId}) => `
         SELECT
-            cpt.id_ti AS territorioId,
+            cp.ID_CNIDA AS comunidadId,
             cp.PUEBLO AS pueblo,
             SUM(cp.CONTEO) AS conteo
         FROM
             \`sigeti.censo_632.Conteo_Pueblos\` cp
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            cpt.id_cnida = cp.ID_CNIDA
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
+            ${haceClausulasWhere({comunidadesId}, 'cp.ID_CNIDA')}
         GROUP BY
-            cp.PUEBLO, cpt.id_ti;`,
+            cp.PUEBLO, cp.ID_CNIDA;`,
     lenguas: ({comunidadesId}) => `
         SELECT
             ID_CNIDA as comunidadId,

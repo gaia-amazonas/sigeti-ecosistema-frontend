@@ -1,4 +1,23 @@
 /* src/components/MapComponent.module.css */
+
+.wrapper {
+  transition: transform 0.5s ease-out, opacity 1s ease-out;
+  will-change: transform, opacity;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .text-icon-container {
   display: flex;
   align-items: center;

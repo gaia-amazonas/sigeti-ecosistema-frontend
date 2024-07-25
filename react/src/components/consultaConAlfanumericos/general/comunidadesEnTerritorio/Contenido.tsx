@@ -89,32 +89,14 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
     );
   }
 
-  const comunidades = extraerComunidades(datosExtraidos.comunidadesGeoJson);
-  const territorios = extraerTerritorio(datosExtraidos.territorioGeoJson);
-
   return (
-    <div style={{ width: '100%', overflow: 'auto' }}>
-      <FiltrosAvanzadosPopup
-        esVisible={popupVisible}
-        edadMinima={edadMinima}
-        edadMaxima={edadMaxima}
-        establecerEdadMinima={establecerEdadMinima}
-        establecerEdadMaxima={establecerEdadMaxima}
-        onClose={cambiaVisibilidadFiltroAvanzadoPopup}
-      />
-      <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
-      <QueEstoyViendo
-        comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
-      />
+    <>
       <WrapperAnimadoParaHistorias>
         <ContenedorGrafico>
           <Hombre contador={hombreContador} />
           <TotalYFamilias
             contadorTotal={totalContador}
             contadorFamilias={datosExtraidos.familias}
-            comunidades={comunidades}
-            territorios={territorios}
           />
           <Mujer contador={mujerContador} />
         </ContenedorGrafico>
@@ -131,7 +113,28 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
           modo={modo}
         />
       </WrapperAnimadoParaHistorias>
-    </div>
+      <WrapperAnimadoParaHistorias>
+        <CajaTitulo>Familias y Población</CajaTitulo>
+        <FamiliasYPoblacionYElectricidad
+          familiasPorComunidad={datosExtraidos.familiasPorComunidad}
+          poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+          familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
+        />
+      </WrapperAnimadoParaHistorias>
+      <FiltrosAvanzadosPopup
+        esVisible={popupVisible}
+        edadMinima={edadMinima}
+        edadMaxima={edadMaxima}
+        establecerEdadMinima={establecerEdadMinima}
+        establecerEdadMaxima={establecerEdadMaxima}
+        onClose={cambiaVisibilidadFiltroAvanzadoPopup}
+      />
+      <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
+      <QueEstoyViendo
+        comunidades={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+        territorios={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
+      />
+    </>
   );
 };
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import logger from 'utilidades/logger';
-import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -92,16 +92,13 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
-      {seleccionados.length > 0 && (
-        <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>
-      )}
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton
           key={opcion.idTi}
           onClick={() => manejarSeleccion(opcion.idTi)}
           $seleccionado={seleccionados.includes(opcion.idTi)}
         >
-          {opcion.territorio}
+          { opcion.territorio }
         </OpcionComoBoton>
       ))}
     </Contenedor>

@@ -5,11 +5,15 @@ import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 
 const EstiloGlobal = createGlobalStyle`
-  body, html, #root {
+  body, html, #__next {
     width: 100vw;
     height: 100vh;
     margin: 0;
     font-family: 'Roboto', sans-serif;
+    background-image: url('/texturas/textura.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
 
   button.reset-button {

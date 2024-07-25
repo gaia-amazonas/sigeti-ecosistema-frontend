@@ -1,7 +1,6 @@
 // src/components/seleccion_inicial/filtros/Comunidad.tsx
 import React, { useState, useEffect } from 'react';
-import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
-
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -37,7 +36,6 @@ const consultas = {
   `
 };
 
-
 const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatosParaConsultar, siguientePaso, modo }) => {
   const [opciones, establecerOpciones] = useState<Opcion[]>([]);
   const [opcionesFiltradas, establecerOpcionesFiltradas] = useState<Opcion[]>([]);
@@ -60,7 +58,6 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
       establecerOpcionesFiltradas(opcionesConTodas);
     }
     buscarDatos(datosParaConsultar.territoriosId);
-
   }, [datosParaConsultar.territoriosId, modo]);
 
   useEffect(() => {
@@ -98,9 +95,6 @@ const Comunidad: React.FC<ComunidadImp> = ({ datosParaConsultar, establecerDatos
         value={filtro}
         onChange={manejarCambioDeFiltro}
       />
-      {seleccionados.length > 0 && (
-        <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>
-      )}
       {opcionesFiltradas.map((opcion) => (
         <OpcionComoBoton
           key={opcion.id_cnida}
