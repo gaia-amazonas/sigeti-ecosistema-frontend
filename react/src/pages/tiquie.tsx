@@ -1,6 +1,7 @@
 // src/pages/tiquie.tsx
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
 import EstiloGlobal from './estilos/global';
 import { FaHome, FaSearch } from 'react-icons/fa';
@@ -14,6 +15,7 @@ const Tiquie: React.FC = () => {
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+
   useEffect(() => {
     const updateOnlineStatus = () => {
       const onlineStatus = navigator.onLine;
@@ -32,12 +34,18 @@ const Tiquie: React.FC = () => {
       };
     }
   }, []);
-  
+
   return (
     <>
       <EstiloGlobal />
       <Header>
-        <img className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+        <Image
+          className="sigeti_logo"
+          src="/logos/sigeti_logo_negro.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+        />
         <Link href="/" passHref>
           <HomeButton>
             <FaHome size={30} />
@@ -64,23 +72,27 @@ const Tiquie: React.FC = () => {
         <Sintesis>
           <h1>¿Qué es el SIGETI?</h1>
           <p>
-            Esta herramienta facilita la toma de decisiones, el posicionamiento, 
-            la comunicación, y la gestión y coordinación tanto interna 
-            como externa en las Entidades Territoriales Indígenas (ETI), utilizando 
-            información territorial. Su desarrollo e implementación proporcionará a 
+            Esta herramienta facilita la toma de decisiones, el posicionamiento,
+            la comunicación, y la gestión y coordinación tanto interna
+            como externa en las Entidades Territoriales Indígenas (ETI), utilizando
+            información territorial. Su desarrollo e implementación proporcionará a
             las ETI y sus gobiernos acceso a información clara, pertinente, suficiente y oportuna.
           </p>
         </Sintesis>
       </ContainerSintesis>
       <Instruccion>
-        Para iniciar tu consulta haz click o toca sobre el icono de la lupa flotante 🔍 
+        Para iniciar tu consulta haz click o toca sobre el icono de la lupa flotante 🔍
         y elige la categoría que te interesa.&nbsp;<b>¡Bienvenido!</b>
       </Instruccion>
       <LogoTerritorio>
         <h1>Tiquie</h1>
-        <div>
-          <img src="logos/comunidadesIndigenas/AATIZOT.png" alt="Logo Tiquie" />
-        </div>
+        <Image
+          src="/logos/comunidadesIndigenas/AATIZOT.png"
+          alt="Logo Yaigojé Apaporis"
+          width={200}
+          height={305}
+          style={{ width: 'auto' }}
+        />
       </LogoTerritorio>
       <Indicadores>
         <h1>Indicadores</h1>
@@ -98,7 +110,7 @@ const Tiquie: React.FC = () => {
       </Indicadores>
       <Footer>
         <div className="creditos">
-          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><img src="logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" /></a> 2024</p>
+          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><Image src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={100} height={50} /></a> 2024</p>
         </div>
       </Footer>
     </>
@@ -109,12 +121,12 @@ const Header = styled.header`
   width: 100%;
   display: flex;
   justify-content: center;
-  background-color: #ecec9d; 
+  background-color: #ecec9d;
   place-items: center;
   box-shadow: 2px 2px 5px #000000;
   border: 1px solid #ccc;
   padding-top: 10px;
-  padding-bottom: 10px; 
+  padding-bottom: 10px;
 
   .sigeti_logo {
     width: 200px;
@@ -195,10 +207,11 @@ const LogoTerritorio = styled.div`
   border-radius: 15px;
   background-color: #ffffff;
   width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
 
   h1 {
-    display: flex;
-    justify-content: center;
     color: #a1a13b;
     text-align: center;
   }
@@ -206,8 +219,6 @@ const LogoTerritorio = styled.div`
   div > img {
     width: 50%;
     margin-left: 120px;
-    display: inline-block;
-    align-content: center;
   }
 `;
 

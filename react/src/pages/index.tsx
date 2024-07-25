@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaSearch } from 'react-icons/fa';
 import styled, { keyframes } from 'styled-components';
 import EstiloGlobal from './estilos/global';
@@ -17,11 +18,11 @@ const Home: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const photos = [
-    'img/fotos_carrete/fc_1.jpg',
-    'img/fotos_carrete/fc_2.jpg',
-    'img/fotos_carrete/fc_3.jpg',
-    'img/fotos_carrete/fc_4.jpg',
-    'img/fotos_carrete/fc_5.jpg'
+    '/img/fotos_carrete/fc_1.jpg',
+    '/img/fotos_carrete/fc_2.jpg',
+    '/img/fotos_carrete/fc_3.jpg',
+    '/img/fotos_carrete/fc_4.jpg',
+    '/img/fotos_carrete/fc_5.jpg'
   ];
 
   useEffect(() => {
@@ -62,7 +63,14 @@ const Home: React.FC = () => {
       <EstiloGlobal />
       <HeaderContainer>
         <Spacer />
-        <img style={{marginRight: '3rem'}} className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+        <Image
+          style={{ marginRight: '3rem' }}
+          className="sigeti_logo"
+          src="/logos/sigeti_logo_negro.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+        />
         <UserSection>
           {user ? (
             <>
@@ -71,7 +79,13 @@ const Home: React.FC = () => {
             </>
           ) : (
             <LoginContainer>
-              <img className="login_logo" src="logos/login.png" alt="Login Logo" />
+              <Image
+                className="login_logo"
+                src="/logos/login.png"
+                alt="Login Logo"
+                width={32}
+                height={32}
+              />
               <nav>
                 <StyledLink href="/login">Entrar</StyledLink>
               </nav>
@@ -102,35 +116,41 @@ const Home: React.FC = () => {
             Selecciona el consejo de tu interés para iniciar la consulta:
           </div>
           <LogosTerritorios>
-            <a href="tiquie">
+            <Link href="tiquie" passHref>
               <ContenedorLogo>
-                <img src="logos/comunidadesIndigenas/AATIZOT.png" />
+                <Image src="/logos/comunidadesIndigenas/AATIZOT.png" alt="Logotipo de Tiquie" width={48} height={48} />
                 <p>Tiquie</p>
               </ContenedorLogo>
-            </a>
-            <a href="piraParana">
+            </Link>
+            <Link href="piraParana" passHref>
               <ContenedorLogo>
-                <img src="logos/comunidadesIndigenas/ACAIPI.png" />
+                <Image src="/logos/comunidadesIndigenas/ACAIPI.png" alt="Logotipo de Pirá Paraná" width={48} height={48} />
                 <p>Pirá Paraná</p>
               </ContenedorLogo>
-            </a>
-            <a href="miritiParana">
+            </Link>
+            <Link href="miritiParana" passHref>
               <ContenedorLogo>
-                <img src="logos/comunidadesIndigenas/CITMA.png" />
+                <Image src="/logos/comunidadesIndigenas/CITMA.png" alt="Logotipo de Mirití Paraná Amazonas" width={48} height={48} />
                 <p>Mirití Paraná Amazonas</p>
               </ContenedorLogo>
-            </a>
-            <a href="yaigojeApaporis">
+            </Link>
+            <Link href="yaigojeApaporis" passHref>
               <ContenedorLogo>
-                <img src="logos/comunidadesIndigenas/CITYA.png" />
+                <Image src="/logos/comunidadesIndigenas/CITYA.png" alt="Logotipo de Yaigojé Apaporis" width={48} height={48} />
                 <p>Yaigojé Apaporis</p>
               </ContenedorLogo>
-            </a>
+            </Link>
           </LogosTerritorios>
           <h2>Galería fotográfica</h2>
           <CarreteFotografias>
             <Carousel>
-              <img id="currentImage" src={photos[currentIndex]} alt={`Foto ${currentIndex + 1}`} />
+              <Image
+                id="currentImage"
+                src={photos[currentIndex]}
+                alt={`Foto ${currentIndex + 1}`}
+                width={600}
+                height={400}
+              />
               <button className="prev" onClick={() => changePhoto(-1)}>&#10094;</button>
               <button className="next" onClick={() => changePhoto(1)}>&#10095;</button>
             </Carousel>
@@ -139,7 +159,7 @@ const Home: React.FC = () => {
       </MainContainer>
       <Footer>
         <div className="creditos">
-          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><img src="logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" /></a> 2024</p>
+          <p>Desarrollado por <Link href="https://gaiaamazonas.org/" passHref><Image src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={100} height={50} /></Link> 2024</p>
         </div>
       </Footer>
       <IconoHerramienta onClick={togglePopup}>
@@ -209,7 +229,7 @@ const Spacer = styled.div`
 `;
 
 const ContainerSintesis = styled.div`
-  background-image: url('img/fondo_1.jpg');
+  background-image: url('/img/fondo_1.jpg');
   background-size: cover;
   color: #ffffff;
   text-align: center;

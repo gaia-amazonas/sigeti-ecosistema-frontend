@@ -60,14 +60,14 @@ const Seleccion: React.FC<SeleccionImp> = ({ alFinalizar, reiniciar, pasoDinamic
           <>
             <Titulo>Territorio</Titulo>
             {haySeleccionadosTerritorio && <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>}
-            <Territorio datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} haySeleccionados={haySeleccionadosTerritorio} />
+            <Territorio datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} />
           </>
         )}
         {paso === 2 && (
           <>
             <Titulo>Comunidad</Titulo>
             {haySeleccionadosComunidad && <BotonSiguiente onClick={siguientePaso}>Siguiente</BotonSiguiente>}
-            <Comunidad datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} haySeleccionados={haySeleccionadosComunidad} />
+            <Comunidad datosParaConsultar={datosParaConsultar} establecerDatosParaConsultar={establecerDatosParaConsultar} siguientePaso={siguientePaso} modo={modo} />
           </>
         )}
       </ContenedorPaso>

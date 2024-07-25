@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import logger from 'utilidades/logger';
-import { Contenedor, OpcionComoBoton, FiltraEntrada, BotonSiguiente } from 'components/seleccionAlfanumerica/estilos/Filtros';
+import { Contenedor, OpcionComoBoton, FiltraEntrada } from 'components/seleccionAlfanumerica/estilos/Filtros';
 
 interface DatosParaConsultar {
   territoriosId: string[];

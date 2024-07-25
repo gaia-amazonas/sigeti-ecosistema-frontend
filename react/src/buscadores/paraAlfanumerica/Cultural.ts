@@ -47,7 +47,6 @@ export const buscarPorTodasComunidadesEnTerritorios = async (datosParaConsultar:
     buscarTerritorios(consultasGeneralesPorTodasComunidadesEnTerritorios.territorios(datosParaConsultar), modo),
   ]);
   if (lenguas.rows.length === 0) lenguas.rows = [{lengua: 'Sin datos', conteo: 1}]
-  console.log(pueblos);
   return {
     pueblos: pueblos,
     lenguas: lenguas,

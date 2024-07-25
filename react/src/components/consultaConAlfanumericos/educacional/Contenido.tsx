@@ -49,18 +49,18 @@ const ComponenteCulturalComunidadesEnTerritorios: React.FC<ComponenteCulturalCom
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Selecciona Tipo de Escolaridad</CajaTitulo>
                 <div className={estilos.toggleContainer}>
-                    <div 
+                    <button
                         className={`${estilos.toggleBox} ${selectedGraph === 'escolaridadJoven' ? estilos.selected : ''}`} 
                         onClick={() => handleSelect('escolaridadJoven')}
                     >
                         Escolaridad Joven
-                    </div>
-                    <div 
-                        className={`${estilos.toggleBox} ${selectedGraph === 'escolaridad' ? estilos.selected : ''}`} 
+                    </button>
+                    <button
+                        className={`${estilos.toggleBox} ${selectedGraph === 'escolaridad' ? estilos.selected : ''}`}
                         onClick={() => handleSelect('escolaridad')}
                     >
                         Escolaridad General
-                    </div>
+                    </button>
                 </div>
             </WrapperAnimadoParaHistorias>
             {selectedGraph === 'escolaridadJoven' && (

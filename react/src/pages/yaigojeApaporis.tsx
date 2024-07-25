@@ -1,6 +1,7 @@
 // src/pages/yaigojeApaporis.tsx
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import styled, { keyframes } from 'styled-components';
 import EstiloGlobal from './estilos/global';
 import { FaHome, FaSearch } from 'react-icons/fa';
@@ -38,7 +39,13 @@ const YaigojeApaporis: React.FC = () => {
     <>
       <EstiloGlobal />
       <Header>
-        <img className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+        <Image
+          className="sigeti_logo"
+          src="/logos/sigeti_logo_negro.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+        />
         <Link href="/" passHref>
           <HomeButton>
             <FaHome size={30} />
@@ -79,9 +86,13 @@ const YaigojeApaporis: React.FC = () => {
       </Instruccion>
       <LogoTerritorio>
         <h1>Yaigojé Apaporis</h1>
-        <div>
-          <img src="logos/comunidadesIndigenas/CITYA.png" alt="Logo Yaigojé Apaporis" />
-        </div>
+        <Image
+          src="/logos/comunidadesIndigenas/CITYA.png"
+          alt="Logo Tiquie"
+          width={200}
+          height={305}
+          style={{ width: 'auto' }}
+        />
       </LogoTerritorio>
       <Indicadores>
         <h1>Indicadores</h1>
@@ -98,8 +109,14 @@ const YaigojeApaporis: React.FC = () => {
         </div>
       </Indicadores>
       <Footer>
-        <div className="creditos">
-          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><img src="logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" /></a> 2024</p>
+        <div className="creditos" style={{ display: 'flex', alignItems: 'center' }}>
+          <p style={{ display: 'flex', alignItems: 'center', margin: 0 }}>
+            Desarrollado por 
+            <a href="https://gaiaamazonas.org/" style={{ display: 'flex', alignItems: 'center', marginLeft: '5px', marginRight: '5px' }}>
+              <Image className="background" src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={250} height={50} style={{ width: 'auto', height: '2rem' }} />
+            </a>
+            2024
+          </p>
         </div>
       </Footer>
     </>
@@ -189,27 +206,26 @@ const IconoHerramienta = styled.div`
 const LogoTerritorio = styled.div`
   float: right;
   vertical-align: top;
-  border: #98c182 solid 2px;
+  border: #a1a13b solid 2px;
   padding: 5px;
   margin-top: 20px;
   margin-right: 30px;
-  box-shadow: 5px 5px 9px #e5e1d8;
+  box-shadow: 5px 5px 9px #a7a5a0;
   border-radius: 15px;
   background-color: #ffffff;
   width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
 
   h1 {
-    display: flex;
-    justify-content: center;
-    color: #98c182;
+    color: #a1a13b;
     text-align: center;
   }
 
   div > img {
     width: 50%;
     margin-left: 120px;
-    display: inline-block;
-    align-content: center;
   }
 `;
 

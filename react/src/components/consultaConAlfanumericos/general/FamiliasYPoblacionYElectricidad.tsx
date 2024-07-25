@@ -92,9 +92,7 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
           </option>
         )) }
         </select>
-        ) : (
-          <a> </a>
-        )
+        ) : (<p></p>)
       }
 
       <div style={{ width: '80%', height: '80%', marginTop: '2rem' }}>
