@@ -3,7 +3,11 @@
 sigeti-dee63dd3ec66.json
 users.json
 cambiar_usuario_git.sh
-react/OsmAnd
+react/OsmAnd/
+react/public/logos/
+react/public/iconos/
+react/public/img/
+react/public/texturas/
 
 # dependencies
 react/node_modules/
