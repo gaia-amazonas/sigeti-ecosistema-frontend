@@ -15,6 +15,15 @@ const Home: React.FC = () => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const { user, setUser } = useUser();
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const photos = [
+    'img/fotos_carrete/fc_1.jpg',
+    'img/fotos_carrete/fc_2.jpg',
+    'img/fotos_carrete/fc_3.jpg',
+    'img/fotos_carrete/fc_4.jpg',
+    'img/fotos_carrete/fc_5.jpg'
+  ];
 
   useEffect(() => {
     const updateOnlineStatus = () => {
@@ -39,114 +48,244 @@ const Home: React.FC = () => {
     setShowPopup(!showPopup);
   };
 
+  const changePhoto = (direction: number) => {
+    let newIndex = currentIndex + direction;
+    if (newIndex < 0) {
+      newIndex = photos.length - 1;
+    } else if (newIndex >= photos.length) {
+      newIndex = 0;
+    }
+    setCurrentIndex(newIndex);
+  };
+
   return (
     <>
       <EstiloGlobal />
-      <Container>
-        <Header>SIGETI</Header>
-          {!isOnline ? <p>Offline</p> : <p></p>}
-        <IconoHerramienta onClick={togglePopup}>
-          <FaSearch size={50} />
-        </IconoHerramienta>
-        {showPopup && (
-          <BotonesContenedor>
-            <AnimatedLink href={{ pathname: '/consulta/alfanumerica/inicio', query: { modo } }}>
-              <Boton as="span">Temáticas</Boton>
-            </AnimatedLink>
-            <AnimatedLink href={{ pathname: '/consulta/espacial/inicio', query: { modo } }}>
-              <Boton as="span">Gestión Documental Territorial</Boton>
-            </AnimatedLink>
-            <AnimatedLink href={{ pathname: '/consulta/meteorologica/inicio', query: { modo } }}>
-              <Boton as="span">Meteorología</Boton>
-            </AnimatedLink>
-          </BotonesContenedor>
-        )}
-        {user ? (
-          <>
-            <p>Bienvenido, {user.username}!</p>
-            <p>Su rol es: {user.role}</p>
-            <LogoutButton />
-          </>
-        ) : (
-          <nav>
-            <Link href="/login">Login</Link>
-          </nav>
-        )}
-      </Container>
+      <HeaderContainer>
+        <img className="sigeti_logo" src="logos/sigeti_logo_negro.png" alt="Logotipo del sistema SIGETI" />
+      </HeaderContainer>
+      <ContainerSintesis>
+        <h1>Por la gobernanza de los territorios indígenas</h1>
+      </ContainerSintesis>
+      <MainContainer>
+        <Article>
+          <h2>¿Cómo se originó este proceso?</h2>
+          <p>
+            En los departamentos de Amazonas, Guainía y Vaupés avanza un proceso histórico y fundamental para la construcción del Estado, la conservación de la Amazonía y la protección de la vida en el Planeta: se están formalizando en calidad de Entidades Territoriales los Territorios de más de 30 pueblos indígenas originarios. 
+            Allí los pueblos indígenas han ejercido, desde sus sistemas de conocimiento, el gobierno en todas sus dimensiones: lo político, lo social, lo económico, lo normativo; sin embargo, la imposición de los estados nacionales construidos en la lógica colonial ha implicado fracturas en dichos sistemas de gobierno y territorialidad; 
+            las cuales pueden ser superadas al cumplir el pacto constitucional de 1991, en el sentido de construir el Estado a partir de la realidad diversa y plural.
+          </p>
+          <p>
+            El reconocimiento de la diversidad y la importancia de garantizar la vida llevó a que la Constitución Política de 1991 incluyera a los Territorios Indígenas como entidades territoriales del Estado colombiano. Sin embargo, en más de 30 años, el Estado no ha formalizado estas entidades, afectando los derechos de los pueblos indígenas. 
+            La falta de acción del Congreso y de coordinación institucional ha resultado en una protección insuficiente para los pueblos indígenas amazónicos. En 2018, tras la presión indígena, se expidió el Decreto Ley 632 para formalizar estas entidades en los departamentos de Guainía, Vaupés y Amazonas, representando un avance en la lucha por sus derechos.
+          </p>
+        </Article>
+        <Aside>
+          <h2>Consejos indígenas</h2>
+          <div>
+            Selecciona el consejo de tu interés para iniciar la consulta:
+          </div>
+          <LogosTerritorios>
+            <a href="tiquie.html">
+              <ContenedorLogo>
+                <img src="logos/comunidadesIndigenas/AATIZOT.png" />
+                <p>Tiquie</p>
+              </ContenedorLogo>
+            </a>
+            <a href="pira_parana.html">
+              <ContenedorLogo>
+                <img src="logos/comunidadesIndigenas/ACAIPI.png" />
+                <p>Pirá Paraná</p>
+              </ContenedorLogo>
+            </a>
+            <a href="miriti_parana_amazonas.html">
+              <ContenedorLogo>
+                <img src="logos/comunidadesIndigenas/CITMA.png" />
+                <p>Mirití Paraná Amazonas</p>
+              </ContenedorLogo>
+            </a>
+            <a href="yaigoje_apaporis.html">
+              <ContenedorLogo>
+                <img src="logos/comunidadesIndigenas/CITYA.png" />
+                <p>Yaigojé Apaporis</p>
+              </ContenedorLogo>
+            </a>
+          </LogosTerritorios>
+          <h2>Galería fotográfica</h2>
+          <CarreteFotografias>
+            <Carousel>
+              <img id="currentImage" src={photos[currentIndex]} alt={`Foto ${currentIndex + 1}`} />
+              <button className="prev" onClick={() => changePhoto(-1)}>&#10094;</button>
+              <button className="next" onClick={() => changePhoto(1)}>&#10095;</button>
+            </Carousel>
+          </CarreteFotografias>
+        </Aside>
+      </MainContainer>
+      <Footer>
+        <div className="creditos">
+          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><img src="logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" /></a> 2024</p>
+        </div>
+      </Footer>
     </>
   );
 };
 
-const Container = styled.div`
+const HeaderContainer = styled.header`
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  background-color: #006a7c;
   align-items: center;
-  height: 100vh;
-  justify-content: flex-start;
-  padding-top: 10px;
-`;
+  box-shadow: 2px 2px 5px #000000;
+  border: 1px solid #ccc;
+  padding: 10px 0;
 
-const pulsate = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
+  .sigeti_logo {
+    width: 200px;
+    filter: invert(100%);
   }
 `;
 
-const IconoHerramienta = styled.div`
-  position: fixed;
-  bottom: 10rem;
-  right: 1rem;
-  cursor: pointer;
-  animation: ${pulsate} 1.5s infinite;
+const ContainerSintesis = styled.div`
+  background-image: url('img/fondo_1.jpg');
+  background-size: cover;
+  color: #ffffff;
+  text-align: center;
+  padding: 5%;
+`;
 
-  svg {
-    color: #4682b4;
-    transition: color 0.3s;
-  }
+const MainContainer = styled.main`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+`;
 
-  &:hover svg {
-    color: #0056b3;
+const Article = styled.article`
+  width: 40%;
+  margin: 15px 0;
+  background-color: #ffffff;
+  text-align: left;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 9px #e5e1d8;
+
+  h2 {
+    text-align: center;
+    color: #006a7c;
   }
 `;
 
-const radialAppear = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(0.5) translate(0, 0);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translate(var(--translate-x), var(--translate-y));
+const Aside = styled.aside`
+  width: 50%;
+  height: 600px;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 5px 5px 9px #e5e1d8;
+
+  h2 {
+    text-align: center;
+    color: #006a7c;
   }
 `;
 
-const AnimatedLink = styled(Link)`
-  position: fixed;
-  right: 1rem;
-  bottom: 10rem;
-  --translate-x: 0;
-  --translate-y: 0;
-  animation: ${radialAppear} 0.5s ease-out forwards;
+const LogosTerritorios = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 8px;
 
-  &:nth-child(1) {
-    right: 1rem;
-    bottom: 14rem;
+  a, div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #006a7c;
+  }
+`;
+
+const ContenedorLogo = styled.div`
+  background-color: #0293ac4a;
+  height: 80px;
+  width: 9rem;
+  border: #006a7c 1px solid;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #006a7c;
+    color: #ffffff;
+    box-shadow: 10px 10px 15px #b5b2ad;
   }
 
-  &:nth-child(2) {
-    right: 3rem;
-    bottom: 9rem;
+  img {
+    width: 3rem;
+    margin-left: 1rem;
   }
-  
-  &:nth-child(3) {
-    right: 1rem;
-    bottom: 5rem;
+
+  p {
+    text-align: left;
+    margin: 0;
+    font-weight: 500;
+  }
+`;
+
+const CarreteFotografias = styled.div`
+  margin: 0 100px;
+`;
+
+const Carousel = styled.div`
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+  }
+
+  .prev {
+    left: 0;
+  }
+
+  .next {
+    right: 0;
+  }
+
+  button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+`;
+
+const Footer = styled.footer`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #006a7c;
+  box-shadow: 2px 2px 5px #000000;
+  width: 100%;
+  padding: 10px 0;
+
+  .creditos {
+    align-items: center;
+    color: #ffffff;
   }
 `;
 
