@@ -1,27 +1,31 @@
 // src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorio.ts
 import haceClausulasWhere from "../clausulas";
 
-type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: string[]}) => string;
+interface DatosParaConsultar {
+    territoriosId: string[];
+    comunidadesId: string[];
+}
+type Query = (datosParaConsultar: DatosParaConsultar) => string;
 
 const funciones: Record<string, Query> = {
     sexo: ({territoriosId}) => `
         SELECT
-            SEXO AS sexo,
-            COUNT(*) AS cantidad
+            sexo,
+            SUM(cantidad) AS cantidad
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.sexos_por_comunidad_y_territorio\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            id_cnida, sexo;`
+            sexo;`
     ,
     poblacionPorComunidad: ({territoriosId}) => `
         SELECT
-            id_cnida AS comunidadId,
-            comunidad AS comunidadNombre,
-            COUNT(*) AS poblacionTotal
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre,
+            SUM(personas) AS poblacionTotal
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.poblacion_por_comunidad_y_territorio\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
@@ -29,43 +33,34 @@ const funciones: Record<string, Query> = {
     ,
     familias: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias
+            SUM(familias) AS familias
         FROM
-            \`sigeti.censo_632.BD_familias\`
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     familiasPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            c.id_cnida as comunidadId,
-            c.comunidad AS comunidadNombre
+            SUM(familias) AS familias,
+            ID_CNIDA as comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'c.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            c.comunidad, c.id_cnida;`
+            COMUNIDAD, ID_CNIDA;`
     ,
     familiasConElectricidadPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            f.id_cnida AS comunidadId
+            SUM(familias) AS familias,
+            ID_CNIDA AS comunidadId
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias_con_electricidad_por_comunidad_y_t\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'f.id_ti')} AND 
-            LOWER(f.vv_elect) IN ('sí', 'si')
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            f.id_cnida;`
+            ID_CNIDA;`
     ,
     sexoEdad: ({territoriosId}) => `
         SELECT 

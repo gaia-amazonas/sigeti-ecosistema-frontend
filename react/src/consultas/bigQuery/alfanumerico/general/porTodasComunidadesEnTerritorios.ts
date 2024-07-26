@@ -1,33 +1,31 @@
 // src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios.ts
-
 import haceClausulasWhere from "../clausulas";
 
 interface DatosParaConsultar {
   territoriosId: string[];
   comunidadesId: string[];
 }
-
 type Query = (datosParaConsultar: DatosParaConsultar) => string;
 
 const funciones: Record<string, Query> = {
     sexo: ({territoriosId}) => `
         SELECT
-            SEXO AS sexo,
-            COUNT(*) AS cantidad
+            sexo,
+            SUM(cantidad) AS cantidad
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.sexos_por_comunidad_y_territorio\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            id_cnida, sexo;`
+            sexo;`
     ,
     poblacionPorComunidad: ({territoriosId}) => `
         SELECT
-            id_cnida AS comunidadId,
-            comunidad AS comunidadNombre,
-            COUNT(*) AS poblacionTotal
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre,
+            SUM(personas) AS poblacionTotal
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.poblacion_por_comunidad_y_territorio\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
@@ -35,43 +33,34 @@ const funciones: Record<string, Query> = {
     ,
     familias: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias
+            SUM(familias) AS familias
         FROM
-            \`sigeti.censo_632.BD_familias\`
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     familiasPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            c.id_cnida as comunidadId,
-            c.comunidad AS comunidadNombre
+            SUM(familias) AS familias,
+            ID_CNIDA as comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'c.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            c.comunidad, c.id_cnida;`
+            COMUNIDAD, ID_CNIDA;`
     ,
     familiasConElectricidadPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            f.id_cnida AS comunidadId
+            SUM(familias) AS familias,
+            ID_CNIDA AS comunidadId
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias_con_electricidad_por_comunidad_y_t\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'f.id_ti')} AND 
-            LOWER(f.vv_elect) IN ('sí', 'si')
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            f.id_cnida;`
+            ID_CNIDA;`
     ,
     sexoEdad: ({territoriosId}) => `
         SELECT 
@@ -139,34 +128,34 @@ const funciones: Record<string, Query> = {
     ,
     territorios: ({territoriosId}) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     comunidadesEnTerritorios: ({territoriosId}) => `
         SELECT
-            ST_AsGeoJSON(g.geometry) AS geometry,
-            g.nomb_cnida AS nombre,
-            g.id_cnida AS id
+            ST_AsGeoJSON(g.geo) AS geometry,
+            g.NOMB_CNIDA AS nombre,
+            g.ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` g
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` a
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cp
         ON
-            a.id_cnida = g.id_cnida
+            g.ID_CNIDA = rcpt.id_cnida
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'g.ID_TI')};`
     ,
     comunidadesAgregadasEnTerritorios: ({territoriosId}) => `
         SELECT
             territorio AS territorioId,
             ARRAY_AGG(comunidad) AS comunidadesId
         FROM
-            \`sigeti.censo_632.comunidades_por_territorio\`
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY

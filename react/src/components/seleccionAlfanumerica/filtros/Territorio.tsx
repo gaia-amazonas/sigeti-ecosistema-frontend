@@ -43,7 +43,10 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
         const respuesta = await fetch(`${puntofinal}?query=${encodeURIComponent(consulta)}`);
         const resultado = await respuesta.json();
         if (resultado.rows) {
-          const opcionesConTodos: Opcion[] = [{ idTi: 'Todos', territorio: 'Todos' }, ...resultado.rows];
+          const filteredOptions = resultado.rows.filter((opcion: Opcion) =>
+            ['MP', 'TQ', 'YA', 'PP'].includes(opcion.idTi)
+          );
+          const opcionesConTodos: Opcion[] = [{ idTi: 'Todos', territorio: 'Todos' }, ...filteredOptions];
           establecerOpciones(opcionesConTodos);
           establecerOpcionesFiltradas(opcionesConTodos);
         } else {
@@ -98,7 +101,7 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
           onClick={() => manejarSeleccion(opcion.idTi)}
           $seleccionado={seleccionados.includes(opcion.idTi)}
         >
-          { opcion.territorio }
+          {opcion.territorio}
         </OpcionComoBoton>
       ))}
     </Contenedor>
@@ -106,4 +109,3 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
 };
 
 export default Territorio;
-

@@ -1,9 +1,7 @@
 // src/components/consultaConAlfanumericos/Pestanhas.tsx
 
 import React, { useState, useEffect } from 'react';
-
 import { useUser } from '../../context/UserContext';
-
 import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
 import CulturalGraficoBurbuja from './cultural/BurbujaWrapper';
@@ -12,13 +10,10 @@ import Salud from './salud/Contenido';
 
 import GeneralComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import GeneralComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorios';
-
 import CulturalComunidadesEnTerritorioDatosConsultados, { ComunidadesGeoJson, TerritoriosGeoJson } from 'tipos/cultural/datosConsultados';
 import CulturalComunidadesEnTerritoriosDatosConsultados from 'tipos/cultural/datosConsultados';
-
 import EducacionalComunidadesEnTerritorioDatosConsultados from 'tipos/educacional/datosConsultados';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
-
 import SaludComunidadesEnTerritoriosDatosConsultados from 'tipos/salud/datosConsultados';
 
 import BotonReiniciar from 'components/BotonReiniciar';
@@ -42,7 +37,6 @@ import {
 import {
   buscarPorComunidadesEnTerritorio as buscarEducacionalPorComunidadesEnTerritorio,
   buscarPorComunidadesEnTerritorios as buscarEducacionalPorComunidadesEnTerritorios,
-  buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorio,
   buscarPorTodasComunidadesEnTerritorio as buscarEducacionalPorTodasComunidadesEnTerritorios,
   buscarPorTodasComunidadesEnTodosTerritorios as buscarEducacionalPorTodasComunidadesEnTodosTerritorios,
   buscarPorComunidadesEnTodosTerritorios as buscarEducacionalPorComunidadesEnTodosTerritorios
@@ -220,7 +214,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
     } else {
       if (buscarGeneral) establecerGeneralTodasComunidadesEnTerritorioDatosConsultados(await buscarGeneralPorTodasComunidadesEnTerritorio(datos, modo));
       if (buscarCultural) establecerCulturalTodasComunidadesEnTerritorioDatosConsultados(await buscarCulturalPorTodasComunidadesEnTerritorios(datos, modo));
-      if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritorioDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorio(datos, modo, territoriosPrivados ? territoriosPrivados : []));
+      if (buscarEducacional) establecerEducacionalTodasComunidadesEnTerritorioDatosConsultados(await buscarEducacionalPorTodasComunidadesEnTerritorios(datos, modo, territoriosPrivados ? territoriosPrivados : []));
       if (buscarSalud) establecerSaludTodasComunidadesEnTerritorioDatosConsultados(await buscarSaludPorTodasComunidadesEnTerritorios(datos, modo, territoriosPrivados));
     }
   };
@@ -364,10 +358,10 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
   };
 
   const renderizaContenidoSalud = () => {
-    const territorio = tipoConsulta === 'enTerritorio'
+    const territorio = tipoConsulta === 'enTerritorio';
     if (territorio) return <Salud datos={datosPorPestanhaEnTerritorio.salud} />;
-    if (!territorio) return <Salud datos={datosPorPestanhaEnTerritorios.salud} />;
-  }
+    return <Salud datos={datosPorPestanhaEnTerritorios.salud} />;
+  };
 
   return (
     <>

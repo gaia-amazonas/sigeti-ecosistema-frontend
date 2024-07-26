@@ -14,7 +14,7 @@ export const ContenedorGrafico = styled.div`
   margin-bottom: 2rem;
   @media (max-width: 48rem) {
     flex-direction: row;
-    flex-wrap: nowrap; /* Ensure no wrap on smaller screens as well */
+    flex-wrap: nowrap;
     height: auto;
   }
 `;

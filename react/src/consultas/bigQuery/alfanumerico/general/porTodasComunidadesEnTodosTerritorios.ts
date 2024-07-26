@@ -3,57 +3,48 @@
 const porTodasComunidadesEnTodosTerritorios = {
     sexo: `
         SELECT
-            SEXO AS sexo,
-            COUNT(*) AS cantidad 
+            sexo,
+            SUM(cantidad) AS cantidad 
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.sexos_por_comunidad_y_territorio\`
         GROUP BY
             sexo;`
     ,
     poblacionPorComunidad: `
         SELECT
-            id_cnida AS comunidadId,
-            comunidad AS comunidadNombre,
-            COUNT(*) AS poblacionTotal
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre,
+            SUM(personas) AS poblacionTotal
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.poblacion_por_comunidad_y_territorio\`
         GROUP BY
-            id_cnida, comunidad;`
+            ID_CNIDA, COMUNIDAD;`
     ,
     familias: `
         SELECT
-            COUNT(*) as familias
+            SUM(familias) as familias
         FROM
-            \`sigeti.censo_632.BD_familias\`;`
+            \`sigeti-admin-364713.050_censo.familias\`;`
     ,
     familiasPorComunidad: `
         SELECT
-            COUNT(*) AS familias,
-            c.comunidad AS comunidadNombre,
-            c.id_cnida AS comunidadId
+            SUM(familias) AS familias,
+            ID_CNIDA as comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias\`
         GROUP BY
-            c.comunidad, c.id_cnida;`
+            COMUNIDAD, ID_CNIDA;`
     ,
     familiasConElectricidadPorComunidad: `
         SELECT
-            COUNT(*) AS familias,
-            f.id_cnida AS comunidadId
+            SUM(familias) AS familias,
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
-        WHERE
-            LOWER(f.vv_elect) IN ('sí', 'si')
+            \`sigeti-admin-364713.050_censo.familias_con_electricidad_por_comunidad_y_t\`
         GROUP BY
-            f.id_cnida;`
+            ID_CNIDA, COMUNIDAD;`
     ,
     sexoEdad: `
         SELECT 
@@ -118,31 +109,31 @@ const porTodasComunidadesEnTodosTerritorios = {
             sexo;`
     ,
     territorios: `
-        SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+        SELECT DISTINCT
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\;`
     ,
     comunidadesEnTerritorios: `
         SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
-            nomb_cnida AS nombre,
-            id_cnida AS id
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
     ,
     comunidadesPorTerritorio: `
         SELECT
-            ARRAY_AGG(c.nomb_cnida) AS comunidadesNombre,
-            ARRAY_AGG(c.id_cnida) AS comunidadesId,
+            ARRAY_AGG(c.NOMBRE_CNIDA) AS comunidadesNombre,
+            ARRAY_AGG(c.ID_CNIDA) AS comunidadesId,
             cp.id_ti as territorioId,
             cp.territorio AS territorioNombre
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` c
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` c
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cp
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cp
         ON
             c.id_cnida = cp.id_cnida
         GROUP BY
@@ -154,7 +145,7 @@ const porTodasComunidadesEnTodosTerritorios = {
             territorio AS territorioId,
             ARRAY_AGG(comunidad) AS comunidadesId
         FROM
-            \`sigeti.censo_632.comunidades_por_territorio\`
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\`
         GROUP BY
             territorio;`
 };
