@@ -144,7 +144,7 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
         JOIN
-            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` cp
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
             g.ID_CNIDA = rcpt.id_cnida
         WHERE

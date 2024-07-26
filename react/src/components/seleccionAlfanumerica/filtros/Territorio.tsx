@@ -46,9 +46,8 @@ const Territorio: React.FC<TerritorioImp> = ({ datosParaConsultar, establecerDat
           const filteredOptions = resultado.rows.filter((opcion: Opcion) =>
             ['MP', 'TQ', 'YA', 'PP'].includes(opcion.idTi)
           );
-          const opcionesConTodos: Opcion[] = [{ idTi: 'Todos', territorio: 'Todos' }, ...filteredOptions];
-          establecerOpciones(opcionesConTodos);
-          establecerOpcionesFiltradas(opcionesConTodos);
+          establecerOpciones(filteredOptions);
+          establecerOpcionesFiltradas(filteredOptions);
         } else {
           logger.error("No fueron halladas filas en la consulta");
         }
