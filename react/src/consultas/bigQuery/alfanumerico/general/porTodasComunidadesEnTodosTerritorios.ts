@@ -114,7 +114,7 @@ const porTodasComunidadesEnTodosTerritorios = {
             ID_TI AS id,
             NOMBRE_TI AS nombre
         FROM
-            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\;`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
     ,
     comunidadesEnTerritorios: `
         SELECT

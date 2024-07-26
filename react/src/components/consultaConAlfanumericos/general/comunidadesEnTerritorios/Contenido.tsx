@@ -1,3 +1,5 @@
+// src/components/consultaConAlfanumericos/general/comunidadesEnTerritorios/Contenido.tsx
+
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { buscarPorTodasComunidadesEnTodosTerritorios, buscarPorTodasComunidadesEnTerritorios, buscarPorComunidadesEnTerritorios } from 'buscadores/paraAlfanumerica/dinamicas/General';
@@ -28,7 +30,7 @@ interface ComponenteGeneralComunidadesEnTerritorioImp {
   modo: string | string[];
 }
 
-export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, datosParaConsulta, modo }) => {
+const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComunidadesEnTerritorioImp> = ({ datosGenerales, datosParaConsulta, modo }) => {
   const [popupVisible, establecerPopupVisible] = useState(false);
   const [edadMinima, establecerEdadMinima] = useState(0);
   const [edadMaxima, establecerEdadMaxima] = useState(120);
@@ -47,29 +49,26 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
     establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosGenerales.sexoEdad));
   }, [datosGenerales]);
 
-  useEffect(() => {
+  const fetchFilteredData = async () => {
     let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
-    const fetchData = async () => {
-      if (datosParaConsulta.territoriosId[0] === 'Todos' && datosParaConsulta.comunidadesId[0] === 'Todas') {
-        const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
-        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      } else if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] !== 'Todos') {
-        const datos = await buscarPorTodasComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
-        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      } else if (datosParaConsulta.comunidadesId[0] !== 'Todas') {
-        const datos = await buscarPorComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
-        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      }
-      establecerDatosExtraidos(prev => ({
-        ...prev,
-        sexo: datosDinamicos.sexo,
-        poblacionPorComunidad: datosDinamicos.poblacionPorComunidad,
-        sexoEdad: datosDinamicos.sexoEdad,
-      }));
-      establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
-    };
-    fetchData();
-  }, [edadMaxima, edadMinima, modo]);
+    if (datosParaConsulta.territoriosId[0] === 'Todos' && datosParaConsulta.comunidadesId[0] === 'Todas') {
+      const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
+      datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+    } else if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] !== 'Todos') {
+      const datos = await buscarPorTodasComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
+      datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+    } else if (datosParaConsulta.comunidadesId[0] !== 'Todas') {
+      const datos = await buscarPorComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
+      datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+    }
+    establecerDatosExtraidos(prev => ({
+      ...prev,
+      sexo: datosDinamicos.sexo,
+      poblacionPorComunidad: datosDinamicos.poblacionPorComunidad,
+      sexoEdad: datosDinamicos.sexoEdad,
+    }));
+    establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+  };
 
   useEffect(() => {
     if (!datosExtraidos.sexo) return;
@@ -118,11 +117,11 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Familias y Población</CajaTitulo>
         <FamiliasYPoblacionYElectricidad
-            familiasPorComunidad={datosExtraidos.familiasPorComunidad}
-            poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
-            familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
-            comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
-          />
+          familiasPorComunidad={datosExtraidos.familiasPorComunidad}
+          poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
+          familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
+          comunidadesPorTerritorio={datosExtraidos.comunidadesEnTerritorios}
+        />
       </WrapperAnimadoParaHistorias>
       <FiltrosAvanzadosPopup
         esVisible={popupVisible}
@@ -131,6 +130,7 @@ export const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGener
         establecerEdadMinima={establecerEdadMinima}
         establecerEdadMaxima={establecerEdadMaxima}
         onClose={cambiaVisibilidadFiltroAvanzadoPopup}
+        onSend={fetchFilteredData}
       />
       <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
     </>

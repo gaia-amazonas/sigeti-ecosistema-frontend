@@ -1,9 +1,7 @@
-// src/components/consultaConAlfanumericos/general/comunidadesEnTerritorio/Contenido.tsx
-
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { buscarPorTodasComunidadesEnTerritorio, buscarPorComunidadesEnTerritorio } from 'buscadores/paraAlfanumerica/dinamicas/General';
-import { Sexo, SexoEdad, SexoEdadFila, ComunidadesGeoJson, TerritorioGeoJson } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
+import { Sexo, SexoEdad, SexoEdadFila } from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritorioDatosConsultados from 'tipos/general/deDatosConsultados/comunidadesEnTerritorio';
 import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
 import Mujer from '../sexo/Mujer';
@@ -50,36 +48,32 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
   }, [datosGenerales]);
 
   useEffect(() => {
-    let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
-    const fetchFilteredData = async () => {
-      if (datosParaConsulta.comunidadesId[0] === 'Todas') {
-        const datos = await buscarPorTodasComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
-        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-        establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
-      } else {
-        const datos = await buscarPorComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
-        datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-        establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
-      }
-      establecerDatosExtraidos(prev => ({
-        ...prev,
-        sexo: datosDinamicos.sexo,
-        poblacionPorComunidad: datosDinamicos.poblacionPorComunidad,
-        sexoEdad: datosDinamicos.sexoEdad,
-      }));
-      establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
-    };
-    fetchFilteredData();
-  }, [edadMinima, edadMaxima, datosParaConsulta]);
-
-
-  useEffect(() => {
     if (!datosExtraidos.sexo) return;
     const sexoPorEdades = calcularSexosPorEdades(datosExtraidos.sexo);
     establecerMujerContador(sexoPorEdades.mujerContador);
     establecerHombreContador(sexoPorEdades.hombreContador);
     establecerTotalContador(sexoPorEdades.totalContador);
   }, [datosPiramidalesSexoEdad]);
+
+  const fetchFilteredData = async () => {
+    let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
+    if (datosParaConsulta.comunidadesId[0] === 'Todas') {
+      const datos = await buscarPorTodasComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
+      datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+    } else {
+      const datos = await buscarPorComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
+      datosDinamicos = extraerDatosEntrantesDinamicos(datos);
+      establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+    }
+    establecerDatosExtraidos(prev => ({
+      ...prev,
+      sexo: datosDinamicos.sexo,
+      poblacionPorComunidad: datosDinamicos.poblacionPorComunidad,
+      sexoEdad: datosDinamicos.sexoEdad,
+    }));
+    establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));
+  };
 
   if (datosGeneralesInvalidos(datosGenerales)) {
     return (
@@ -128,6 +122,7 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
         establecerEdadMinima={establecerEdadMinima}
         establecerEdadMaxima={establecerEdadMaxima}
         onClose={cambiaVisibilidadFiltroAvanzadoPopup}
+        onSend={fetchFilteredData}
       />
       <FiltrosAvanzadosIcono onClick={cambiaVisibilidadFiltroAvanzadoPopup} />
       <QueEstoyViendo
@@ -176,20 +171,6 @@ const extraerDatosEntrantesDinamicos = (datosGenerales: ComunidadesEnTerritorios
     poblacionPorComunidad: datosGenerales.poblacionPorComunidad,
     familiasConElectricidadPorComunidad: datosGenerales.familiasConElectricidadPorComunidad
   };
-};
-
-const extraerComunidades = (comunidadesGeoJson: ComunidadesGeoJson | null): string[] | null => {
-  if (comunidadesGeoJson) {
-    return comunidadesGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
-  }
-  return null;
-};
-
-const extraerTerritorio = (territorioGeoJson: TerritorioGeoJson | null): string[] | null => {
-  if (territorioGeoJson) {
-    return territorioGeoJson.features.map(feature => (feature.properties ? feature.properties.nombre : null));
-  }
-  return null;
 };
 
 const calcularSexosPorEdades = (sexoDatos: Sexo | null) => {
