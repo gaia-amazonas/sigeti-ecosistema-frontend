@@ -41,7 +41,7 @@ export const buscarPorComunidadesEnTerritorio = async ({ datosParaConsulta, edad
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
   ]);
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!",
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!",
     consultasDinamicasPorComunidadesEnTerritorios.sexo(datosParaConsulta, { edadMinima, edadMaxima }),
     consultasDinamicasPorComunidadesEnTerritorios.familias(datosParaConsulta, { edadMinima, edadMaxima }),
     consultasDinamicasPorComunidadesEnTerritorios.sexoEdad(datosParaConsulta, { edadMinima, edadMaxima }),
