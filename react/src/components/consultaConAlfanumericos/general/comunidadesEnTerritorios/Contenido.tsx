@@ -50,7 +50,12 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
   }, [datosGenerales]);
 
   const fetchFilteredData = async () => {
-    let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
+    let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos = {sexo: null,
+    familias: null,
+    sexoEdad: null,
+    familiasPorComunidad: null,
+    poblacionPorComunidad: null,
+    familiasConElectricidadPorComunidad: null};
     if (datosParaConsulta.territoriosId[0] === 'Todos' && datosParaConsulta.comunidadesId[0] === 'Todas') {
       const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
