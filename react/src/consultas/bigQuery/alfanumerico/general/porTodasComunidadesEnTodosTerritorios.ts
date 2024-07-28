@@ -99,7 +99,11 @@ const porTodasComunidadesEnTodosTerritorios = {
                 ELSE 0
             END AS ordenGrupoPorEdad
         FROM 
-            \`sigeti.censo_632.BD_personas\`
+            (SELECT 
+                IF(EDAD = 'NS/NR', NULL, CAST(EDAD AS INT64)) AS edad, 
+                SEXO AS sexo 
+            FROM 
+                \`sigeti-admin-364713.050_censo.BD_personas_050\`)
         GROUP BY 
             grupoPorEdad,
             sexo, 

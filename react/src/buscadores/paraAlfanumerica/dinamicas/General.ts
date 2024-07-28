@@ -41,13 +41,6 @@ export const buscarPorComunidadesEnTerritorio = async ({ datosParaConsulta, edad
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
   ]);
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!",
-    consultasDinamicasPorComunidadesEnTerritorios.sexo(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familias(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.sexoEdad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familiasPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }));
   return {
     sexo,
     familias,
@@ -74,13 +67,6 @@ export const buscarPorComunidadesEnTerritorios = async ({ datosParaConsulta, eda
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
   ]);
-  console.log("$$$$$$$$$$$$$$$$$$$$$$",
-    consultasDinamicasPorComunidadesEnTerritorios.sexo(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familias(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.sexoEdad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familiasPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }),
-    consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }));
   return {
     sexo,
     familias,

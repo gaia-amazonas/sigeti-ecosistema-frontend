@@ -136,7 +136,6 @@ const funciones: Record<string, Query> = {
         sexo;
     `;
   },
-
   territorios: ({ territoriosId }) => `
     SELECT DISTINCT
       ST_AsGeoJSON(geometry) AS geometry,
@@ -145,8 +144,8 @@ const funciones: Record<string, Query> = {
     FROM
       \`sigeti.unidades_de_analisis.territorios_censo632\`
     WHERE
-      ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
-
+      ${haceClausulasWhere({ territoriosId }, 'id_ti')};`
+  ,
   comunidadesEnTerritorios: ({ comunidadesId }) => `
     SELECT
       ST_AsGeoJSON(geometry) AS geometry,

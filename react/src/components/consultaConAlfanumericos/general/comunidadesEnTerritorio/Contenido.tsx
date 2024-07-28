@@ -49,7 +49,6 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
 
   useEffect(() => {
     if (!datosExtraidos.sexo) return;
-    console.log(datosExtraidos, "datosExtraidos");
     const sexoPorEdades = calcularSexosPorEdades(datosExtraidos.sexo);
     establecerMujerContador(sexoPorEdades.mujerContador);
     establecerHombreContador(sexoPorEdades.hombreContador);
@@ -59,7 +58,6 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
   const fetchFilteredData = async () => {
     let datosDinamicos: ComunidadesEnTerritoriosDatosConsultadosDinamicos;
     if (datosParaConsulta.comunidadesId[0] === 'Todas') {
-      console.log("aaaaaaaaaaaaaaaaaaaa");
       const datos = await buscarPorTodasComunidadesEnTerritorio({datosParaConsulta, edadMinima, edadMaxima, modo});
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
       establecerDatosPiramidalesSexoEdad(segmentarPorEdadYSexoParaGraficasPiramidales(datosDinamicos.sexoEdad));

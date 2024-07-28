@@ -1,5 +1,4 @@
 // src/consultas/bigQuery/alfanumerico/general/dinamicas/porTodasComunidadesEnTerritorios.ts
-
 import haceClausulasWhere from "../../clausulas";
 
 interface DatosParaConsultar {
@@ -15,12 +14,12 @@ const funciones: Record<string, Query> = {
             SEXO AS sexo,
             COUNT(*) AS cantidad
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.sexo_y_edad_por_comunidad_y_territorio\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
             AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
         GROUP BY
-            id_cnida, sexo;`
+            SEXO;`
     ,
     poblacionPorComunidad: ({territoriosId}, {edadMinima, edadMaxima}) => `
         SELECT
@@ -30,7 +29,7 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.BD_personas\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({ territoriosId }, 'id_ti')}
             AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
         GROUP BY
             id_cnida, comunidad;`

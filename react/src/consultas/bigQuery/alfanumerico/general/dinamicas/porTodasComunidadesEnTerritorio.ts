@@ -19,7 +19,8 @@ const funciones: Record<string, Query> = {
       ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
       AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
     GROUP BY
-      SEXO;`,
+      SEXO;`
+  ,
   poblacionPorComunidad: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
       id_cnida AS comunidadId,
@@ -31,8 +32,8 @@ const funciones: Record<string, Query> = {
       ${haceClausulasWhere({ territoriosId }, 'id_ti')}
       AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
     GROUP BY
-      id_cnida, comunidad;`,
-
+      id_cnida, comunidad;`
+  ,
   familias: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
         COUNT(DISTINCT ID_FORM) familias
