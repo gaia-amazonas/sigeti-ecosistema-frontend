@@ -95,7 +95,7 @@ const Tiquie: React.FC = () => {
         />
       </LogoTerritorio>
       <Indicadores>
-        <h1>Indicadores</h1>
+        <h1>Indicadores -----</h1>
         <div>
           <Indicador>
             <span className="valor">#</span><span className="etiqueta-valor">comunidades en el territorio</span>
