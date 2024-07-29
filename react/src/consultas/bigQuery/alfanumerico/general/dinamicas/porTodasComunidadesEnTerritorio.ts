@@ -11,129 +11,101 @@ type Query = (datosParaConsultar: DatosParaConsultar, edades: {edadMinima: numbe
 const funciones: Record<string, Query> = {
   sexo: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
-      SEXO AS sexo,
-      COUNT(*) AS cantidad
+        SEXO AS sexo,
+        COUNT(*) AS cantidad
     FROM
-      \`sigeti-admin-364713.050_censo.sexo_y_edad_por_comunidad_y_territorio\`
+        \`sigeti-admin-364713.050_censo.sexo_y_edad_por_comunidad_y_territorio\`
     WHERE
-      ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
-      AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
+        ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
+        AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
     GROUP BY
-      SEXO;`
+        SEXO;`
   ,
   poblacionPorComunidad: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
-      id_cnida AS comunidadId,
-      comunidad AS comunidadNombre,
-      COUNT(*) AS poblacionTotal
+        ID_CNIDA AS comunidadId,
+        COMUNIDAD AS comunidadNombre,
+        COUNT(DISTINCT ID_PERS) AS poblacionTotal
     FROM
-      \`sigeti.censo_632.BD_personas\`
+        \`sigeti-admin-364713.050_censo.poblacion_edad_por_comunidad_y_territorio\`
     WHERE
-      ${haceClausulasWhere({ territoriosId }, 'id_ti')}
-      AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
+        ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
+        AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
     GROUP BY
-      id_cnida, comunidad;`
+        ID_CNIDA, COMUNIDAD;`
   ,
   familias: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
-        COUNT(DISTINCT ID_FORM) familias
+        COUNT(DISTINCT ID_FORM) AS familias
     FROM
-        \`sigeti-admin-364713.050_censo.familias_y_edad\`
+        sigeti-admin-364713.050_censo.familias_y_edad
     WHERE
         ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         AND edad BETWEEN ${edadMinima} AND ${edadMaxima};`
   ,
   familiasPorComunidad: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
-      COUNT(DISTINCT ID_FORM) as familias,
-      ID_CNIDA as comunidadId,
-      COMUNIDAD AS comunidadNombre
+        COUNT(DISTINCT ID_FORM) AS familias,
+        ID_CNIDA as comunidadId,
+        COMUNIDAD AS comunidadNombre
     FROM
-      \`sigeti-admin-364713.050_censo.familias_y_edad\`
+        \`sigeti-admin-364713.050_censo.familias_y_edad\`
     WHERE
-      ${haceClausulasWhere({territoriosId}, 'ID_TI')}
-      AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
+        ${haceClausulasWhere({territoriosId}, 'ID_TI')}
+        AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
     GROUP BY
-      ID_CNIDA, COMUNIDAD;`
+        COMUNIDAD, ID_CNIDA;`
   ,
   familiasConElectricidadPorComunidad: ({ territoriosId }, { edadMinima, edadMaxima }) => `
     SELECT
-      COUNT(*) AS familias,
-      ID_CNIDA AS comunidadId
+        COUNT(*) AS familias,
+        ID_CNIDA AS comunidadId,
+        COMUNIDAD AS comunidadNombre
     FROM
-      \`sigeti-admin-364713.050_censo.familias_edad_electricidad_comunidad_territorio\`
+        \`sigeti-admin-364713.050_censo.familias_edad_electricidad_comunidad_territorio\`
     WHERE
-    ${haceClausulasWhere({ territoriosId }, 'ID_TI')}
-      AND LOWER(VV_ELECT) IN ('sí', 'si')
-      AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
-    GROUP BY
-      ID_CNIDA;`
-  ,
-  sexoEdad: ({ territoriosId }, { edadMinima, edadMaxima }) => {
-    let caseStatements: string[] = [];
-    let orderCaseStatements: string[] = [];
-    let currentOrder = 1;
-
-    for (let age = edadMinima; age <= edadMaxima; age += 5) {
-      let upperBound = age + 4;
-      if (upperBound > edadMaxima) upperBound = edadMaxima;
-
-      caseStatements.push(`WHEN edad BETWEEN ${age} AND ${upperBound} THEN '${age} a ${upperBound} años'`);
-      orderCaseStatements.push(`WHEN edad BETWEEN ${age} AND ${upperBound} THEN ${currentOrder}`);
-
-      currentOrder++;
-    }
-
-    return `
-      SELECT 
-        CASE 
-          ${caseStatements.join('\n          ')}
-          ELSE 'NS/NR'
-        END AS grupoPorEdad,
-        sexo,
-        COUNT(*) AS contador,
-        CASE 
-          ${orderCaseStatements.join('\n          ')}
-          ELSE 0
-        END AS ordenGrupoPorEdad
-      FROM 
-        \`sigeti.censo_632.BD_personas\`
-      WHERE
-        ${haceClausulasWhere({ territoriosId }, 'id_ti')}
+        ${haceClausulasWhere({territoriosId}, 'ID_TI')}
+        AND LOWER(VV_ELECT) IN ('sí', 'si')
         AND edad BETWEEN ${edadMinima} AND ${edadMaxima}
-      GROUP BY 
-        grupoPorEdad,
-        sexo, 
-        ordenGrupoPorEdad
-      ORDER BY 
-        ordenGrupoPorEdad,
-        sexo;
-    `;
-  },
-
+    GROUP BY
+        ID_CNIDA, COMUNIDAD;`
+  ,
+  sexoEdad: ({territoriosId}, {edadMinima, edadMaxima}) => `
+    SELECT
+        grupoPorEdad, sexo, SUM(contador) AS contador
+    FROM
+        \`sigeti-admin-364713.050_censo.sexos_conedad_por_edades_en_territorios\`
+    WHERE
+        ${haceClausulasWhere({territoriosId}, 'ID_TI')} AND
+        edad BETWEEN ${edadMinima} AND ${edadMaxima}
+    GROUP BY
+        grupoPorEdad, sexo, ordenGrupoPorEdad
+    ORDER BY
+        ordenGrupoPorEdad;`
+  ,
   territorio: ({ territoriosId }) => `
     SELECT DISTINCT
-      ST_AsGeoJSON(geometry) AS geometry,
-      id_ti AS id,
-      territorio AS nombre
+        ST_AsGeoJSON(geo) AS geometry,
+        ID_TI AS id,
+        NOMBRE_TI AS nombre
     FROM
-      \`sigeti.unidades_de_analisis.territorios_censo632\`
+        \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
     WHERE
-      ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
-
+        ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
+  ,
   comunidadesEnTerritorio: ({ territoriosId }) => `
     SELECT
-      ST_AsGeoJSON(g.geometry) AS geometry,
-      g.nomb_cnida AS nombre,
-      g.id_cnida AS id
+        ST_AsGeoJSON(g.geo) AS geometry,
+        g.NOMB_CNIDA AS nombre,
+        g.ID_CNIDA AS id
     FROM
-      \`sigeti.unidades_de_analisis.comunidades_censo632\` g
+        \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
     JOIN
-      \`sigeti.censo_632.comunidades_por_territorio\` a
+        \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
     ON
-      a.id_cnida = g.id_cnida
+        g.ID_CNIDA = rcpt.id_cnida
     WHERE
-      ${haceClausulasWhere({ territoriosId }, 'a.id_ti')};`
+        ${haceClausulasWhere({territoriosId}, 'g.ID_TI')};`
 };
 
 export default funciones;
