@@ -7,17 +7,17 @@ type Query = (datosParaConsultar: {territoriosId: string[], comunidadesId: strin
 const funciones: Record<string, Query> = {
     territorios: ({comunidadesId}) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(t.geometry) AS geometry,
-            t.id_ti AS id,
-            t.territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\` t
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\` g
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            t.id_ti = c.id_ti
+            g.ID_TI = rcpt.id_ti
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'c.id_cnida')};`
+            ${haceClausulasWhere({comunidadesId}, 'g.ID_CNIDA')};`
 };
 
 export default funciones;

@@ -177,23 +177,19 @@ const funciones: Record<string, Query> = {
         ) GROUP BY nivelEducativo, sexo;`,
     territorios: () => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
     ,
     comunidadesEnTerritorios: () => `
         SELECT
-            ST_AsGeoJSON(c.geometry) AS geometry,
-            c.id_cnida AS id,
-            c.nomb_cnida AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` AS cpt
-        ON
-            c.id_cnida = cpt.id_cnida;`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
 }
 
 export default funciones;

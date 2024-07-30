@@ -239,23 +239,23 @@ const funciones: Record<string, Query> = {
         GROUP BY sexo;`,
     territorio: ({territoriosId}) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     comunidadesEnTerritorio: ({comunidadesId}) => `
         SELECT
-            ST_AsGeoJSON(c.geometry) AS geometry,
-            c.id_cnida AS id,
-            c.nomb_cnida AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'c.id_cnida')};`
+            ${haceClausulasWhere({comunidadesId}, 'ID_CNIDA')};`
 };
 
 export default funciones;
