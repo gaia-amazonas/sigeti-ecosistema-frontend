@@ -59,11 +59,9 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
     if (datosParaConsulta.territoriosId[0] === 'Todos' && datosParaConsulta.comunidadesId[0] === 'Todas') {
       const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      console.log(datosDinamicos, "1");
     } else if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] !== 'Todos') {
       const datos = await buscarPorTodasComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      console.log(datosDinamicos, "2");
     } else if (datosParaConsulta.comunidadesId[0] !== 'Todas') {
       const datos = await buscarPorComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);

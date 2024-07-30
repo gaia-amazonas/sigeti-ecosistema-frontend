@@ -65,7 +65,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
         <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
         <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
           <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
-          <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} />
+          {
+            datos.territoriosGeoJson && (
+              <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} />
+            )
+          }
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

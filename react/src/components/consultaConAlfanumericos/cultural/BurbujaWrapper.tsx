@@ -79,7 +79,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       </>
     );
   };
-
   if (validaDatosCulturales(datos, queEstoyViendo)) {
     return (
       <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -87,7 +86,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       </div>
     );
   }
-
   return (
     <>
       {renderMapaCultural()}

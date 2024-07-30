@@ -18,6 +18,7 @@ import EducativaIcon from 'logos/Educacion_001.png';
 import SaludIcon from 'logos/Salud_001.png';
 
 import { useUser } from '../../../context/UserContext';
+import Image from 'next/image';
 
 interface InfraestructuraPorComunidad {
     Malocas: number;
@@ -186,15 +187,15 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                 >
                     <div>
                         <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}>
-                            <img src={MalocasIcon.src} style={{ width: '3rem', marginRight: '0.5rem' }} />
+                            <Image src={MalocasIcon.src} alt="Malocas Icon" width={48} height={48} style={{ marginRight: '0.5rem' }} />
                             <span>{popupInfo.comunidadDatos.Malocas}</span>
                         </div>
                         <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}>
-                            <img src={EducativaIcon.src} style={{ width: '3rem', marginRight: '0.5rem' }} />
+                            <Image src={EducativaIcon.src} alt="Educativa Icon" width={48} height={48} style={{ marginRight: '0.5rem' }} />
                             <span>{popupInfo.comunidadDatos.Educativa}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={SaludIcon.src} style={{ width: '3rem', marginRight: '0.5rem' }} />
+                            <Image src={SaludIcon.src} alt="Salud Icon" width={48} height={48} style={{ marginRight: '0.5rem' }} />
                             <span>{popupInfo.comunidadDatos.Salud}</span>
                         </div>
                     </div>
@@ -266,7 +267,7 @@ const MarcadorConIcono = ({ position, icono, conteo }: { position: [number, numb
     const leaflet = require('leaflet');
     const customIcon = leaflet.divIcon({
         html: `<div style="position: relative;">
-                <img src="${icono}" style="width: 5rem; height: 5rem;" />
+                <img src="${icono}" alt="Custom Icon" style="width: 5rem; height: 5rem;" />
                 <span style="position: absolute;
                 top: 0px;
                 right: -5px;
