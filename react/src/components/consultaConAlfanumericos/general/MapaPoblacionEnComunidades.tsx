@@ -1,4 +1,4 @@
-// src/components/consultaConAlfanumericos/general/MapaComunidades.tsx
+// src/components/consultaConAlfanumericos/general/MapaPoblacionEnComunidades.tsx
 
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';

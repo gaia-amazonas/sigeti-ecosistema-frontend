@@ -7,33 +7,25 @@ import * as turf from '@turf/turf';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
-
 import { useUser } from '../../../context/UserContext';
-
 import DatosConsultados, { EscolaridadPrimariaYSecundaria } from 'tipos/educacional/datosConsultados';
-
-import {
-    buscarPorComunidadesEnTerritorios,
-    buscarPorTodasComunidadesEnTerritorios,
-    buscarPorTodasComunidadesEnTodosTerritorios
-} from 'buscadores/paraAlfanumerica/dinamicas/Educacional';
-
+import { buscarPorComunidadesEnTerritorios, buscarPorTodasComunidadesEnTerritorios, buscarPorTodasComunidadesEnTodosTerritorios } from 'buscadores/paraAlfanumerica/dinamicas/Educacional';
 import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolaridadPorComunidadGraficoTorta';
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
+import bbox from '@turf/bbox';
 import isClient from 'utilidades/isClient';
 
 interface MapaConControlesProps {
     datosEducacionales: DatosConsultados;
     datosParaConsulta: { territoriosId: string[], comunidadesId: string[] };
-    queEstoyViendo: { comunidadesGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null,
-    territoriosGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null };
+    queEstoyViendo: { comunidadesGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null, territoriosGeoJson: FeatureCollection<Geometry, GeoJsonProperties> | null };
     modo: string | string[];
 }
 
 const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
     const user = useUser();
-    if(!user.user?.territoriosPrivados) return <div>Aún no se le han asignado territorios</div>
+    if (!user.user?.territoriosPrivados) return <div>Aún no se le han asignado territorios</div>;
     const territoriosPrivados = user.user?.territoriosPrivados;
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
@@ -165,6 +157,7 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
             </div>
             <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
                 <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
+                <AdjustMapBounds territoriosGeoJson={queEstoyViendo.territoriosGeoJson} />
                 <TileLayer
                     url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
                     attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
@@ -300,5 +293,21 @@ const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) 
             setZoomLevel(e.target.getZoom());
         }
     });
+    return null;
+};
+
+const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCollection }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (territoriosGeoJson) {
+            const bounds = bbox(territoriosGeoJson);
+            map.fitBounds([
+                [bounds[1], bounds[0]],
+                [bounds[3], bounds[2]]
+            ]);
+        }
+    }, [territoriosGeoJson, map]);
+
     return null;
 };

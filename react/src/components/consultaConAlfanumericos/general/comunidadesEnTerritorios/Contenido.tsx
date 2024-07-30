@@ -11,7 +11,7 @@ import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
-import MapaComunidadesPorTerritorio from '../MapaComunidades';
+import MapaComunidadesPorTerritorio from '../MapaPoblacionEnComunidades';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
