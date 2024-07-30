@@ -137,12 +137,6 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
                   zoomNivel={zoomNivel}
                   onClick={() => handleMarkerClick([markerPosition[0], markerPosition[1]], datosFeature, total)}
                 />
-                {zoomNivel > 9 && (
-                  <Marker
-                    position={tipo === 'pueblos' ? [centroide[1] - 0.07, centroide[0]] : [coordinates[0][1] - 0.07, coordinates[0][0]]}
-                    icon={crearMarcadorNombre(feature.properties?.nombre)}
-                  />
-                )}
               </React.Fragment>
             );
           })}

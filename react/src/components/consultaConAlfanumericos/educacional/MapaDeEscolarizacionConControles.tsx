@@ -30,52 +30,50 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);
     const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
     const [opcionEscolaridad, setOpcionEscolaridad] = useState<string>('Primaria');
-    const [sliderValue, setSliderValue] = useState<number[]>([5, 13]);
+    const [sliderValue, setSliderValue] = useState<number[]>([0, 120]);
     const [escolaridadFiltrada, setEscolaridadFiltrada] = useState<any | null>(null);
 
     useEffect(() => {
-        if (opcionEscolaridad === 'Primaria') {
-            setSliderValue([5, 13]);
-        } else if (opcionEscolaridad === 'Secundaria') {
-            setSliderValue([14, 20]);
-        }
+        setSliderValue([0, 120]);
     }, [opcionEscolaridad]);
+
+    const fetchFilteredData = async (edadMinima: number, edadMaxima: number) => {
+        let escolaridadPrimariaYSecundariaFiltrada: EscolaridadPrimariaYSecundaria | null = null;
+        if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] === 'Todos') {
+            escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTodosTerritorios(
+                datosParaConsulta,
+                modo,
+                { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                opcionEscolaridad,
+                territoriosPrivados
+            );
+        } else if (datosParaConsulta.comunidadesId[0] === 'Todas') {
+            escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTerritorios(
+                datosParaConsulta,
+                modo,
+                { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                opcionEscolaridad,
+                territoriosPrivados
+            );
+        } else if (datosParaConsulta.comunidadesId[0] !== 'Todas' && datosParaConsulta.comunidadesId.length > 0) {
+            escolaridadPrimariaYSecundariaFiltrada = await buscarPorComunidadesEnTerritorios(
+                datosParaConsulta,
+                modo,
+                { edadMinima: edadMinima, edadMaxima: edadMaxima },
+                opcionEscolaridad,
+                territoriosPrivados
+            );
+        }
+        setEscolaridadFiltrada(escolaridadPrimariaYSecundariaFiltrada);
+    };
 
     useEffect(() => {
         if (!sliderValue) return;
-        const edadMinima = sliderValue.at(0);
-        const edadMaxima = sliderValue.at(1);
-        if (!edadMaxima || !edadMinima) return;
-        const fetchFilteredData = async () => {
-            let escolaridadPrimariaYSecundariaFiltrada: EscolaridadPrimariaYSecundaria | null = null;
-            if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] === 'Todos') {
-                escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTodosTerritorios(
-                    datosParaConsulta,
-                    modo,
-                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
-                    opcionEscolaridad,
-                    territoriosPrivados
-                );
-            } else if (datosParaConsulta.comunidadesId[0] === 'Todas') {
-                escolaridadPrimariaYSecundariaFiltrada = await buscarPorTodasComunidadesEnTerritorios(
-                    datosParaConsulta,
-                    modo,
-                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
-                    opcionEscolaridad,
-                    territoriosPrivados
-                );
-            } else if (datosParaConsulta.comunidadesId[0] !== 'Todas' && datosParaConsulta.comunidadesId.length > 0) {
-                escolaridadPrimariaYSecundariaFiltrada = await buscarPorComunidadesEnTerritorios(
-                    datosParaConsulta,
-                    modo,
-                    { edadMinima: edadMinima, edadMaxima: edadMaxima },
-                    opcionEscolaridad,
-                    territoriosPrivados
-                );
-            }
-            setEscolaridadFiltrada(escolaridadPrimariaYSecundariaFiltrada);
-        };
-        fetchFilteredData();
+        const edadMinima = sliderValue[0];
+        const edadMaxima = sliderValue[1];
+        if (edadMaxima !== undefined && edadMinima !== undefined) {
+            fetchFilteredData(edadMinima, edadMaxima);
+        }
     }, [sliderValue]);
 
     const handleSliderChange = (_event: any, newValue: number | number[]) => {
@@ -143,16 +141,16 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
                 </RadioGroup>
             </FormControl>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <a style={{ textAlign: 'left' }}>{sliderValue.at(0)}</a>
-                <a style={{ textAlign: 'right' }}>{sliderValue.at(1)}</a>
+                <a style={{ textAlign: 'left' }}>{sliderValue[0]}</a>
+                <a style={{ textAlign: 'right' }}>{sliderValue[1]}</a>
             </div>
             <div style={{ width: '100%' }}>
                 <Slider
                     value={sliderValue}
                     onChange={handleSliderChange}
                     valueLabelDisplay="auto"
-                    min={opcionEscolaridad === 'Primaria' ? 5 : 14}
-                    max={opcionEscolaridad === 'Primaria' ? 13 : 20}
+                    min={0}
+                    max={120}
                 />
             </div>
             <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
@@ -199,13 +197,6 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
                                             zoomNivel={zoomNivel}
                                         />
                                     )}
-                                    {zoomNivel >= 12 && crearMarcadorNombre(comunidad.properties?.nombre) && (
-                                        <Marker
-                                            position={[centroide[1], centroide[0] - centroide[0] * 0.001 / zoomNivel]}
-                                            icon={crearMarcadorNombre(comunidad.properties?.nombre)}
-                                            zIndexOffset={1000}
-                                        />
-                                    )}
                                 </React.Fragment>
                             );
                         })}
@@ -242,26 +233,6 @@ interface CustomCircleMarkerProps {
     total: number;
     zoomNivel: number;
 }
-
-const crearMarcadorNombre = (nombre: string) => {
-    if (!isClient) return null;
-    const leaflet = require('leaflet');
-    return leaflet.divIcon({
-        html: `<div style="z-index: 10;
-            font-size: 1rem;
-            font-weight: bold;
-            color: black;
-            background: white;
-            margin-left: 0rem;
-            margin-right: 0;
-            border-radius: 1rem;
-            padding-left: 1rem;
-            padding-right: 5rem">${nombre}</div>`,
-        iconSize: [nombre.length * 6, 20],
-        iconAnchor: [nombre.length * 3, 10],
-        className: ''
-    });
-};
 
 const CustomCircleMarker: React.FC<CustomCircleMarkerProps> = ({ center, baseRadius, color, proporcion, total, zoomNivel }) => {
     const map = useMap();

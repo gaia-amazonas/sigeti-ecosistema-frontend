@@ -7,7 +7,7 @@ import SexoEdad from '../SexoEdad';
 import MapaInfraestructura from 'components/consultaConAlfanumericos/educacional/MapaInfraestructuraPorComunidades';
 import QueEstoyViendo from '../general/QueEstoyViendo';
 import { datosCulturalesInvalidos, segmentarPorEdadYSexoParaGraficasPiramidales } from './utils';
-import MapaConControles from './MapaConControles';
+import MapaConControles from './MapaDeEscolarizacionConControles';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
 import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
 import { useUser } from '../../../context/UserContext';
