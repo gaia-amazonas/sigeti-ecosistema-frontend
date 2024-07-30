@@ -33,7 +33,6 @@ interface MapaConControlesProps {
 
 const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
     const user = useUser();
-    if(!user) return <div>Debe ingresar al sistema para ver este gráfico</div>
     if(!user.user?.territoriosPrivados) return <div>Aún no se le han asignado territorios</div>
     const territoriosPrivados = user.user?.territoriosPrivados;
     const [zoomNivel, establecerZoomNivel] = useState<number>(6);

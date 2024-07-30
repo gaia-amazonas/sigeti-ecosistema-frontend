@@ -14,6 +14,8 @@ import MalocasIcon from 'logos/Maloca_Redonda_001.png';
 import EducativaIcon from 'logos/Educacion_001.png';
 import SaludIcon from 'logos/Salud_001.png';
 
+import { useUser } from '../../../context/UserContext';
+
 interface InfraestructuraPorComunidad {
     Malocas: number;
     Educativa: number;
