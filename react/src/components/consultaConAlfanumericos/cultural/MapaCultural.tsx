@@ -2,10 +2,11 @@
 
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
-import React, { useState } from 'react';
+import bbox from '@turf/bbox';
+import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
-import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker, Popup, useMap } from 'react-leaflet';
 import CustomCircleMarker from '../general/CustomCircleMarker';
 import CulturalGraficoBurbuja from './Contenido';
 import L from 'leaflet';
@@ -18,7 +19,7 @@ interface MapaCulturalImp {
   agregador: string;
   variable: string;
   mostrarMenosRepresentativo: boolean;
-  tipo: 'lenguas' | 'etnias' | 'clanes' | 'pueblos';
+  tipo: 'lenguas' | 'pueblos';
 }
 
 const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
@@ -52,6 +53,22 @@ const getCoordinates = (geometry: any): number[][] => {
   }
 };
 
+const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCollection }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (territoriosGeoJson) {
+      const bounds = bbox(territoriosGeoJson);
+      map.fitBounds([
+        [bounds[1], bounds[0]],
+        [bounds[3], bounds[2]]
+      ]);
+    }
+  }, [territoriosGeoJson, map]);
+
+  return null;
+};
+
 const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo, tipo }) => {
   const centroMapa = [0.969793, -70.830454];
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
@@ -79,10 +96,10 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
   };
 
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
-        const id = comunidad.properties?.id;
-        const total = datos.filter(d => d[agregador] === id).reduce((sum) => sum + 1, 0);
-        return total;
-      });
+    const id = comunidad.properties?.id;
+    const total = datos.filter(d => d[agregador] === id).reduce((sum) => sum + 1, 0);
+    return total;
+  });
 
   const minPopulation = totalPopulations ? Math.min(...totalPopulations) : 0;
   const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
@@ -90,6 +107,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
   return (
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
+      <AdjustMapBounds territoriosGeoJson={territoriosGeoJson} />
       <TileLayer
         url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
         attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
@@ -97,9 +115,9 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       {territoriosGeoJson && (
         <GeoJSON data={territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
       )}
-      { comunidadesGeoJson  && (
+      {comunidadesGeoJson && (
         <>
-          { comunidadesGeoJson.features.map((feature, index) => {
+          {comunidadesGeoJson.features.map((feature, index) => {
             const centroide = turf.centroid(feature).geometry.coordinates;
             const id = feature.properties?.id;
             const datosFeature = datos.filter(d => d[agregador] === id);
@@ -140,7 +158,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
               datos={popupInfo.datosComunidad}
               labelKey={variable}
               valueKey='conteo'
-              groupKey={ agregador }
+              groupKey={agregador}
               mostrarMenosRepresentativo={mostrarMenosRepresentativo}
             />
           </div>

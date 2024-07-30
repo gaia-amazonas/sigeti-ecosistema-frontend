@@ -67,8 +67,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
           <div className={estilos.controls}>
             <select onChange={handleOptionChange} value={selectedOption}>
               <option value="lenguas">Lenguas</option>
-              <option value="etnias">Etnias</option>
-              <option value="clanes">Clanes</option>
               <option value="pueblos">Pueblos</option>
             </select>
             <button onClick={toggleRepresentacion}>
