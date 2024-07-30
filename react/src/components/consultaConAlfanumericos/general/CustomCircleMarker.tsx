@@ -17,9 +17,9 @@ interface CustomCircleMarkerProps {
 
 const calculateAdjustedRadius = (zoomNivel: number): number => {
   if (zoomNivel <= 9) return zoomNivel;
-  if (zoomNivel === 10) return zoomNivel ** 1.5;
-  if (zoomNivel === 11) return zoomNivel ** 1.85;
-  if (zoomNivel > 11) return zoomNivel ** 2.05;
+  if (zoomNivel === 10) return zoomNivel ** 1.1;
+  if (zoomNivel === 11) return zoomNivel ** 1.2;
+  if (zoomNivel > 11) return zoomNivel ** 1.3;
   return zoomNivel ** 2.25;
 };
 

@@ -38,18 +38,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
         variable = 'lengua';
         agregador = 'comunidadId';
         break;
-      case 'etnias':
-        titulo = 'Distribución de Etnias';
-        datosFiltrados = datos.etnias.rows;
-        variable = 'etnia';
-        agregador = 'comunidadId';
-        break;
-      case 'clanes':
-        titulo = 'Distribución de Clanes';
-        datosFiltrados = datos.clanes.rows;
-        variable = 'clan';
-        agregador = 'comunidadId';
-        break;
       case 'pueblos':
         titulo = 'Distribución de Pueblos';
         datosFiltrados = datos.pueblos.rows;
