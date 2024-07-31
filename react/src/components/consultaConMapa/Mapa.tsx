@@ -52,23 +52,23 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const [mostrarLineasColindantes, establecerMostrarLineas] = useState(true);
   const [mostrarTerritorios, establecerMostrarTerritorios] = useState(true);
   const [mostrarComunidades, establecerMostrarComunidades] = useState(true);
-  const [estaCargandoLineas, establecerEstaCargandoLineas] = useState(true);
-  const [estaCargandoTerritorios, establecerEstaCargandoTerritorios] = useState(true);
-  const [estaCargandoComunidades, establecerEstaCargandoComunidades] = useState(true);
+  const [estaCargando, establecerEstaCargando] = useState(true);
 
-  const allDataLoaded = !estaCargandoLineas && !estaCargandoTerritorios && !estaCargandoComunidades;
+  const allDataLoaded = !estaCargando;
 
   useEffect(() => {
     traerDatosInicialesDeMapa(modo);
   }, [modo]);
 
   const traerDatosInicialesDeMapa = async (modo: string | string[]) => {
-    establecerEstaCargandoLineas(true);
-    traerLineasColindantes(modo);
-    establecerEstaCargandoTerritorios(true);
-    traerTerritorios(modo);
-    establecerEstaCargandoComunidades(true);
-    traerComunidades(modo);
+    establecerEstaCargando(true);
+    try {
+      await Promise.all([traerLineasColindantes(modo), traerTerritorios(modo), traerComunidades(modo)]);
+    } catch (error) {
+      logger.error('Error fetching data:', error);
+    } finally {
+      establecerEstaCargando(false);
+    }
   };
 
   const traerLineasColindantes = async (modo: string | string[]) => {
@@ -80,10 +80,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometriasYColindanciaEntre, modo, lineas);
       establecerLineasColindantesGeoJson(geoJsonLineas);
-      establecerEstaCargandoLineas(false);
     } catch (error) {
       logger.error('Error buscando lineas:', error);
-      establecerEstaCargandoLineas(false);
     }
   };
 
@@ -96,10 +94,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
       establecerTerritoriosGeoJson(geoJsonTerritorios);
-      establecerEstaCargandoTerritorios(false);
     } catch (error) {
       logger.error('Error buscando territorios:', error);
-      establecerEstaCargandoTerritorios(false);
     }
   };
 
@@ -112,10 +108,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
       establecerComunidadesGeoJson(geoJsonComunidades);
-      establecerEstaCargandoComunidades(false);
     } catch (error) {
       logger.error('Error buscando comunidades:', error);
-      establecerEstaCargandoComunidades(false);
     }
   };
 
@@ -177,7 +171,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      {estaCargandoLineas || estaCargandoTerritorios || estaCargandoComunidades ? (
+      {estaCargando ? (
         <div className={estilos['superposicionCarga']}>
           <div className={estilos.spinner}></div>
         </div>
