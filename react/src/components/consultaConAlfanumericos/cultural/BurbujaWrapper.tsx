@@ -38,18 +38,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
         variable = 'lengua';
         agregador = 'comunidadId';
         break;
-      case 'etnias':
-        titulo = 'Distribución de Etnias';
-        datosFiltrados = datos.etnias.rows;
-        variable = 'etnia';
-        agregador = 'comunidadId';
-        break;
-      case 'clanes':
-        titulo = 'Distribución de Clanes';
-        datosFiltrados = datos.clanes.rows;
-        variable = 'clan';
-        agregador = 'comunidadId';
-        break;
       case 'pueblos':
         titulo = 'Distribución de Pueblos';
         datosFiltrados = datos.pueblos.rows;
@@ -67,8 +55,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
           <div className={estilos.controls}>
             <select onChange={handleOptionChange} value={selectedOption}>
               <option value="lenguas">Lenguas</option>
-              <option value="etnias">Etnias</option>
-              <option value="clanes">Clanes</option>
               <option value="pueblos">Pueblos</option>
             </select>
             <button onClick={toggleRepresentacion}>
@@ -93,7 +79,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       </>
     );
   };
-
   if (validaDatosCulturales(datos, queEstoyViendo)) {
     return (
       <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
@@ -101,7 +86,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       </div>
     );
   }
-
   return (
     <>
       {renderMapaCultural()}
