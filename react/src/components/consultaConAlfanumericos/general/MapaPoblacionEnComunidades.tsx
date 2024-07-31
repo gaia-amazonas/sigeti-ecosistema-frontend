@@ -1,14 +1,14 @@
-// src/components/consultaConAlfanumericos/general/MapaComunidades.tsx
+// src/components/consultaConAlfanumericos/general/MapaPoblacionEnComunidades.tsx
 
 import 'leaflet/dist/leaflet.css';
 import * as turf from '@turf/turf';
+import bbox from '@turf/bbox';
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { traeSexosPorComunidad } from 'buscadores/paraMapa';
 import logger from 'utilidades/logger';
-import isClient from 'utilidades/isClient';
-import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, useMap } from 'react-leaflet';
 import CustomCircleMarker from './CustomCircleMarker';
 import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
 
@@ -49,8 +49,23 @@ const getCoordinates = (geometry: any): number[][] => {
   }
 };
 
+const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCollection }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (territoriosGeoJson) {
+      const bounds = bbox(territoriosGeoJson);
+      map.fitBounds([
+        [bounds[1], bounds[0]],
+        [bounds[3], bounds[2]]
+      ]);
+    }
+  }, [territoriosGeoJson, map]);
+
+  return null;
+};
+
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
-  const centroMapa = [0.969793, -70.830454];
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const [sexosPorComunidad, setSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
   const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
@@ -74,26 +89,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     ordenaSexosPorComunidad();
   }, [comunidadesGeoJson, modo]);
 
-  const crearMarcadorNombre = (nombre: string) => {
-    if (!isClient) return null;
-    const leaflet = require('leaflet');
-    return leaflet.divIcon({
-      html: `<div style="z-index: 10;
-            font-size: 1rem;
-            font-weight: bold;
-            color: black;
-            background: white;
-            margin-left: 0rem;
-            margin-right: 0;
-            border-radius: 1rem;
-            padding-left: 1rem;
-            padding-right: 5rem">${nombre}</div>`,
-      iconSize: [nombre.length * 6, 20],
-      iconAnchor: [nombre.length * 3, 10],
-      className: ''
-    });
-  };
-
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
     const id = comunidad.properties?.id;
     const datos = sexosPorComunidad[id] || { hombres: 0, mujeres: 0 };
@@ -103,8 +98,9 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
   const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
 
   return (
-    <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1, borderRadius: '3rem' }}>
+    <MapContainer style={{ height: '30rem', width: '100%', zIndex: 1, borderRadius: '3rem' }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
+      <AdjustMapBounds territoriosGeoJson={territoriosGeoJson} />
       <TileLayer
         url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
         attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
@@ -139,12 +135,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
                     proporcion={total}
                     total={total}
                     zoomNivel={zoomNivel}
-                  />
-                )}
-                {zoomNivel >= 13 && crearMarcadorNombre(comunidad.properties?.nombre) && (
-                  <Marker
-                    position={[centroide[1], centroide[0] - centroide[0] * 0.00015]}
-                    icon={crearMarcadorNombre(comunidad.properties?.nombre)}
                   />
                 )}
               </React.Fragment>

@@ -7,9 +7,10 @@ import SexoEdad from '../SexoEdad';
 import MapaInfraestructura from 'components/consultaConAlfanumericos/educacional/MapaInfraestructuraPorComunidades';
 import QueEstoyViendo from '../general/QueEstoyViendo';
 import { datosCulturalesInvalidos, segmentarPorEdadYSexoParaGraficasPiramidales } from './utils';
-import MapaConControles from './MapaConControles';
+import MapaConControles from './MapaDeEscolarizacionConControles';
 import EducacionalComunidadesEnTerritoriosDatosConsultados from 'tipos/educacional/datosConsultados';
 import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
+import { useUser } from '../../../context/UserContext';
 
 interface ComponenteEducacionalComunidadesEnTerritoriosImp {
     datosEducacionales: EducacionalComunidadesEnTerritoriosDatosConsultados;
@@ -19,6 +20,7 @@ interface ComponenteEducacionalComunidadesEnTerritoriosImp {
 }
 
 const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacionalComunidadesEnTerritoriosImp> = ({ datosEducacionales, datosParaConsulta, queEstoyViendo, modo }) => {
+    const user = useUser();
     const [selectedGraph, setSelectedGraph] = useState<'escolaridadJoven' | 'escolaridad' | null>('escolaridadJoven');
 
     const handleSelect = (graphType: 'escolaridadJoven' | 'escolaridad') => {
@@ -33,15 +35,19 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
 
     return (
         <>
-            <WrapperAnimadoParaHistorias>
-                <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
-                <MapaConControles
-                    datosEducacionales={datosEducacionales}
-                    datosParaConsulta={datosParaConsulta}
-                    queEstoyViendo={queEstoyViendo}
-                    modo={modo}
-                />
-            </WrapperAnimadoParaHistorias>
+            {
+                user && user.user && (
+                    <WrapperAnimadoParaHistorias>
+                        <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
+                        <MapaConControles
+                            datosEducacionales={datosEducacionales}
+                            datosParaConsulta={datosParaConsulta}
+                            queEstoyViendo={queEstoyViendo}
+                            modo={modo}
+                        />
+                    </WrapperAnimadoParaHistorias>
+                )
+            }
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Infraestructura para la Educación</CajaTitulo>
                 <MapaInfraestructura datos={datosEducacionales} modo={modo} />

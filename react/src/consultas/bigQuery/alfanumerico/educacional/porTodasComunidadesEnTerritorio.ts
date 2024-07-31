@@ -238,27 +238,27 @@ const funciones: Record<string, Query> = {
         ) GROUP BY nivelEducativo, sexo;`,
     territorio: ({territoriosId}) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     comunidadesEnTerritorio: ({territoriosId}) => `
         SELECT
-            ST_AsGeoJSON(c.geometry) AS geometry,
-            c.id_cnida AS id,
-            c.nomb_cnida AS nombre
+            ST_AsGeoJSON(g.geo) AS geometry,
+            g.NOMB_CNIDA AS nombre,
+            g.ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` AS c
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
         JOIN
-            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` AS cpt
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            c.id_cnida = cpt.id_cnida
+            g.ID_CNIDA = rcpt.id_cnida
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'g.ID_TI')};`
 }
 
 export default funciones;

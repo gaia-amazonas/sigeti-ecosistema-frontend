@@ -11,7 +11,7 @@ import Hombre from '../sexo/Hombre';
 import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
-import MapaComunidadesPorTerritorio from '../MapaComunidades';
+import MapaComunidadesPorTerritorio from '../MapaPoblacionEnComunidades';
 import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
 import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
@@ -59,11 +59,9 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
     if (datosParaConsulta.territoriosId[0] === 'Todos' && datosParaConsulta.comunidadesId[0] === 'Todas') {
       const datos = await buscarPorTodasComunidadesEnTodosTerritorios({ edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      console.log(datosDinamicos, "1");
     } else if (datosParaConsulta.comunidadesId[0] === 'Todas' && datosParaConsulta.territoriosId[0] !== 'Todos') {
       const datos = await buscarPorTodasComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
-      console.log(datosDinamicos, "2");
     } else if (datosParaConsulta.comunidadesId[0] !== 'Todas') {
       const datos = await buscarPorComunidadesEnTerritorios({ datosParaConsulta, edadMinima, edadMaxima, modo });
       datosDinamicos = extraerDatosEntrantesDinamicos(datos);
@@ -123,7 +121,7 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
         />
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
-        <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
+        <CajaTitulo>Poblacion Total y por Sexo </CajaTitulo>
         <MapaComunidadesPorTerritorio
           territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
