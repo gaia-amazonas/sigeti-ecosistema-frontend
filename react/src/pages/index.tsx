@@ -159,7 +159,7 @@ const Home: React.FC = () => {
       </MainContainer>
       <Footer>
         <div className="creditos">
-          <p>Desarrollado por <Link href="https://gaiaamazonas.org/" passHref><Image src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={100} height={50} /></Link> 2024</p>
+        <p>Desarrollado por <a href='https://gaiaamazonas.org/'>Gaia Amazonas</a> con apoyo de las comunidades indígenas. 2024</p>
         </div>
       </Footer>
       <IconoHerramienta onClick={togglePopup}>

@@ -70,13 +70,13 @@ const PiraParana: React.FC = () => {
       )}
       <ContainerSintesis>
         <Sintesis>
-          <h1>¿Qué es el SIGETI?</h1>
+          <h1>Territorio Indígena del Río Pirá Paraná</h1>
           <p>
-            Esta herramienta facilita la toma de decisiones, el posicionamiento, 
-            la comunicación, y la gestión y coordinación tanto interna 
-            como externa en las Entidades Territoriales Indígenas (ETI), utilizando 
-            información territorial. Su desarrollo e implementación proporcionará a 
-            las ETI y sus gobiernos acceso a información clara, pertinente, suficiente y oportuna.
+          Con base en los fundamentos y principio que sustentan nuestra existencia como Pueblos Indígenas 
+          y en ejercicio de los derechos reconocidos en la Constitución Política a la autodeterminación, 
+          la autonomía y a conformar nuestro gobierno de acuerdo con nuestros sistemas de conocimiento 
+          entregados por los Ancestros Primordiales – Ayawa – constituimos el Consejo Indígena del Pirá Paraná, 
+          como expresión representativa de nuestro Sistema de Gobierno.
           </p>
         </Sintesis>
       </ContainerSintesis>
@@ -98,24 +98,20 @@ const PiraParana: React.FC = () => {
         <h1>Indicadores</h1>
         <div>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">comunidades en el territorio</span>
+            <span className="valor">17</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor"># km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor">5.302,01 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">Habitantes</span>
+            <span className="valor">2270</span><span className="etiqueta-valor">Habitantes</span>
           </Indicador>
         </div>
       </Indicadores>
       <Footer>
         <div className="creditos" style={{ display: 'flex', alignItems: 'center' }}>
           <p style={{ display: 'flex', alignItems: 'center', margin: 0 }}>
-            Desarrollado por 
-            <a href="https://gaiaamazonas.org/" style={{ display: 'flex', alignItems: 'center', marginLeft: '5px', marginRight: '5px' }}>
-              <Image className="background" src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={250} height={50} style={{ width: 'auto', height: '2rem' }} />
-            </a>
-            2024
+          <p>Desarrollado por <a href='https://gaiaamazonas.org/'>Gaia Amazonas</a> con apoyo de las comunidades indígenas. 2024</p>
           </p>
         </div>
       </Footer>
@@ -206,7 +202,7 @@ const IconoHerramienta = styled.div`
 const LogoTerritorio = styled.div`
   float: right;
   vertical-align: top;
-  border: #a1a13b solid 2px;
+  border: #d59196 solid 2px;
   padding: 5px;
   margin-top: 20px;
   margin-right: 30px;
@@ -219,7 +215,7 @@ const LogoTerritorio = styled.div`
   align-items: center;
 
   h1 {
-    color: #a1a13b;
+    color: #d59196;
     text-align: center;
   }
 

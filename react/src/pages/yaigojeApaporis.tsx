@@ -70,13 +70,16 @@ const YaigojeApaporis: React.FC = () => {
       )}
       <ContainerSintesis>
         <Sintesis>
-          <h1>¿Qué es el SIGETI?</h1>
+          <h1>Territorio Indígena Yaigojé Apaporis</h1>
           <p>
-            Esta herramienta facilita la toma de decisiones, el posicionamiento, 
-            la comunicación, y la gestión y coordinación tanto interna 
-            como externa en las Entidades Territoriales Indígenas (ETI), utilizando 
-            información territorial. Su desarrollo e implementación proporcionará a 
-            las ETI y sus gobiernos acceso a información clara, pertinente, suficiente y oportuna.
+          Nuestro territorio indígena se encuentra ubicado al noreste del 
+          departamento del Amazonas y al sureste del departamento del Vaupés; 
+          incluye la totalidad del resguardo indígena Yaigojé Río Apaporis. 
+          El proceso de configuración de la Entidad Territorial hace parte 
+          de un proceso histórico, político y cultural, que busca garantizar 
+          nuestros derechos fundamentales y colectivos a través del ejercicio 
+          de la libre determinación en términos organizativos, administrativos, 
+          de gobierno y gestión.
           </p>
         </Sintesis>
       </ContainerSintesis>
@@ -98,24 +101,20 @@ const YaigojeApaporis: React.FC = () => {
         <h1>Indicadores</h1>
         <div>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">comunidades en el territorio</span>
+            <span className="valor">22</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor"># km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor">12.269,65 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">Habitantes</span>
+            <span className="valor">1985</span><span className="etiqueta-valor">Habitantes</span>
           </Indicador>
         </div>
       </Indicadores>
       <Footer>
         <div className="creditos" style={{ display: 'flex', alignItems: 'center' }}>
           <p style={{ display: 'flex', alignItems: 'center', margin: 0 }}>
-            Desarrollado por 
-            <a href="https://gaiaamazonas.org/" style={{ display: 'flex', alignItems: 'center', marginLeft: '5px', marginRight: '5px' }}>
-              <Image className="background" src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={250} height={50} style={{ width: 'auto', height: '2rem' }} />
-            </a>
-            2024
+          <p>Desarrollado por <a href='https://gaiaamazonas.org/'>Gaia Amazonas</a> con apoyo de las comunidades indígenas. 2024</p>
           </p>
         </div>
       </Footer>
@@ -206,7 +205,7 @@ const IconoHerramienta = styled.div`
 const LogoTerritorio = styled.div`
   float: right;
   vertical-align: top;
-  border: #a1a13b solid 2px;
+  border: #98c182 solid 2px;
   padding: 5px;
   margin-top: 20px;
   margin-right: 30px;
@@ -219,7 +218,7 @@ const LogoTerritorio = styled.div`
   align-items: center; /* Center the content horizontally */
 
   h1 {
-    color: #a1a13b;
+    color: #98c182;
     text-align: center;
   }
 
