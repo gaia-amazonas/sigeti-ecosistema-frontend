@@ -185,7 +185,7 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       <MapContainer center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {mostrarOSM && (
           <TileLayer
-            url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+            url={modo === "online" ? "https://api.maptiler.com/maps/d2c25c43-29c2-47a0-ac77-01ac61ddfd97/256/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
         )}
