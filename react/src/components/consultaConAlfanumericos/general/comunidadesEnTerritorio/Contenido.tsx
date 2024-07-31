@@ -10,7 +10,7 @@ import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
 import MapaComunidadesPorTerritorio from '../MapaPoblacionEnComunidades';
-import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacion';
 import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';

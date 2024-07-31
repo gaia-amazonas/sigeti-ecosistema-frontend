@@ -171,7 +171,7 @@ const Home: React.FC = () => {
             <Boton as="span">Temáticas</Boton>
           </AnimatedLink>
           <AnimatedLink href={{ pathname: '/consulta/espacial/inicio', query: { modo } }}>
-            <Boton as="span">Gestión Documental Territorial</Boton>
+            <Boton as="span">Delimitación</Boton>
           </AnimatedLink>
           <AnimatedLink href={{ pathname: '/consulta/meteorologica/inicio', query: { modo } }}>
             <Boton as="span">Meteorología</Boton>
@@ -425,8 +425,8 @@ const AnimatedLink = styled(Link)`
   }
 
   &:nth-child(2) {
-    right: 3rem;
-    bottom: 9rem;
+    right: 5rem;
+    bottom: 9.5rem;
   }
   
   &:nth-child(3) {

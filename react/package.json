@@ -18,6 +18,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@google-cloud/bigquery": "^7.8.0",
+    "@maptiler/sdk": "^2.2.1",
     "@mui/material": "^5.16.4",
     "@turf/turf": "^7.0.0",
     "@types/geojson": "^7946.0.14",
