@@ -123,7 +123,7 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
         />
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
-        <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
+        <CajaTitulo>Poblacion Total y por Sexo </CajaTitulo>
         <MapaComunidadesPorTerritorio
           territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
