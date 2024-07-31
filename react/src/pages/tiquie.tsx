@@ -70,13 +70,15 @@ const Tiquie: React.FC = () => {
       )}
       <ContainerSintesis>
         <Sintesis>
-          <h1>¿Qué es el SIGETI?</h1>
+          <h1>Territorio Indígena del Río Tiquié</h1>
           <p>
-            Esta herramienta facilita la toma de decisiones, el posicionamiento,
-            la comunicación, y la gestión y coordinación tanto interna
-            como externa en las Entidades Territoriales Indígenas (ETI), utilizando
-            información territorial. Su desarrollo e implementación proporcionará a
-            las ETI y sus gobiernos acceso a información clara, pertinente, suficiente y oportuna.
+          Nuestro territorio indígena está ubicado al sureste del departamento del Vaupés, 
+          definido principalmente por la cuenca alta del río Tiquié (costados occidente y norte), 
+          y por las microcuencas de los caños Timiña y Umuña (costado sur), y en el oriente por 
+          la República Federal de Brasil. Ser entidad territorial indígena significa para nosotros 
+          continuar fortaleciéndonos como organización política con capacidad para administrar y 
+          gobernar nuestro territorio según nuestra ley de origen y nuestro sistema de conocimiento 
+          tradicional para el buen vivir de los grupos étnicos que habitamos en él.
           </p>
         </Sintesis>
       </ContainerSintesis>
@@ -98,19 +100,19 @@ const Tiquie: React.FC = () => {
         <h1>Indicadores</h1>
         <div>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">comunidades en el territorio</span>
+            <span className="valor">11</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor"># km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor">1.359,44 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
-            <span className="valor">#</span><span className="etiqueta-valor">Habitantes</span>
+            <span className="valor">795</span><span className="etiqueta-valor">Habitantes</span>
           </Indicador>
         </div>
       </Indicadores>
       <Footer>
         <div className="creditos">
-          <p>Desarrollado por <a href="https://gaiaamazonas.org/"><Image src="/logos/logo_gaia.png" alt="Logotipo de la Fundación GAIA Amazonas" width={100} height={50} /></a> 2024</p>
+          <p>Desarrollado por <a href='https://gaiaamazonas.org/'>Gaia Amazonas</a> con apoyo de las comunidades indígenas. 2024</p>
         </div>
       </Footer>
     </>
