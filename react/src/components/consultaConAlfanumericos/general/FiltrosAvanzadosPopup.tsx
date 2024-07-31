@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CajaTitulo } from '../estilos';
 import Slider from 'react-slider';
@@ -57,10 +57,16 @@ interface FiltrosAvanzadosProps {
   edadMaxima: number;
   establecerEdadMinima: (edad: number) => void;
   establecerEdadMaxima: (edad: number) => void;
+  onSend: () => void;
 }
 
-const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima }) => {
+const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima, onSend }) => {
   const [values, setValues] = useState<[number, number]>([edadMinima, edadMaxima]);
+
+  useEffect(() => {
+    establecerEdadMinima(values[0]);
+    establecerEdadMaxima(values[1]);
+  }, [values, establecerEdadMinima, establecerEdadMaxima]);
 
   const controlarCambio = (newValues: number | readonly number[]) => {
     if (Array.isArray(newValues)) {
@@ -69,8 +75,7 @@ const FiltrosAvanzadosPopup: React.FC<FiltrosAvanzadosProps> = ({ edadMinima, ed
   };
 
   const handleSend = () => {
-    establecerEdadMinima(values[0]);
-    establecerEdadMaxima(values[1]);
+    onSend();
   };
 
   return (
@@ -99,15 +104,22 @@ interface PopupProps {
   establecerEdadMinima: React.Dispatch<React.SetStateAction<number>>;
   establecerEdadMaxima: React.Dispatch<React.SetStateAction<number>>;
   onClose: () => void;
+  onSend: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({ esVisible, edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima, onClose }) => {
+const Popup: React.FC<PopupProps> = ({ esVisible, edadMinima, edadMaxima, establecerEdadMinima, establecerEdadMaxima, onClose, onSend }) => {
   if (!esVisible) return null;
 
   return (
     <PopupOverlay onClick={onClose}>
       <PopupContent onClick={(e) => e.stopPropagation()}>
-        <FiltrosAvanzadosPopup edadMinima = {edadMinima} edadMaxima = {edadMaxima} establecerEdadMinima={establecerEdadMinima} establecerEdadMaxima={establecerEdadMaxima} />
+        <FiltrosAvanzadosPopup 
+          edadMinima={edadMinima} 
+          edadMaxima={edadMaxima} 
+          establecerEdadMinima={establecerEdadMinima} 
+          establecerEdadMaxima={establecerEdadMaxima} 
+          onSend={onSend} 
+        />
         <button onClick={onClose} style={{ marginTop: '1rem' }}>Close</button>
       </PopupContent>
     </PopupOverlay>

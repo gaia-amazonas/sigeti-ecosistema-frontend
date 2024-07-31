@@ -1,172 +1,110 @@
 // src/consultas/bigQuery/alfanumerico/general/porTodasComunidadesEnTerritorios.ts
-
 import haceClausulasWhere from "../clausulas";
 
 interface DatosParaConsultar {
-  territoriosId: string[];
-  comunidadesId: string[];
+    territoriosId: string[];
+    comunidadesId: string[];
 }
-
 type Query = (datosParaConsultar: DatosParaConsultar) => string;
 
 const funciones: Record<string, Query> = {
     sexo: ({territoriosId}) => `
         SELECT
-            SEXO AS sexo,
-            COUNT(*) AS cantidad
+            sexo,
+            SUM(cantidad) AS cantidad
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.sexos_por_comunidad_y_territorio\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            id_cnida, sexo;`
+            sexo;`
     ,
     poblacionPorComunidad: ({territoriosId}) => `
         SELECT
-            id_cnida AS comunidadId,
-            comunidad AS comunidadNombre,
-            COUNT(*) AS poblacionTotal
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre,
+            SUM(personas) AS poblacionTotal
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti-admin-364713.050_censo.poblacion_por_comunidad_y_territorio\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            id_cnida, comunidad;`
+            ID_CNIDA, COMUNIDAD;`
     ,
     familias: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias
+            SUM(familias) AS familias
         FROM
-            \`sigeti.censo_632.BD_familias\`
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     familiasPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            c.id_cnida as comunidadId,
-            c.comunidad AS comunidadNombre
+            SUM(familias) AS familias,
+            ID_CNIDA as comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'c.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            c.comunidad, c.id_cnida;`
+            COMUNIDAD, ID_CNIDA;`
     ,
     familiasConElectricidadPorComunidad: ({territoriosId}) => `
         SELECT
-            COUNT(*) AS familias,
-            f.id_cnida AS comunidadId
+            SUM(familias) AS familias,
+            ID_CNIDA AS comunidadId,
+            COMUNIDAD AS comunidadNombre
         FROM
-            \`sigeti.censo_632.BD_familias\` f
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` c
-        ON
-            f.id_cnida = c.id_cnida
+            \`sigeti-admin-364713.050_censo.familias_con_electricidad_por_comunidad_y_t\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'f.id_ti')} AND 
-            LOWER(f.vv_elect) IN ('sí', 'si')
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
         GROUP BY
-            f.id_cnida;`
+            ID_CNIDA, COMUNIDAD;`
     ,
     sexoEdad: ({territoriosId}) => `
-        SELECT 
-            CASE 
-                WHEN edad BETWEEN 0 AND 5 THEN '0 a 5 años'
-                WHEN edad BETWEEN 6 AND 10 THEN '6 a 10 años'
-                WHEN edad BETWEEN 11 AND 15 THEN '11 a 15 años'
-                WHEN edad BETWEEN 16 AND 20 THEN '16 a 20 años'
-                WHEN edad BETWEEN 21 AND 25 THEN '21 a 25 años'
-                WHEN edad BETWEEN 26 AND 30 THEN '26 a 30 años'
-                WHEN edad BETWEEN 31 AND 35 THEN '31 a 35 años'
-                WHEN edad BETWEEN 36 AND 40 THEN '36 a 40 años'
-                WHEN edad BETWEEN 41 AND 45 THEN '41 a 45 años'
-                WHEN edad BETWEEN 46 AND 50 THEN '46 a 50 años'
-                WHEN edad BETWEEN 51 AND 55 THEN '51 a 55 años'
-                WHEN edad BETWEEN 56 AND 60 THEN '56 a 60 años'
-                WHEN edad BETWEEN 61 AND 65 THEN '61 a 65 años'
-                WHEN edad BETWEEN 66 AND 70 THEN '66 a 70 años'
-                WHEN edad BETWEEN 71 AND 75 THEN '71 a 75 años'
-                WHEN edad BETWEEN 76 AND 80 THEN '76 a 80 años'
-                WHEN edad BETWEEN 81 AND 85 THEN '81 a 85 años'
-                WHEN edad BETWEEN 86 AND 90 THEN '86 a 90 años'
-                WHEN edad BETWEEN 91 AND 95 THEN '91 a 95 años'
-                WHEN edad BETWEEN 96 AND 100 THEN '96 a 100 años'
-                WHEN edad > 100 THEN 'más de 100 años '
-                ELSE 'NS/NR'
-            END AS grupoPorEdad,
-            sexo,
-            COUNT(*) AS contador,
-            CASE 
-                WHEN edad BETWEEN 0 AND 5 THEN 21
-                WHEN edad BETWEEN 6 AND 10 THEN 20
-                WHEN edad BETWEEN 11 AND 15 THEN 19
-                WHEN edad BETWEEN 16 AND 20 THEN 18
-                WHEN edad BETWEEN 21 AND 25 THEN 17
-                WHEN edad BETWEEN 26 AND 30 THEN 16
-                WHEN edad BETWEEN 31 AND 35 THEN 15
-                WHEN edad BETWEEN 36 AND 40 THEN 14
-                WHEN edad BETWEEN 41 AND 45 THEN 13
-                WHEN edad BETWEEN 46 AND 50 THEN 12
-                WHEN edad BETWEEN 51 AND 55 THEN 11
-                WHEN edad BETWEEN 56 AND 60 THEN 10
-                WHEN edad BETWEEN 61 AND 65 THEN 9
-                WHEN edad BETWEEN 66 AND 70 THEN 8
-                WHEN edad BETWEEN 71 AND 75 THEN 7
-                WHEN edad BETWEEN 76 AND 80 THEN 6
-                WHEN edad BETWEEN 81 AND 85 THEN 5
-                WHEN edad BETWEEN 86 AND 90 THEN 4
-                WHEN edad BETWEEN 91 AND 95 THEN 3
-                WHEN edad BETWEEN 96 AND 100 THEN 2
-                WHEN edad > 100 THEN 1
-                ELSE 0
-            END AS ordenGrupoPorEdad
-        FROM 
-            \`sigeti.censo_632.BD_personas\`
+        SELECT
+            grupoPorEdad, sexo, SUM(contador) AS contador
+        FROM
+            \`sigeti-admin-364713.050_censo.sexos_por_edades_en_territorios\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')}
-        GROUP BY 
-            grupoPorEdad,
-            sexo, 
-            ordenGrupoPorEdad
-        ORDER BY 
-            ordenGrupoPorEdad,
-            sexo;`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')}
+        GROUP BY
+            grupoPorEdad, sexo, ordenGrupoPorEdad
+        ORDER BY
+            ordenGrupoPorEdad;`
     ,
     territorios: ({territoriosId}) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`
     ,
     comunidadesEnTerritorios: ({territoriosId}) => `
         SELECT
-            ST_AsGeoJSON(g.geometry) AS geometry,
-            g.nomb_cnida AS nombre,
-            g.id_cnida AS id
+            ST_AsGeoJSON(g.geo) AS geometry,
+            g.NOMB_CNIDA AS nombre,
+            g.ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` g
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` a
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            a.id_cnida = g.id_cnida
+            g.ID_CNIDA = rcpt.id_cnida
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'g.ID_TI')};`
     ,
     comunidadesAgregadasEnTerritorios: ({territoriosId}) => `
         SELECT
             territorio AS territorioId,
             ARRAY_AGG(comunidad) AS comunidadesId
         FROM
-            \`sigeti.censo_632.comunidades_por_territorio\`
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY

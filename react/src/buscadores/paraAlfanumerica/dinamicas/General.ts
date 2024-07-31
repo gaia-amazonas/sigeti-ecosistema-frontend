@@ -41,7 +41,6 @@ export const buscarPorComunidadesEnTerritorio = async ({ datosParaConsulta, edad
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
   ]);
-
   return {
     sexo,
     familias,
@@ -68,7 +67,6 @@ export const buscarPorComunidadesEnTerritorios = async ({ datosParaConsulta, eda
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.poblacionPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo),
     buscarDatos(consultasDinamicasPorComunidadesEnTerritorios.familiasConElectricidadPorComunidad(datosParaConsulta, { edadMinima, edadMaxima }), modo)
   ]);
-
   return {
     sexo,
     familias,

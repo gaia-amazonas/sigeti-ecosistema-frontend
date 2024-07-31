@@ -104,7 +104,6 @@ export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: Dato
     buscarComunidades(consultasGeneralesPorComunidadesEnTerritorios.comunidadesEnTerritorios(datosParaConsultar), modo),
     buscarTerritorios(consultasGeneralesPorComunidadesEnTerritorios.territorios(datosParaConsultar), modo)
   ]);
-
   return {
     sexo,
     familias,
