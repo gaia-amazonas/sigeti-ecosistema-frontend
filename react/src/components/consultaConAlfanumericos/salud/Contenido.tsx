@@ -62,8 +62,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
   return (
     <>
       <WrapperAnimadoParaHistorias>
-        <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
-        <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
+        <p>En desarrollo</p>
+        {/* <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo> */}
+        {/* <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
           <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
           {
             datos.territoriosGeoJson && (
@@ -94,7 +95,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
               />
             );
           })}
-        </MapContainer>
+        </MapContainer> */}
       </WrapperAnimadoParaHistorias>
     </>
   );
