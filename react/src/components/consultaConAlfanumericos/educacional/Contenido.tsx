@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CajaTitulo } from '../estilos';
+import ContenedorContexto from '../ContenedorContexto';
 import estilos from 'estilosParaMapas/ParaMapas.module.css'
 import SexoEdad from '../SexoEdad';
 import MapaInfraestructura from 'components/consultaConAlfanumericos/educacional/MapaInfraestructuraPorComunidades';
@@ -50,6 +51,7 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
             }
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Infraestructura para la Educación</CajaTitulo>
+                <ContenedorContexto texto = 'Los siguientes datos constituyen una caracterización de la población escolarizada en el territorio. Esta información básica es útil para observar a detalle la infraestructura educativa, el grado de escolarización y la distribución poblacional según su nivel educativo.' />
                 <MapaInfraestructura datos={datosEducacionales} modo={modo} />
             </WrapperAnimadoParaHistorias>
             <WrapperAnimadoParaHistorias>

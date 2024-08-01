@@ -97,3 +97,12 @@ export const CajaReductor = styled.div`
   text-align: center;
   z-index: 2;
 `;
+
+export const Contexto = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  text-align: center;
+  margin: 1rem;
+`
