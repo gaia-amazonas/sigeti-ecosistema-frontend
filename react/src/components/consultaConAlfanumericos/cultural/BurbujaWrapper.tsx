@@ -54,10 +54,10 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       <>
         <WrapperAnimadoParaHistorias>
           <CajaTitulo>{titulo}</CajaTitulo>
-          <ContenedorContexto texto= 'El siguiente mapa identifica la distribución de pueblos 
+          <ContenedorContexto texto="El siguiente mapa identifica la distribución de pueblos
           indígenas y hablantes de lenguas tradicionales. Los pueblos indígenas se han constituido 
           espacialmente en el territorio por distintas dinámicas de movilidad y relacionamiento social, 
-          que ahora definen la diversidad étnica y diversidad lingüística en el territorio.' />
+          que ahora definen la diversidad étnica y diversidad lingüística en el territorio." />
 
           <ContenedorContexto texto= 'Selecciona de la lista desplegable:' />
 

@@ -14,7 +14,7 @@ import MarcadorConEscolaridadPorComunidadGraficoTorta from './MarcadorConEscolar
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import bbox from '@turf/bbox';
-import isClient from 'utilidades/isClient';
+
 
 interface MapaConControlesProps {
     datosEducacionales: DatosConsultados;
@@ -142,6 +142,7 @@ const MapaConControles: React.FC<MapaConControlesProps> = ({ datosEducacionales,
             </FormControl>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <a style={{ textAlign: 'left' }}>{sliderValue[0]}</a>
+                <a>Seleccione rango de edades</a>
                 <a style={{ textAlign: 'right' }}>{sliderValue[1]}</a>
             </div>
             <div style={{ width: '100%' }}>
