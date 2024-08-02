@@ -1,4 +1,4 @@
-// src/components/consultaConAlfanumericos/general/FamiliasYPoblacionYElectricidad.tsx
+// src/components/consultaConAlfanumericos/general/FamiliasYPoblacion.tsx
 
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -94,7 +94,6 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
         </select>
         ) : (<p></p>)
       }
-
       <div style={{ width: '80%', flexGrow: 1 }}>
         <Bar data={datosParaGraficoConTerritorio} options={estilizaGraficoConTerritorio()} />
       </div>
@@ -103,13 +102,6 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
 };
 
 export default FamiliasYPoblacionYElectricidad;
-
-interface DatosAgrupados {
-  comunidades: string[];
-  familias: number[];
-  poblacionTotal: number[];
-  familiasConElectricidad: number[];
-}
 
 type DatosParaGraficoConTerritorio = {
   comunidades: string[];
@@ -142,15 +134,7 @@ const estructuraGraficoConTerritorio = ({
         borderWidth: 1,
         barThickness: 20,
         data: poblacionTotal,
-      },
-      {
-        label: 'Familias con Electricidad',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        barThickness: 20,
-        data: familiasConElectricidad,
-      },
+      }
     ],
   };
 };
@@ -159,15 +143,14 @@ const estilizaGraficoConTerritorio = (): ChartOptions<'bar'> => {
   return {
     responsive: true,
     maintainAspectRatio: false,
-    indexAxis: 'y',
     scales: {
       x: {
         beginAtZero: true,
-        stacked: true,
+        stacked: false,
       },
       y: {
         beginAtZero: true,
-        stacked: true,
+        stacked: false,
       },
     },
   };

@@ -8,11 +8,12 @@ import ComunidadesEnTerritoriosDatosConsultados from 'tipos/general/deDatosConsu
 import ComunidadesEnTerritoriosDatosConsultadosDinamicos from 'tipos/general/deDatosConsultados/dinamicos/comunidadesEnTerritorios';
 import Mujer from '../sexo/Mujer';
 import Hombre from '../sexo/Hombre';
+import ContenedorContexto from 'components/consultaConAlfanumericos/ContenedorContexto';
 import ComponenteSexoEdad from '../../SexoEdad';
 import TotalYFamilias from '../TotalYFamilias';
 import QueEstoyViendo from '../QueEstoyViendo';
 import MapaComunidadesPorTerritorio from '../MapaPoblacionEnComunidades';
-import FamiliasYPoblacionYElectricidad from '../FamiliasYPoblacionYElectricidad';
+import FamiliasYPoblacion from '../FamiliasYPoblacion';
 import FiltrosAvanzadosIcono from '../FiltrosAvanzadosIcono';
 import FiltrosAvanzadosPopup from '../FiltrosAvanzadosPopup';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
@@ -106,6 +107,9 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
           />
           <Mujer contador={mujerContador} />
         </ContenedorGrafico>
+        <ContenedorContexto texto='Los siguientes datos son el resultado de un ejercicio de recolección de información sobre 
+        dimensión poblacional en el año 2021, por parte de los equipos territoriales indígenas en el marco de la puesta en funcionamiento 
+        del decreto ley 632 de 2018.'/>
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Sexo y Edad</CajaTitulo>
@@ -113,7 +117,7 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Familias y Población</CajaTitulo>
-        <FamiliasYPoblacionYElectricidad
+        <FamiliasYPoblacion
           familiasPorComunidad={datosExtraidos.familiasPorComunidad}
           poblacionPorComunidad={datosExtraidos.poblacionPorComunidad}
           familiasConElectricidadPorComunidad={datosExtraidos.familiasConElectricidadPorComunidad}
@@ -121,7 +125,7 @@ const ComponenteGeneralComponentesEnTerritorios: React.FC<ComponenteGeneralComun
         />
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
-        <CajaTitulo>Poblacion Total y por Sexo </CajaTitulo>
+        <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
         <MapaComunidadesPorTerritorio
           territoriosGeoJson={datosExtraidos.territoriosGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}

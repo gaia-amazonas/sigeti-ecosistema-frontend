@@ -62,8 +62,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
   return (
     <>
       <WrapperAnimadoParaHistorias>
-        <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
-        <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
+        <p>En construcción</p>
+        {/* <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo> */}
+        {/* <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
           <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
           {
             datos.territoriosGeoJson && (
@@ -71,7 +72,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
             )
           }
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url="https://api.maptiler.com/maps/210f299d-7ee0-44b4-8a97-9c581923af6d/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
           {datos.territoriosGeoJson && (
@@ -94,7 +95,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
               />
             );
           })}
-        </MapContainer>
+        </MapContainer> */}
       </WrapperAnimadoParaHistorias>
     </>
   );

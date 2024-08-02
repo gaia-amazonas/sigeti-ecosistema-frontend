@@ -35,12 +35,13 @@ Despliega la imagen Docker en Google Cloud Run con el siguiente comando:
 ```sh
 gcloud run deploy sigeti-ecosistema-frontend \
   --image gcr.io/sigeti/sigeti-ecosistema-frontend:produccion \
-  --platform managed \
   --region southamerica-east1 \
+  --network frontend \
+  --subnet frontend \
   --allow-unauthenticated \
-  --min-instances 1
-  --set-env-vars "AMBIENTE=produccion"
+  --min-instances 1 \
+  --set-env-vars "AMBIENTE=produccion" \
+  --vpc-egress=all-traffic
 ```
----
 
 Siguiendo estos pasos, puedes construir, probar y desplegar la aplicación **sigeti-ecosistema-frontend** usando Google Cloud Run.

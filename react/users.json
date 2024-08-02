@@ -27,5 +27,33 @@
     "role": "territorial",
     "territoriosPrivados": ["AR"],
     "email": "user@example.com"
+  },
+  {
+    "username": "apaporis",
+    "password": "3456",
+    "role": "territorial",
+    "territoriosPrivados": ["YA"],
+    "email": "user@example.com"
+  },
+  {
+    "username": "miriti",
+    "password": "2345",
+    "role": "territorial",
+    "territoriosPrivados": ["MP"],
+    "email": "user@example.com"
+  },
+  {
+    "username": "tiquie",
+    "password": "1234",
+    "role": "territorial",
+    "territoriosPrivados": ["TQ"],
+    "email": "user@example.com"
+  },
+  {
+    "username": "pira",
+    "password": "4567",
+    "role": "territorial",
+    "territoriosPrivados": ["PP"],
+    "email": "user@example.com"
   }
 ]

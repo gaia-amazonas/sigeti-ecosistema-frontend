@@ -52,23 +52,23 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
   const [mostrarLineasColindantes, establecerMostrarLineas] = useState(true);
   const [mostrarTerritorios, establecerMostrarTerritorios] = useState(true);
   const [mostrarComunidades, establecerMostrarComunidades] = useState(true);
-  const [estaCargandoLineas, establecerEstaCargandoLineas] = useState(true);
-  const [estaCargandoTerritorios, establecerEstaCargandoTerritorios] = useState(true);
-  const [estaCargandoComunidades, establecerEstaCargandoComunidades] = useState(true);
+  const [estaCargando, establecerEstaCargando] = useState(true);
 
-  const allDataLoaded = !estaCargandoLineas && !estaCargandoTerritorios && !estaCargandoComunidades;
+  const allDataLoaded = !estaCargando;
 
   useEffect(() => {
     traerDatosInicialesDeMapa(modo);
   }, [modo]);
 
   const traerDatosInicialesDeMapa = async (modo: string | string[]) => {
-    establecerEstaCargandoLineas(true);
-    traerLineasColindantes(modo);
-    establecerEstaCargandoTerritorios(true);
-    traerTerritorios(modo);
-    establecerEstaCargandoComunidades(true);
-    traerComunidades(modo);
+    establecerEstaCargando(true);
+    try {
+      await Promise.all([traerLineasColindantes(modo), traerTerritorios(modo), traerComunidades(modo)]);
+    } catch (error) {
+      logger.error('Error fetching data:', error);
+    } finally {
+      establecerEstaCargando(false);
+    }
   };
 
   const traerLineasColindantes = async (modo: string | string[]) => {
@@ -80,10 +80,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonLineas = await buscarDatosGeoJson(consultasBigQueryParaLineasColindantes.geometriasYColindanciaEntre, modo, lineas);
       establecerLineasColindantesGeoJson(geoJsonLineas);
-      establecerEstaCargandoLineas(false);
     } catch (error) {
       logger.error('Error buscando lineas:', error);
-      establecerEstaCargandoLineas(false);
     }
   };
 
@@ -96,10 +94,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonTerritorios = await buscarDatosGeoJson(consultasBigQueryParaTerritorios.geometrias, modo, territorios);
       establecerTerritoriosGeoJson(geoJsonTerritorios);
-      establecerEstaCargandoTerritorios(false);
     } catch (error) {
       logger.error('Error buscando territorios:', error);
-      establecerEstaCargandoTerritorios(false);
     }
   };
 
@@ -112,10 +108,8 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
       });
       const geoJsonComunidades = await buscarDatosGeoJson(consultasBigQueryParaComunidades.comunidades, modo, comunidades);
       establecerComunidadesGeoJson(geoJsonComunidades);
-      establecerEstaCargandoComunidades(false);
     } catch (error) {
       logger.error('Error buscando comunidades:', error);
-      establecerEstaCargandoComunidades(false);
     }
   };
 
@@ -177,21 +171,21 @@ const Mapa: React.FC<MapaImp> = ({ modo }) => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      {estaCargandoLineas || estaCargandoTerritorios || estaCargandoComunidades ? (
+      {estaCargando ? (
         <div className={estilos['superposicionCarga']}>
           <div className={estilos.spinner}></div>
         </div>
       ) : null}
       <div style={estiloContenedorBotones}>
         <button onClick={() => establecerMostrarOSM(!mostrarOSM)} style={estiloBoton(mostrarOSM, 'green')}>OSM</button>
-        <button onClick={() => establecerMostrarLineas(!mostrarLineasColindantes)} style={estiloBoton(mostrarLineasColindantes, '#FF0000')}>Lineas</button>
+        <button onClick={() => establecerMostrarLineas(!mostrarLineasColindantes)} style={estiloBoton(mostrarLineasColindantes, '#FF0000')}>Colindancias</button>
         <button onClick={() => establecerMostrarTerritorios(!mostrarTerritorios)} style={estiloBoton(mostrarTerritorios, '#3388FF')}>Territorios</button>
-        <button onClick={() => establecerMostrarComunidades(!mostrarComunidades)} style={estiloBoton(mostrarComunidades, '#3388FF')}>Comunidades</button>
+        <button onClick={() => establecerMostrarComunidades(!mostrarComunidades)} style={estiloBoton(mostrarComunidades, '#808080')}>Comunidades</button>
       </div>
       <MapContainer center={[-0.227026, -70.067765]} zoom={7} style={{ height: '100%', width: '100%' }}>
         {mostrarOSM && (
           <TileLayer
-            url={modo === "online" ? "https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWRyaXJzZ2FpYSIsImEiOiJjazk0d3RweHIwaGlvM25uMWc5OWlodmI0In0.7v0BCtVHaGqVi2MnbLeM5Q" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
+            url={modo === "online" ? "https://api.maptiler.com/maps/d2c25c43-29c2-47a0-ac77-01ac61ddfd97/256/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
             attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
           />
         )}

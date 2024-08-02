@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import estilos from 'estilosParaMapas/ParaMapas.module.css';
 import MapaCultural from './MapaCultural';
+import ContenedorContexto from '../ContenedorContexto';
 import { CajaTitulo } from '../estilos';
 import QueEstoyViendo from '../general/QueEstoyViendo';
 import WrapperAnimadoParaHistorias from '../WrapperAnimadoParaHistorias';
+
 
 interface CulturalGraficoBurbujaWrapperImp {
   datos: any;
@@ -52,6 +54,13 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
       <>
         <WrapperAnimadoParaHistorias>
           <CajaTitulo>{titulo}</CajaTitulo>
+          <ContenedorContexto texto="El siguiente mapa identifica la distribución de pueblos
+          indígenas y hablantes de lenguas tradicionales. Los pueblos indígenas se han constituido 
+          espacialmente en el territorio por distintas dinámicas de movilidad y relacionamiento social, 
+          que ahora definen la diversidad étnica y diversidad lingüística en el territorio." />
+
+          <ContenedorContexto texto= 'Selecciona de la lista desplegable:' />
+
           <div className={estilos.controls}>
             <select onChange={handleOptionChange} value={selectedOption}>
               <option value="lenguas">Lenguas</option>

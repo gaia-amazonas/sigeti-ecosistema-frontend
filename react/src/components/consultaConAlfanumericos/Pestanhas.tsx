@@ -370,7 +370,7 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
         <BotonReiniciar onClick={reiniciar} />
         <Titulo>Temáticas</Titulo>
         <ListaPestanhas>
-          <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>Cuántos somos?</EstiloPestanha>
+          <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>¿Cuántos somos?</EstiloPestanha>
           <EstiloPestanha $activo={activo === 'pestanhaCultural'} onClick={() => establecerActivo('pestanhaCultural')}>Cultural</EstiloPestanha>
           <EstiloPestanha $activo={activo === 'pestanhaEducacional'} onClick={() => establecerActivo('pestanhaEducacional')}>Educación</EstiloPestanha>
           <EstiloPestanha $activo={activo === 'pestanhaSalud'} onClick={() => establecerActivo('pestanhaSalud')}>Salud</EstiloPestanha>
