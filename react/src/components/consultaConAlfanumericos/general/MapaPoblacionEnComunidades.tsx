@@ -69,7 +69,6 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const [sexosPorComunidad, setSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
   const [cargando, setCargando] = useState<{ [id: string]: boolean }>({});
-  const comunidadesId = comunidadesGeoJson.features.map((row) => row.properties?.id);
   
   useEffect(() => {
     const ordenaSexosPorComunidad = async () => {

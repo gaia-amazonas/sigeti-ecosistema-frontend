@@ -62,7 +62,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
   return (
     <>
       <WrapperAnimadoParaHistorias>
-        <p>En desarrollo</p>
+        <p>En construcción</p>
         {/* <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo> */}
         {/* <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
           <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />

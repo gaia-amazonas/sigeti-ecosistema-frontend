@@ -6,9 +6,7 @@ import bbox from '@turf/bbox';
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
-import Comunidades from '../../Comunidades';
 import logger from 'utilidades/logger';
-import isClient from 'utilidades/isClient';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import DatosConsultados from 'tipos/educacional/datosConsultados';
 import { traeInfraestructuraEducacionalPorComunidad } from 'buscadores/paraMapa';
@@ -17,7 +15,6 @@ import MalocasIcon from 'logos/Maloca_Redonda_001.png';
 import EducativaIcon from 'logos/Educacion_001.png';
 import SaludIcon from 'logos/Salud_001.png';
 
-import { useUser } from '../../../context/UserContext';
 import Image from 'next/image';
 
 interface InfraestructuraPorComunidad {
@@ -71,6 +68,35 @@ const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCo
 type Key = string;
 type ConjuntoDeValores = Set<"Educativa" | "Salud" | "Malocas">;
 type MapaDeTiposPorComunidades = Map<Key, ConjuntoDeValores>;
+
+const Legend = () => {
+    return (
+        <div style={{
+            position: 'absolute',
+            bottom: '10px',
+            left: '10px',
+            backgroundColor: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            boxShadow: '0 0 15px rgba(0, 0, 0, 0.2)',
+            zIndex: 1000,
+        }}>
+            <h4>Leyenda</h4>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                <Image src={MalocasIcon.src} alt="Malocas Icon" width={24} height={24} style={{ marginRight: '5px' }} />
+                <span>Malocas</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                <Image src={EducativaIcon.src} alt="Educativa Icon" width={24} height={24} style={{ marginRight: '5px' }} />
+                <span>Educativa</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Image src={SaludIcon.src} alt="Salud Icon" width={24} height={24} style={{ marginRight: '5px' }} />
+                <span>Salud</span>
+            </div>
+        </div>
+    );
+};
 
 const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
     const [infraestructuraEducacionalPorComunidad, establecerInfraestructuraEducacionalPorComunidad] = useState<{ [id: string]: InfraestructuraPorComunidad }>({});
@@ -138,7 +164,7 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
     return (
         <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={zoomNivel} style={{ height: '30rem', width: '100%', zIndex: 1, borderRadius: '3rem' }}>
             <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
-            { datos.territoriosGeoJson && <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} /> }
+                { datos.territoriosGeoJson && <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} /> }
             <TileLayer
                 url={modo === "online" ? "https://api.maptiler.com/maps/210f299d-7ee0-44b4-8a97-9c581923af6d/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
                 attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
@@ -201,6 +227,7 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                     </div>
                 </Popup>
             )}
+            <Legend />
         </MapContainer>
     );
 };

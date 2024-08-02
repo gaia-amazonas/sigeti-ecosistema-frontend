@@ -94,7 +94,6 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
         </select>
         ) : (<p></p>)
       }
-
       <div style={{ width: '80%', flexGrow: 1 }}>
         <Bar data={datosParaGraficoConTerritorio} options={estilizaGraficoConTerritorio()} />
       </div>
@@ -103,13 +102,6 @@ const FamiliasYPoblacionYElectricidad: React.FC<FamiliasYPoblacionYElectricidadI
 };
 
 export default FamiliasYPoblacionYElectricidad;
-
-interface DatosAgrupados {
-  comunidades: string[];
-  familias: number[];
-  poblacionTotal: number[];
-  familiasConElectricidad: number[];
-}
 
 type DatosParaGraficoConTerritorio = {
   comunidades: string[];

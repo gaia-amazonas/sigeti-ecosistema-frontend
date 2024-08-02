@@ -40,6 +40,7 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
                 user && user.user && (
                     <WrapperAnimadoParaHistorias>
                         <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
+                        <ContenedorContexto texto = 'Los siguientes datos constituyen una caracterización de la población escolarizada en el territorio. Esta información básica es útil para observar a detalle la infraestructura educativa, el grado de escolarización y la distribución poblacional según su nivel educativo.' />
                         <MapaConControles
                             datosEducacionales={datosEducacionales}
                             datosParaConsulta={datosParaConsulta}
@@ -50,8 +51,7 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
                 )
             }
             <WrapperAnimadoParaHistorias>
-                <CajaTitulo>Infraestructura para la Educación</CajaTitulo>
-                <ContenedorContexto texto = 'Los siguientes datos constituyen una caracterización de la población escolarizada en el territorio. Esta información básica es útil para observar a detalle la infraestructura educativa, el grado de escolarización y la distribución poblacional según su nivel educativo.' />
+                <CajaTitulo>Infraestructura</CajaTitulo>
                 <MapaInfraestructura datos={datosEducacionales} modo={modo} />
             </WrapperAnimadoParaHistorias>
             <WrapperAnimadoParaHistorias>
