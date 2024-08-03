@@ -9,7 +9,7 @@ interface MujerComponentImp {
 const MujerComponent: React.FC<MujerComponentImp> = ({ contador }) => {
   return (
     <ContenedorImagen>
-      <Imagen src="/logos/Mujer_001.png" alt="Mujer" style={{maxWidth: '6rem'}} />
+      <Imagen src="/logos/Mujer_001.png" alt="Mujer" style={{height: '6rem', maxWidth: '6rem'}} />
       <CajaReductor>MUJERES<br />{contador === null? '-' : contador}</CajaReductor>
     </ContenedorImagen>
   );

@@ -1,12 +1,11 @@
 // src/components/consultaConAlfanumericos/cultural/MapaCultural.tsx
 
 import 'leaflet/dist/leaflet.css';
-import * as turf from '@turf/turf';
 import bbox from '@turf/bbox';
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
-import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, Popup, useMap } from 'react-leaflet';
 import CustomCircleMarker from '../general/CustomCircleMarker';
 import CulturalGraficoBurbuja from './Contenido';
 import L from 'leaflet';
@@ -118,7 +117,6 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       {comunidadesGeoJson && (
         <>
           {comunidadesGeoJson.features.map((feature, index) => {
-            const centroide = turf.centroid(feature).geometry.coordinates;
             const id = feature.properties?.id;
             const datosFeature = datos.filter(d => d[agregador] === id);
             const total = datosFeature.reduce((sum) => sum + 1, 0);
