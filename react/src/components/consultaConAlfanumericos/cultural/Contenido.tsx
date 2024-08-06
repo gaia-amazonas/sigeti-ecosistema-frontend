@@ -3,9 +3,9 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-
 interface GraficoBurbujaImp {
   datos: any[];
+  comunidades: { [key: string]: string };
   labelKey: string;
   valueKey: string;
   groupKey: string;
@@ -23,7 +23,7 @@ interface DatosJerarquicos {
   valor: number;
 }
 
-const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, valueKey, groupKey, mostrarMenosRepresentativo }) => {
+const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, comunidades, labelKey, valueKey, groupKey, mostrarMenosRepresentativo }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -31,7 +31,7 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, 
     if (!containerRef.current || !svgRef.current) return;
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
-    const datosJerarquicos = creaDatosJerarquicos(datos, labelKey, valueKey, groupKey);
+    const datosJerarquicos = creaDatosJerarquicos(datos, labelKey, valueKey, groupKey, comunidades);
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr('width', width)
       .attr('height', height)
@@ -47,7 +47,7 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, 
   }, [datos, labelKey, valueKey, groupKey, mostrarMenosRepresentativo]);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ width: '100%', height: '90%' }}>
       <svg ref={svgRef}></svg>
     </div>
   );
@@ -55,12 +55,12 @@ const CulturalGraficoBurbuja: React.FC<GraficoBurbujaImp> = ({ datos, labelKey, 
 
 export default CulturalGraficoBurbuja;
 
-const creaDatosJerarquicos = (datos: any[], labelKey: string, valueKey: string, groupKey: string): DatosJerarquicos[] => {
+const creaDatosJerarquicos = (datos: any[], labelKey: string, valueKey: string, groupKey: string, comunidades: { [key: string]: string }): DatosJerarquicos[] => {
   const groupedData = d3.group(datos, d => d[groupKey]);
   const result: DatosJerarquicos[] = [];
   groupedData.forEach((value, key) => {
     result.push({
-      label: key,
+      label: `Comunidad: ${comunidades[key] || key}`,
       valor: 0,
       children: value.map((item) => ({
         label: item[labelKey],

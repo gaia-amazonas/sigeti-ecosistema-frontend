@@ -39,7 +39,7 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
             {
                 user && user.user && (
                     <WrapperAnimadoParaHistorias>
-                        <CajaTitulo>Mapa de Escolarización Primaria y Secundaria</CajaTitulo>
+                        <CajaTitulo>Mapa de Escolarización: Primaria y Secundaria</CajaTitulo>
                         <ContenedorContexto texto = 'Los siguientes datos constituyen una caracterización de la población escolarizada en el territorio. Esta información básica es útil para observar a detalle la infraestructura educativa, el grado de escolarización y la distribución poblacional según su nivel educativo.' />
                         <MapaConControles
                             datosEducacionales={datosEducacionales}
@@ -47,12 +47,14 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
                             queEstoyViendo={queEstoyViendo}
                             modo={modo}
                         />
+                        <ContenedorContexto texto='Zoom en el mapa para ver la proporción de escolarización'></ContenedorContexto>
                     </WrapperAnimadoParaHistorias>
                 )
             }
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Infraestructura</CajaTitulo>
                 <MapaInfraestructura datos={datosEducacionales} modo={modo} />
+                <ContenedorContexto texto = 'Clique los círculos para ver con qué tipo de infraestructura cuenta' />
             </WrapperAnimadoParaHistorias>
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Selecciona Tipo de Escolaridad</CajaTitulo>

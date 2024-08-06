@@ -11,6 +11,7 @@ import logger from 'utilidades/logger';
 import { MapContainer, TileLayer, GeoJSON, useMapEvents, useMap } from 'react-leaflet';
 import CustomCircleMarker from './CustomCircleMarker';
 import MarcadorConSexosPorComunidadGraficoTorta from './sexosPorComunidadGraficoTorta/MarcadorConSexosPorComunidadGraficoTorta';
+import L from 'leaflet';
 
 interface MapaImp {
   territoriosGeoJson: FeatureCollection;
@@ -65,6 +66,36 @@ const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCo
   return null;
 };
 
+const Legend = ({ min, max }: { min: number; max: number }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const legend = new L.Control({ position: 'bottomright' });
+    legend.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      div.innerHTML = `
+        <h4>Población</h4>
+        <div style="background: linear-gradient(to right, rgb(255, 255, 0), rgb(255, 0, 0)); width: 100px; height: 20px; border-radius: 5px;"></div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>${min}</span><span>${max}</span>
+        </div>
+        <div>
+          <i style="background: rgb(255, 255, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Baja
+          <br>
+          <i style="background: rgb(255, 0, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Alta
+        </div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+    return () => {
+      map.removeControl(legend);
+    };
+  }, [map, min, max]);
+
+  return null;
+};
+
 const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo }) => {
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const [sexosPorComunidad, setSexosPorComunidad] = useState<{ [id: string]: { hombres: number, mujeres: number } }>({});
@@ -101,6 +132,7 @@ const Mapa: React.FC<MapaImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo 
     <MapContainer style={{ height: '30rem', width: '100%', zIndex: 1, borderRadius: '3rem' }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
       <AdjustMapBounds territoriosGeoJson={territoriosGeoJson} />
+      <Legend min={minPopulation} max={maxPopulation} />
       <TileLayer
         url={modo === "online" ? "https://api.maptiler.com/maps/d2c25c43-29c2-47a0-ac77-01ac61ddfd97/256/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
         attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
