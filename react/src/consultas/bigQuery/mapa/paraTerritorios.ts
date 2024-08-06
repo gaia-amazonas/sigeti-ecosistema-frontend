@@ -2,12 +2,12 @@
 const consultasBigQueryParaTerritorios = {
     geometrias: `
         SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti ID_TI,
-            territorio NOMBRE_TI,
-            CONCAT("TI", SUBSTRING(territorio, 21)) ABREV_TI
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI,
+            NOMBRE_TI,
+            CONCAT("TI ", SUBSTRING(NOMBRE_TI, 21)) ABREV_TI
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
     ,
     gestionDocumentalTerritorio: (territorioId: string) => `
         SELECT
