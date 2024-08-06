@@ -14,25 +14,37 @@ const funciones: Record<string, Query> = {
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
             ${haceClausulasWhere({ comunidadesId }, 'id_cnida')} AND
-            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
+            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`
+    ,
+    chagrasPorPersonaYFamilia: ({ comunidadesId }) => `
+        SELECT
+            id_cnida AS comunidadId,
+            id_ti AS territorioId,
+            chagras_x_persona AS chagrasPorPersona,
+            chagras_x_familia AS chagrasPorFamilia
+        FROM
+            \`sigeti.NS_NC.chagras_por_persona_y_familia_en_comunidad\`
+        WHERE
+            ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
+    ,
     territorios: ({ territoriosId }) => `
         SELECT DISTINCT
-        ST_AsGeoJSON(geometry) AS geometry,
-        id_ti AS id,
-        territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-        \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-        ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
+            ${haceClausulasWhere({ territoriosId }, 'ID_TI')};`,
     comunidadesEnTerritorios: ({ comunidadesId }) => `
         SELECT
-        ST_AsGeoJSON(geometry) AS geometry,
-        id_cnida AS id,
-        nomb_cnida AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-        \`sigeti.unidades_de_analisis.comunidades_censo632\`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
         WHERE
-        ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
+            ${haceClausulasWhere({ comunidadesId }, 'ID_CNIDA')};`
 };
 
 export default funciones;

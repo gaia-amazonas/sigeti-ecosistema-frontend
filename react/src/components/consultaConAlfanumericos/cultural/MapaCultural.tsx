@@ -1,15 +1,13 @@
 // src/components/consultaConAlfanumericos/cultural/MapaCultural.tsx
 
 import 'leaflet/dist/leaflet.css';
-import * as turf from '@turf/turf';
 import bbox from '@turf/bbox';
 import React, { useEffect, useState } from 'react';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
-import { MapContainer, TileLayer, GeoJSON, useMapEvents, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, Popup, useMap } from 'react-leaflet';
 import CustomCircleMarker from '../general/CustomCircleMarker';
 import CulturalGraficoBurbuja from './Contenido';
-import L from 'leaflet';
 
 interface MapaCulturalImp {
   territoriosGeoJson: FeatureCollection;
@@ -76,24 +74,6 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
   const handleMarkerClick = (position: [number, number], datosComunidad: any[], total: number) => {
     setPopupInfo({ position, datosComunidad, total });
   };
-  const crearMarcadorNombre = (nombre: string) => {
-    return L.divIcon({
-      html: `<div style="z-index: 10;
-            font-size: 1rem;
-            font-weight: bold;
-            color: black;
-            background: white;
-            margin-left: 0rem;
-            margin-right: 0;
-            border-radius: 1rem;
-            padding-left: 1rem;
-            padding-right: 5rem">${nombre}
-        </div>`,
-      iconSize: [nombre.length * 6, 20],
-      iconAnchor: [nombre.length * 3, 10],
-      className: ''
-    });
-  };
 
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
     const id = comunidad.properties?.id;
@@ -118,7 +98,6 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
       {comunidadesGeoJson && (
         <>
           {comunidadesGeoJson.features.map((feature, index) => {
-            const centroide = turf.centroid(feature).geometry.coordinates;
             const id = feature.properties?.id;
             const datosFeature = datos.filter(d => d[agregador] === id);
             const total = datosFeature.reduce((sum) => sum + 1, 0);

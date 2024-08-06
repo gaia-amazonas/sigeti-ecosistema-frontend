@@ -14,27 +14,32 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
-            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
+            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`
+    ,
+    chagrasPorPersonaYFamilia: () => `
+        SELECT
+            id_cnida AS comunidadId,
+            id_ti AS territorioId,
+            chagras_x_persona AS chagrasPorPersona,
+            chagras_x_familia AS chagrasPorFamilia
+        FROM
+            \`sigeti.NS_NC.chagras_por_persona_y_familia_en_comunidad\`;`
+    ,
     territorios: () => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`,
-    comunidadesEnTerritorios: ( territoriosPrivados ) => `
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
+    ,
+    comunidadesEnTerritorios: () => `
         SELECT
-            ST_AsGeoJSON(cc.geometry) AS geometry,
-            cc.id_cnida AS id,
-            cc,nomb_cnida AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` cc
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            cc.id_cnida = cpt.id_cnida
-        WHERE
-            ${haceClausulasWhere({ territoriosPrivados }, 'id_ti')};`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
     };
 
 export default funciones;
