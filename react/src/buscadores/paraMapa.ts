@@ -11,11 +11,13 @@ import { FeatureLineas, FeatureTerritorios } from 'components/consultaConMapa/ti
 
 export const traeInformacionComunidad = async (idComunidad: string, modo: string | string[]) => {
   try {
-    const sexos = await buscarDatos(consultasBigQueryParaComunidades.sexo(idComunidad), modo);
-    const nombre = await buscarDatos(consultasBigQueryParaComunidades.nombreComunidad(idComunidad), modo);
-    const territorio = await buscarDatos(consultasBigQueryParaComunidades.nombreTerritorio(idComunidad), modo);
-    const familias = await buscarDatos(consultasBigQueryParaComunidades.familias(idComunidad), modo);
-    const pueblos = await buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo);
+    const [sexos, nombre, territorio, familias, pueblos] = await Promise.all([
+      buscarDatos(consultasBigQueryParaComunidades.sexo(idComunidad), modo),
+      buscarDatos(consultasBigQueryParaComunidades.nombreComunidad(idComunidad), modo),
+      buscarDatos(consultasBigQueryParaComunidades.nombreTerritorio(idComunidad), modo),
+      buscarDatos(consultasBigQueryParaComunidades.familias(idComunidad), modo),
+      buscarDatos(consultasBigQueryParaComunidades.pueblos(idComunidad), modo)
+    ]);
     return { sexos, nombre, territorio, familias, pueblos };
   } catch (error) {
     logger.error('Error buscando información demográfica por comunidad:', error);

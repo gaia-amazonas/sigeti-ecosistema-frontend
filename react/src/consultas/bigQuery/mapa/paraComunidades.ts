@@ -1,19 +1,20 @@
 // src/consultas/bigQuery/paraComunidades.ts
 
+
 const consultasBigQueryParaComunidades = {
     comunidades: `
         SELECT
-            ST_AsGeoJSON(geometry) AS geometry,
-            nomb_cnida,
-            id_cnida
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nomb_cnida,
+            ID_CNIDA AS id_cnida
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\`;`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
     ,
     nombreComunidad: (comunidadId: string) => `
         SELECT
-            nomb_cnida
+            NOMB_CNIDA AS nomb_cnida
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\`
+             \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`
         WHERE
             id_cnida = '${comunidadId}';`
     ,
@@ -83,33 +84,33 @@ const consultasBigQueryParaComunidades = {
     ,
     territorio: (comunidadId: string) => `
         SELECT
-            ST_AsGeoJSON(t.geometry) as geometry,
-            t.id_ti,
-            t.territorio
+            ST_AsGeoJSON(t.geo) as geometry,
+            t.ID_TI AS id_ti,
+            t.TERRITORIO AS territorio
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\` AS t
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` AS c
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            t.id_ti = c.id_ti
+            t.ID_TI = rcpt.id_ti
         WHERE
-            c.id_cnida = '${comunidadId}';`,
+            rcpt.id_cnida = '${comunidadId}';`,
     nombreTerritorio: (comunidadId: string) => `
         SELECT
-            t.territorio as nombreTerritorio
+            t.NOMBRE_TI AS nombreTerritorio
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\` AS t
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\` AS t
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` AS c
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            t.id_ti = c.id_ti
+            t.ID_TI = rcpt.id_ti
         WHERE
-            c.id_cnida = '${comunidadId}';`,
+            rcpt.id_cnida = '${comunidadId}';`,
     sexo: (comunidadId: string) => `
         SELECT
             SEXO, COUNT(*) 
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti.NS_NC.BD_Personas\`
         WHERE
             id_cnida = '${comunidadId}'
         GROUP BY
