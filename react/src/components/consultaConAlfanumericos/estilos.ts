@@ -102,7 +102,6 @@ export const Contexto = styled.div`
   position: relative;
   display: flex;
   flex: 1;
-  overflow: hidden;
   text-align: center;
   margin: 1rem;
 `

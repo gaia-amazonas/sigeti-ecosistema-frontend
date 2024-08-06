@@ -15,28 +15,28 @@ const funciones: Record<string, Query> = {
         WHERE
             ${haceClausulasWhere({ territoriosId }, 'id_ti')} AND
             (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
-    territorios: ({ territoriosId }, territoriosPrivados) => `
+    territorios: ({ territoriosId }) => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`
         WHERE
-            ${haceClausulasWhere({ territoriosId }, 'id_ti')};`,
-    comunidadesEnTerritorios: ({ territoriosId }, territoriosPrivados) => `
+            ${haceClausulasWhere({territoriosId}, 'ID_TI')};`,
+    comunidadesEnTerritorios: ({ territoriosId }) => `
         SELECT
-            ST_AsGeoJSON(cc.geometry) AS geometry,
-            cc.id_cnida AS id,
-            cc,nomb_cnida AS nombre
+            ST_AsGeoJSON(g.geo) AS geometry,
+            g.NOMB_CNIDA AS nombre,
+            g.ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` cc
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\` g
         JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
+            \`sigeti.censo_632.representacion_comunidades_por_territorio_2\` rcpt
         ON
-            cc.id_cnida = cpt.id_cnida
+            g.ID_CNIDA = rcpt.id_cnida
         WHERE
-            ${haceClausulasWhere({ territoriosId }, 'id_ti')};`
+            ${haceClausulasWhere({territoriosId}, 'g.ID_TI')};`
 };
 
 export default funciones;

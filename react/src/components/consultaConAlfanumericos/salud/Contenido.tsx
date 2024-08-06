@@ -22,10 +22,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
   const { user } = useUser();
 
-  if (!user) {
-    return <div><p>Ingrese al sistema para ver el mapa.</p></div>;
-  }
-
   if (datosSaludInvalidos(datos)) {
     return <div className={estilos['superposicionCargaConsultaAlfanumerica']}>
       <div className={estilos.spinner}></div>
@@ -61,41 +57,45 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
 
   return (
     <>
+      { user && (
+        <WrapperAnimadoParaHistorias>
+          <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
+          <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
+            <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
+            {
+              datos.territoriosGeoJson && (
+                <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} />
+              )
+            }
+            <TileLayer
+              url="https://api.maptiler.com/maps/210f299d-7ee0-44b4-8a97-9c581923af6d/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {datos.territoriosGeoJson && (
+              <GeoJSON data={datos.territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
+            )}
+            {mujeresEnEdadFertil.rows.map((row, idx) => {
+              const community = comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
+              if (!community) return null;
+              const coordinates = getCoordinates(community.geometry);
+              if (coordinates.length === 0) return null;
+              return (
+                <CustomCircleMarker
+                  key={idx}
+                  center={[coordinates[0][1], coordinates[0][0]]}
+                  baseRadius={2}
+                  color={getColor(row.proporcionMujeresEnEdadFertil)}
+                  proporcion={Math.round(row.proporcionMujeresEnEdadFertil)}
+                  total={row.mujeresEnEdadFertil}
+                  zoomNivel={zoomNivel}
+                />
+              );
+            })}
+          </MapContainer>
+        </WrapperAnimadoParaHistorias>
+      )}
       <WrapperAnimadoParaHistorias>
-        <p>En construcción</p>
-        {/* <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo> */}
-        {/* <MapContainer center={[0.969793, -70.830454]} zoom={zoomNivel} style={{ height: '600px', width: '100%', borderRadius: '3rem' }}>
-          <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
-          {
-            datos.territoriosGeoJson && (
-              <AdjustMapBounds territoriosGeoJson={datos.territoriosGeoJson} />
-            )
-          }
-          <TileLayer
-            url="https://api.maptiler.com/maps/210f299d-7ee0-44b4-8a97-9c581923af6d/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-          {datos.territoriosGeoJson && (
-            <GeoJSON data={datos.territoriosGeoJson as FeatureCollection<Geometry, GeoJsonProperties>} style={estiloTerritorio} />
-          )}
-          {mujeresEnEdadFertil.rows.map((row, idx) => {
-            const community = comunidadesGeoJson?.features.find(feature => feature.properties?.id === row.comunidadId);
-            if (!community) return null;
-            const coordinates = getCoordinates(community.geometry);
-            if (coordinates.length === 0) return null;
-            return (
-              <CustomCircleMarker
-                key={idx}
-                center={[coordinates[0][1], coordinates[0][0]]}
-                baseRadius={2}
-                color={getColor(row.proporcionMujeresEnEdadFertil)}
-                proporcion={Math.round(row.proporcionMujeresEnEdadFertil)}
-                total={row.mujeresEnEdadFertil}
-                zoomNivel={zoomNivel}
-              />
-            );
-          })}
-        </MapContainer> */}
+        <p>a</p>
       </WrapperAnimadoParaHistorias>
     </>
   );

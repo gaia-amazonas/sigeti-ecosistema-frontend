@@ -17,24 +17,19 @@ const funciones: Record<string, Query> = {
             (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
     territorios: () => `
         SELECT DISTINCT
-            ST_AsGeoJSON(geometry) AS geometry,
-            id_ti AS id,
-            territorio AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            ID_TI AS id,
+            NOMBRE_TI AS nombre
         FROM
-            \`sigeti.unidades_de_analisis.territorios_censo632\`;`,
-    comunidadesEnTerritorios: ( territoriosPrivados ) => `
+            \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
+    ,
+    comunidadesEnTerritorios: ( ) => `
         SELECT
-            ST_AsGeoJSON(cc.geometry) AS geometry,
-            cc.id_cnida AS id,
-            cc,nomb_cnida AS nombre
+            ST_AsGeoJSON(geo) AS geometry,
+            NOMB_CNIDA AS nombre,
+            ID_CNIDA AS id
         FROM
-            \`sigeti.unidades_de_analisis.comunidades_censo632\` cc
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            cc.id_cnida = cpt.id_cnida
-        WHERE
-            ${haceClausulasWhere({ territoriosPrivados }, 'id_ti')};`
+            \`sigeti-admin-364713.analysis_units.Comunidades_Vista\`;`
     };
 
 export default funciones;
