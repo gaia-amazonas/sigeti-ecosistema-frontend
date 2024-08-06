@@ -8,7 +8,6 @@ import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { MapContainer, TileLayer, GeoJSON, useMapEvents, Popup, useMap } from 'react-leaflet';
 import CustomCircleMarker from '../general/CustomCircleMarker';
 import CulturalGraficoBurbuja from './Contenido';
-import L from 'leaflet';
 
 interface MapaCulturalImp {
   territoriosGeoJson: FeatureCollection;
@@ -74,24 +73,6 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
   const [popupInfo, setPopupInfo] = useState<{ position: [number, number], datosComunidad: any[], total: number } | null>(null);
   const handleMarkerClick = (position: [number, number], datosComunidad: any[], total: number) => {
     setPopupInfo({ position, datosComunidad, total });
-  };
-  const crearMarcadorNombre = (nombre: string) => {
-    return L.divIcon({
-      html: `<div style="z-index: 10;
-            font-size: 1rem;
-            font-weight: bold;
-            color: black;
-            background: white;
-            margin-left: 0rem;
-            margin-right: 0;
-            border-radius: 1rem;
-            padding-left: 1rem;
-            padding-right: 5rem">${nombre}
-        </div>`,
-      iconSize: [nombre.length * 6, 20],
-      iconAnchor: [nombre.length * 3, 10],
-      className: ''
-    });
   };
 
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {

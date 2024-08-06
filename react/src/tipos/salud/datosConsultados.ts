@@ -15,13 +15,25 @@ export interface MujeresEnEdadFertil {
   rows: MujeresEnEdadFertilFila[];
 }
 
+interface ChagrasPorPersonaYFamiliaFila {
+  comunidadId: string;
+  territorioId: string;
+  chagrasPorPersona: number;
+  chagrasPorFamilia: number;
+}
+
+interface ChagrasPorPersonaYFamilia {
+  rows: ChagrasPorPersonaYFamiliaFila[];
+}
+
 interface TerritoriosGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
 interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperties> {};
 
 interface DatosConsultados {
   mujeresEnEdadFertil: MujeresEnEdadFertil | null;
-  comunidadesGeoJson: ComunidadesGeoJson | null;
-  territoriosGeoJson: TerritoriosGeoJson | null;
+  chagrasPorPersonaYFamilia: ChagrasPorPersonaYFamilia | null;
+  comunidadesGeoJson: ComunidadesGeoJson;
+  territoriosGeoJson: TerritoriosGeoJson;
 }
 
 export default DatosConsultados;

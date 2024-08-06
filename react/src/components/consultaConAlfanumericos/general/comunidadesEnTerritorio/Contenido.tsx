@@ -95,9 +95,7 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
           />
           <Mujer contador={mujerContador} />
         </ContenedorGrafico>
-        <ContenedorContexto texto='Los siguientes datos son el resultado de un ejercicio de recolección de información sobre 
-        dimensión poblacional en el año 2021, por parte de los equipos territoriales indígenas en el marco de la puesta en funcionamiento 
-        del decreto ley 632 de 2018.'/>
+        <ContenedorContexto texto='Los siguientes datos son el resultado de un ejercicio de recolección de información sobre dimensión poblacional en el año 2021, por parte de los equipos territoriales indígenas en el marco de la puesta en funcionamiento del decreto ley 632 de 2018.'/>
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Sexo y Edad</CajaTitulo>
@@ -105,7 +103,8 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
-        <ContenedorContexto texto= 'Acérquese dentro del mapa a la comunidad para conocer la población total y su estructura según el sexo.' />        <MapaComunidadesPorTerritorio
+        <ContenedorContexto texto= 'Acérquese dentro del mapa a la comunidad para conocer la población total y su estructura según el sexo.' />
+        <MapaComunidadesPorTerritorio
           territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           modo={modo}

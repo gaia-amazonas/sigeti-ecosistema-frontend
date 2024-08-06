@@ -14,7 +14,17 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
-            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
+            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`
+    ,
+    chagrasPorPersonaYFamilia: () => `
+        SELECT
+            id_cnida AS comunidadId,
+            id_ti AS territorioId,
+            chagras_x_persona AS chagrasPorPersona,
+            chagras_x_familia AS chagrasPorFamilia
+        FROM
+            \`sigeti.NS_NC.chagras_por_persona_y_familia_en_comunidad\`;`
+    ,
     territorios: () => `
         SELECT DISTINCT
             ST_AsGeoJSON(geo) AS geometry,
@@ -23,7 +33,7 @@ const funciones: Record<string, Query> = {
         FROM
             \`sigeti-admin-364713.analysis_units.TerritoriosIndigenas_Vista\`;`
     ,
-    comunidadesEnTerritorios: ( ) => `
+    comunidadesEnTerritorios: () => `
         SELECT
             ST_AsGeoJSON(geo) AS geometry,
             NOMB_CNIDA AS nombre,

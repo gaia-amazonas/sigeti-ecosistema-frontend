@@ -14,7 +14,19 @@ const funciones: Record<string, Query> = {
             \`sigeti.censo_632.mujeres_edad_fertil\`
         WHERE
             ${haceClausulasWhere({ comunidadesId }, 'id_cnida')} AND
-            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`,
+            (${haceClausulasWhere({ territoriosPrivados }, 'id_ti')});`
+    ,
+    chagrasPorPersonaYFamilia: ({ comunidadesId }) => `
+        SELECT
+            id_cnida AS comunidadId,
+            id_ti AS territorioId,
+            chagras_x_persona AS chagrasPorPersona,
+            chagras_x_familia AS chagrasPorFamilia
+        FROM
+            \`sigeti.NS_NC.chagras_por_persona_y_familia_en_comunidad\`
+        WHERE
+            ${haceClausulasWhere({ comunidadesId }, 'id_cnida')};`
+    ,
     territorios: ({ territoriosId }) => `
         SELECT DISTINCT
             ST_AsGeoJSON(geo) AS geometry,
