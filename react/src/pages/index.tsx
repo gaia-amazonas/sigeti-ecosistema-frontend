@@ -157,6 +157,16 @@ const Home: React.FC = () => {
           </CarreteFotografias>
         </Aside>
       </MainContainer>
+      <Texto_complemento>
+        <h2>Texto complementario del home</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero veritatis, impedit, 
+          voluptatem expedita saepe omnis cupiditate recusandae quia unde tempora fugit facilis 
+          totam laboriosam, dicta fugiat consequatur est eos ut.</p>
+      </Texto_complemento>
+      <MapaSitio>
+        <h2>Índice del SIGETI</h2>
+        
+      </MapaSitio>
       <Footer>
         <div className="creditos">
         <p>Desarrollado por <a href='https://gaiaamazonas.org/'>Gaia Amazonas</a> con apoyo de las comunidades indígenas. 2024</p>
@@ -433,6 +443,40 @@ const AnimatedLink = styled(Link)`
   &:nth-child(3) {
     right: 1rem;
     bottom: 5rem;
+  }
+`;
+
+const Texto_complemento = styled.div`
+  background-color: #ffffff;
+  margin: 1rem;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 5px 5px 9px #e5e1d8;
+  
+  h2 {
+    text-align: center;
+    color: #006a7c;
+  }
+
+  p {
+    padding: 1rem;
+  }
+`;
+
+const MapaSitio = styled.div`
+  background-color: #ffffff;
+  margin: 1rem;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 5px 5px 9px #e5e1d8;
+  
+  h2 {
+    text-align: center;
+    color: #006a7c;
+  }
+
+  p {
+    padding: 1rem;
   }
 `;
 
