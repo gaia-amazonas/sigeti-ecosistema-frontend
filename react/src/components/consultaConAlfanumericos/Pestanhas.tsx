@@ -1,6 +1,7 @@
 // src/components/consultaConAlfanumericos/Pestanhas.tsx
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useUser } from '../../context/UserContext';
 import GeneralTerritorio from './general/comunidadesEnTerritorio/Contenido';
 import GeneralTerritorios from './general/comunidadesEnTerritorios/Contenido';
@@ -369,6 +370,14 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       <EstiloGlobal />
       <Contenedor>
         <BotonReiniciar onClick={reiniciar} />
+        <Image
+          style={{ position: 'fixed', right: '0rem', marginRight: '1rem', marginTop: '1rem', marginBottom: '0rem'}}
+          className="sigeti_logo"
+          src="/logos/sigeti_logo.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+        />
         <Titulo>Temáticas</Titulo>
         <ListaPestanhas>
           <EstiloPestanha $activo={activo === 'pestanhaGeneral'} onClick={() => establecerActivo('pestanhaGeneral')}>¿Cuántos somos?</EstiloPestanha>

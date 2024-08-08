@@ -10,7 +10,13 @@ interface BotonReiniciarProps {
 const BotonReiniciar: React.FC<BotonReiniciarProps> = ({ onClick }) => {
   return (
     <Boton onClick={onClick}>
-      <FaArrowLeft size={24} />
+        <FaArrowLeft
+          style={{
+            color: 'black',
+            filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 1))'
+          }}
+          size={24}
+        />
     </Boton>
   );
 };

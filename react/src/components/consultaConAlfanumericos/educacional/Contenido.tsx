@@ -81,7 +81,7 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
             <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Infraestructura</CajaTitulo>
                 <MapaInfraestructura datos={datosEducacionales} modo={modo} />
-                <ContenedorContexto texto = 'Clique los círculos para ver con qué tipo de infraestructura cuenta' />
+                <ContenedorContexto texto = {`Interactividad: clique los círculos para ver con qué tipo de infraestructura cuenta; acérquese con los íconos (+ y -) para ver la cantidad de construcciones para la educación`} />
             </WrapperAnimadoParaHistorias>
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}

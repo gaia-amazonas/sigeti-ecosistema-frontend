@@ -103,7 +103,7 @@ const ComponenteGeneralComunidadesEnTerritorio: React.FC<ComponenteGeneralComuni
       </WrapperAnimadoParaHistorias>
       <WrapperAnimadoParaHistorias>
         <CajaTitulo>Poblacion Total y por Sexo</CajaTitulo>
-        <ContenedorContexto texto= 'Acérquese dentro del mapa a la comunidad para conocer la población total y su estructura según el sexo.' />
+        <ContenedorContexto texto= 'Interactividad: Acérquese dentro del mapa a la comunidad para conocer la población total y su estructura según el sexo.' />
         <MapaComunidadesPorTerritorio
           territoriosGeoJson={datosExtraidos.territorioGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}
           comunidadesGeoJson={datosExtraidos.comunidadesGeoJson as unknown as FeatureCollection<Geometry, GeoJsonProperties>}

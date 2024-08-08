@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaSearch } from 'react-icons/fa';
 import styled, { keyframes } from 'styled-components';
-import EstiloGlobal from './estilos/global';
+import EstiloGlobal, { HeaderContainer, Spacer, UserSection, LoginContainer, StyledLink } from 'estilos_paginas/global';
 import Boton, { BotonesContenedor } from './estilos/boton';
 import LogoutButton from '../components/LogoutButton';
 import { useUser } from '../context/UserContext';
@@ -157,12 +157,12 @@ const Home: React.FC = () => {
           </CarreteFotografias>
         </Aside>
       </MainContainer>
-      <Texto_complemento>
+      <TextoComplemento>
         <h2>Texto complementario del home</h2>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero veritatis, impedit, 
           voluptatem expedita saepe omnis cupiditate recusandae quia unde tempora fugit facilis 
           totam laboriosam, dicta fugiat consequatur est eos ut.</p>
-      </Texto_complemento>
+      </TextoComplemento>
       <MapaSitio>
         <h2>Índice del SIGETI</h2>
         
@@ -191,53 +191,6 @@ const Home: React.FC = () => {
     </>
   );
 };
-
-const HeaderContainer = styled.header`
-  position: fixed;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #006a7c;
-  box-shadow: 2px 2px 5px #000000;
-  border: 1px solid #ccc;
-  padding: 10px 20px;
-
-  .sigeti_logo {
-    width: 200px;
-    filter: invert(100%);
-  }
-`;
-
-const UserSection = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const LoginContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  .login_logo {
-    width: 2rem;
-    margin-right: 10px;
-  }
-`;
-
-const StyledLink = styled(Link)`
-  font-size: 14px;
-  font-weight: 400;
-  color: #ffffff;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const Spacer = styled.div`
-  flex: 1;
-`;
 
 const ContainerSintesis = styled.div`
   background-image: url('/img/fondo_1.jpg');
@@ -446,7 +399,7 @@ const AnimatedLink = styled(Link)`
   }
 `;
 
-const Texto_complemento = styled.div`
+const TextoComplemento = styled.div`
   background-color: #ffffff;
   margin: 1rem;
   padding: 2rem;

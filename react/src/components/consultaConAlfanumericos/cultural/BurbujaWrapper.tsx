@@ -77,7 +77,7 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
             variable={variable}
             mostrarMenosRepresentativo={mostrarMenosRepresentativo}
           />
-          <ContenedorContexto texto={`Interacciones`} />
+          <ContenedorContexto texto={`Interactividad`} />
           <ContenedorContexto texto={`1: Haz zoom con los íconos (+ y -) para ver cuántas tipos de ${selectedOption} hay por cada comunidad`} />
           <ContenedorContexto texto={`2: Haz clic en los círculos para ver la distrubcuión de tipos de ${selectedOption} por cada comunidad`} />
         </WrapperAnimadoParaHistorias>
