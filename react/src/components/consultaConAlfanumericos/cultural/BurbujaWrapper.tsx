@@ -58,9 +58,7 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
           indígenas y hablantes de lenguas tradicionales. Los pueblos indígenas se han constituido 
           espacialmente en el territorio por distintas dinámicas de movilidad y relacionamiento social, 
           que ahora definen la diversidad étnica y diversidad lingüística en el territorio." />
-
           <ContenedorContexto texto= 'Selecciona de la lista desplegable:' />
-
           <div className={estilos.controls}>
             <select onChange={handleOptionChange} value={selectedOption}>
               <option value="lenguas">Lenguas</option>
@@ -79,6 +77,9 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
             variable={variable}
             mostrarMenosRepresentativo={mostrarMenosRepresentativo}
           />
+          <ContenedorContexto texto={`Interacciones`} />
+          <ContenedorContexto texto={`1: Haz zoom con los íconos (+ y -) para ver cuántas tipos de ${selectedOption} hay por cada comunidad`} />
+          <ContenedorContexto texto={`2: Haz clic en los círculos para ver la distrubcuión de tipos de ${selectedOption} por cada comunidad`} />
         </WrapperAnimadoParaHistorias>
         <QueEstoyViendo
           comunidades={queEstoyViendo.comunidadesGeoJson}
@@ -104,6 +105,7 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
 export default CulturalGraficoBurbujaWrapper;
 
 const validaDatosCulturales = (datos: any, queEstoyViendo: { comunidadesGeoJson: any, territoriosGeoJson: any }) => {
+  console.log(datos);
   return !datos.lenguas ||
     !datos.etnias ||
     !datos.clanes ||

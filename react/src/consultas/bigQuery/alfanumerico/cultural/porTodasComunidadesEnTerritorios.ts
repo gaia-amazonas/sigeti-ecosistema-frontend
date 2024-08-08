@@ -6,58 +6,44 @@ type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: strin
 const funciones: Record<string, Query> = {
     pueblos: ({territoriosId}) => `
         SELECT
-            cp.ID_CNIDA AS comunidadId,
-            cp.PUEBLO AS pueblo,
-            SUM(cp.CONTEO) AS conteo
+            id_cnida AS comunidadId,
+            pueblo,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Conteo_Pueblos\` cp
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            cp.ID_CNIDA = cpt.id_cnida
+            \`sigeti.NS_NC.conteo_pueblos_en_comunidades\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            cp.PUEBLO, cp.ID_CNIDA;`,
+            pueblo, id_cnida;`,
     lenguas: ({territoriosId}) => `
         SELECT
-            dl.ID_CNIDA as comunidadId,
-            dl.LENGUA_HAB AS lengua,
-            SUM(dl.NUM_HAB) AS conteo
+            id_cnida as comunidadId,
+            lengua AS lengua,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Distribución_Lenguas\` dl
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cpt
-        ON
-            dl.ID_CNIDA = cpt.id_cnida
+            \`sigeti.NS_NC.conteo_lenguas_en_comunidades\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cpt.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            dl.LENGUA_HAB, dl.ID_CNIDA;`
-    ,
+            lengua, id_cnida;`,
     etnias: ({territoriosId}) => `
         SELECT
-            ce.ID_CNIDA AS comunidadId,
-            ce.ETNIA AS etnia,
-            SUM(ce.CONTEO) AS conteo
+            id_cnida AS comunidadId,
+            etnia,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Conteo_Etnias\` ce
-        JOIN
-            \`sigeti.censo_632.comunidades_por_territorio\` cp
-        ON
-            ce.ID_CNIDA = cp.id_cnida
+            \`sigeti.NS_NC.conteo_etnias_en_comunidades\`
         WHERE
-            ${haceClausulasWhere({territoriosId}, 'cp.id_ti')}
+            ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY
-            ce.ETNIA, ce.ID_CNIDA;`
-    ,
+            etnia, id_cnida;`,
     clanes: ({territoriosId}) => `
         SELECT
             id_cnida AS comunidadId,
             clan,
             COUNT(*) AS conteo
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti.NS_NC.BD_Personas\`
         WHERE
             ${haceClausulasWhere({territoriosId}, 'id_ti')}
         GROUP BY

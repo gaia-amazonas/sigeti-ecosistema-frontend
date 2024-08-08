@@ -23,6 +23,7 @@ export const buscarPorComunidadesEnTerritorio = async (datosParaConsultar: Datos
     buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo)
   ]);
+  console.log("AAAAAAAAAAAAAA", escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson);
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,
@@ -40,6 +41,7 @@ export const buscarPorTodasComunidadesEnTerritorio = async (datosParaConsultar: 
     buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTerritorio.territorio(datosParaConsultar), modo),
     buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo)
   ]);
+  console.log("BBBBBBBBBBBBBBBB", escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson);
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,
@@ -57,6 +59,7 @@ export const buscarPorComunidadesEnTerritorios = async (datosParaConsultar: Dato
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
     buscarTerritorios(consultasEducacionalesPorComunidadesEnTerritorio.territorio(datosParaConsultar), modo)
   ]);
+  console.log("CCCCCCCCCCCCCCCCC", escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson);
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,
@@ -74,6 +77,7 @@ export const buscarPorComunidadesEnTodosTerritorios = async (datosParaConsultar:
     buscarComunidades(consultasEducacionalesPorComunidadesEnTerritorio.comunidadesEnTerritorio(datosParaConsultar), modo),
     buscarTerritorios(consultasEducacionalesPorComunidadesEnTodosTerritorios.territorios(datosParaConsultar), modo)
   ]);
+  console.log("DDDDDDDDDDDDDDDDDDDDDD", escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson);
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,
@@ -91,6 +95,7 @@ export const buscarPorTodasComunidadesEnTodosTerritorios = async (modo: string |
     buscarComunidades(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.comunidadesEnTerritorios(), modo),
     buscarTerritorios(consultasEducacionalesPorTodasComunidadesEnTodosTerritorios.territorios(), modo),
   ]);
+  console.log("EEEEEEEEEEEEEEEEEEEEE", escolaridadPrimariaYSecundaria, escolaridadJoven, escolaridad, territoriosGeoJson, comunidadesGeoJson);
   return {
     escolaridadPrimariaYSecundaria: escolaridadPrimariaYSecundaria,
     escolaridadJoven: escolaridadJoven,

@@ -6,44 +6,44 @@ type Query = (datosParaConsultar: {comunidadesId: string[], territoriosId: strin
 const funciones: Record<string, Query> = {
     pueblos: ({comunidadesId}) => `
         SELECT
-            cp.ID_CNIDA AS comunidadId,
-            cp.PUEBLO AS pueblo,
-            SUM(cp.CONTEO) AS conteo
+            id_cnida AS comunidadId,
+            pueblo,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Conteo_Pueblos\` cp
+            \`sigeti.NS_NC.conteo_pueblos_en_comunidades\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'cp.ID_CNIDA')}
+            ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
-            cp.PUEBLO, cp.ID_CNIDA;`,
+            pueblo, id_cnida;`,
     lenguas: ({comunidadesId}) => `
         SELECT
-            ID_CNIDA as comunidadId,
-            LENGUA_HAB AS lengua,
-            SUM(NUM_HAB) AS conteo
+            id_cnida as comunidadId,
+            lengua AS lengua,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Distribución_Lenguas\`
+            \`sigeti.NS_NC.conteo_lenguas_en_comunidades\`
         WHERE
-            ${haceClausulasWhere({comunidadesId}, 'ID_CNIDA')}
+            ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
-            ID_CNIDA, LENGUA_HAB;`,
+            lengua, id_cnida;`,
     etnias: ({comunidadesId}) => `
         SELECT
-            id_cnida as comunidadId,
-            ETNIA AS etnia,
-            SUM(CONTEO) AS conteo
+            id_cnida AS comunidadId,
+            etnia,
+            SUM(conteo) AS conteo
         FROM
-            \`sigeti.censo_632.Conteo_Etnias\`
+            \`sigeti.NS_NC.conteo_etnias_en_comunidades\`
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
             etnia, id_cnida;`,
     clanes: ({comunidadesId}) => `
         SELECT
-            id_cnida as comunidadId,
+            id_cnida AS comunidadId,
             clan,
             COUNT(*) AS conteo
         FROM
-            \`sigeti.censo_632.BD_personas\`
+            \`sigeti.NS_NC.BD_Personas\`
         WHERE
             ${haceClausulasWhere({comunidadesId}, 'id_cnida')}
         GROUP BY
