@@ -371,7 +371,14 @@ const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo
       <Contenedor>
         <BotonReiniciar onClick={reiniciar} />
         <Image
-          style={{ position: 'fixed', right: '0rem', marginRight: '1rem', marginTop: '1rem', marginBottom: '0rem'}}
+          style={{
+            position: 'fixed',
+            right: '0rem',
+            marginRight: '1rem',
+            marginTop: '1rem',
+            marginBottom: '0rem',
+            filter: 'drop-shadow(0 0 10px rgba(0, 255, 0, 0.8))' // Green drop shadow
+          }}
           className="sigeti_logo"
           src="/logos/sigeti_logo.png"
           alt="Logotipo del sistema SIGETI"
