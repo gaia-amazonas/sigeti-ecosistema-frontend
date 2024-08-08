@@ -8,6 +8,7 @@ import { estiloTerritorio } from 'estilosParaMapas/paraMapas';
 import { MapContainer, TileLayer, GeoJSON, useMapEvents, Popup, useMap } from 'react-leaflet';
 import CustomCircleMarker from '../general/CustomCircleMarker';
 import CulturalGraficoBurbuja from './Contenido';
+import L from 'leaflet';
 
 interface MapaCulturalImp {
   territoriosGeoJson: FeatureCollection;
@@ -17,7 +18,6 @@ interface MapaCulturalImp {
   agregador: string;
   variable: string;
   mostrarMenosRepresentativo: boolean;
-  tipo: 'lenguas' | 'pueblos';
 }
 
 const ControlaEventosDeMapa = ({ setZoomLevel }: { setZoomLevel: (zoom: number) => void }) => {
@@ -67,12 +67,42 @@ const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCo
   return null;
 };
 
-const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo, tipo }) => {
+const Legend = ({ min, max, variable }: { min: number; max: number; variable: string }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const legend = new L.Control({ position: 'bottomright' });
+    legend.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      div.innerHTML = `
+        <h4>Número de ${variable}s</h4>
+        <div style="background: linear-gradient(to right, rgb(255, 255, 0), rgb(255, 0, 0)); width: 100px; height: 20px; border-radius: 5px;"></div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>${min}</span><span>${max}</span>
+        </div>
+        <div>
+          <i style="background: rgb(255, 255, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Baja
+          <br>
+          <i style="background: rgb(255, 0, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Alta
+        </div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+    return () => {
+      map.removeControl(legend);
+    };
+  }, [map, min, max]);
+
+  return null;
+};
+
+const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidadesGeoJson, modo, datos, agregador, variable, mostrarMenosRepresentativo }) => {
   const centroMapa = [0.969793, -70.830454];
   const [zoomNivel, establecerZoomNivel] = useState<number>(6);
-  const [popupInfo, setPopupInfo] = useState<{ position: [number, number], datosComunidad: any[], total: number } | null>(null);
-  const handleMarkerClick = (position: [number, number], datosComunidad: any[], total: number) => {
-    setPopupInfo({ position, datosComunidad, total });
+  const [popupInfo, setPopupInfo] = useState<{ position: [number, number], datosComunidad: any[], total: number, id: string } | null>(null);
+  const handleMarkerClick = (position: [number, number], datosComunidad: any[], total: number, id: string) => {
+    setPopupInfo({ position, datosComunidad, total, id });
   };
 
   const totalPopulations = comunidadesGeoJson?.features.map(comunidad => {
@@ -81,6 +111,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
     return total;
   });
 
+  const comunidades = Object.fromEntries(comunidadesGeoJson.features.map((feature) => [feature.properties?.id, feature.properties?.nombre]))
   const minPopulation = totalPopulations ? Math.min(...totalPopulations) : 0;
   const maxPopulation = totalPopulations ? Math.max(...totalPopulations) : 0;
 
@@ -88,6 +119,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
     <MapContainer center={[centroMapa[0], centroMapa[1]]} zoom={6} style={{ height: '30rem', width: '100%', zIndex: 1 }}>
       <ControlaEventosDeMapa setZoomLevel={establecerZoomNivel} />
       <AdjustMapBounds territoriosGeoJson={territoriosGeoJson} />
+      <Legend min={minPopulation} max={maxPopulation} variable={variable} />
       <TileLayer
         url={modo === "online" ? "https://api.maptiler.com/maps/210f299d-7ee0-44b4-8a97-9c581923af6d/{z}/{x}/{y}.png?key=aSbUrcjlnwB0XPSJ7YAw" : "http://localhost:8080/{z}/{x}/{y}.png.tile"}
         attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
@@ -114,7 +146,7 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
                   proporcion={total}
                   total={total}
                   zoomNivel={zoomNivel}
-                  onClick={() => handleMarkerClick([markerPosition[0], markerPosition[1]], datosFeature, total)}
+                  onClick={() => handleMarkerClick([markerPosition[0], markerPosition[1]], datosFeature, total, id)}
                 />
               </React.Fragment>
             );
@@ -127,8 +159,11 @@ const MapaCultural: React.FC<MapaCulturalImp> = ({ territoriosGeoJson, comunidad
           eventHandlers={{ remove: () => setPopupInfo(null) }}
         >
           <div style={{ width: `${Math.min(popupInfo.total * 150, 300)}px`, height: `${Math.min(popupInfo.total * 150, 300)}px` }}>
+            {mostrarMenosRepresentativo && (<h3>Lenguas menos representativas en {comunidades[popupInfo.id]}</h3>)}
+            {!mostrarMenosRepresentativo && (<h3>Lenguas más representativas en {comunidades[popupInfo.id]}</h3>)}
             <CulturalGraficoBurbuja
               datos={popupInfo.datosComunidad}
+              comunidades={comunidades}
               labelKey={variable}
               valueKey='conteo'
               groupKey={agregador}

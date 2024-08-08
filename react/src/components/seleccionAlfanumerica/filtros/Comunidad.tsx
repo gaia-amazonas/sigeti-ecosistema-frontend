@@ -24,14 +24,14 @@ const consultas = {
     const whereClause = territoriosId.length > 0 ? territoriosId.map(id => `id_ti = '${id}'`).join(' OR '): `id_ti = '${territoriosId[0]}'`;
     return `
       SELECT id_cnida, comunidad
-      FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+      FROM \`sigeti.censo_632.representacion_comunidades_por_territorio_2\`
       WHERE ${whereClause}
       ORDER BY id_cnida;
     `;
   },
   total: (modo: 'online' | 'offline') => `
     SELECT id_cnida, comunidad
-    FROM ${modo === 'online' ? '`sigeti.censo_632.comunidades_por_territorio`' : 'sigetiescritorio.comunidades_por_territorio'}
+    FROM \`sigeti.censo_632.representacion_comunidades_por_territorio_2\`
     ORDER BY id_cnida;
   `
 };

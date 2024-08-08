@@ -78,7 +78,6 @@ const CulturalGraficoBurbujaWrapper: React.FC<CulturalGraficoBurbujaWrapperImp> 
             agregador={agregador}
             variable={variable}
             mostrarMenosRepresentativo={mostrarMenosRepresentativo}
-            tipo={selectedOption}
           />
         </WrapperAnimadoParaHistorias>
         <QueEstoyViendo

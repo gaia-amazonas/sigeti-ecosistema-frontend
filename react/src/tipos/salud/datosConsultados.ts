@@ -32,8 +32,8 @@ interface ComunidadesGeoJson extends FeatureCollection<Geometry, GeoJsonProperti
 interface DatosConsultados {
   mujeresEnEdadFertil: MujeresEnEdadFertil | null;
   chagrasPorPersonaYFamilia: ChagrasPorPersonaYFamilia | null;
-  comunidadesGeoJson: ComunidadesGeoJson;
-  territoriosGeoJson: TerritoriosGeoJson;
+  comunidadesGeoJson: ComunidadesGeoJson | null;
+  territoriosGeoJson: TerritoriosGeoJson | null;
 }
 
 export default DatosConsultados;

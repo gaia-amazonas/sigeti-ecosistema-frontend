@@ -16,6 +16,7 @@ import EducativaIcon from 'logos/Educacion_001.png';
 import SaludIcon from 'logos/Salud_001.png';
 
 import Image from 'next/image';
+import L from 'leaflet';
 
 interface InfraestructuraPorComunidad {
     Malocas: number;
@@ -65,11 +66,7 @@ const AdjustMapBounds = ({ territoriosGeoJson }: { territoriosGeoJson: FeatureCo
     return null;
 };
 
-type Key = string;
-type ConjuntoDeValores = Set<"Educativa" | "Salud" | "Malocas">;
-type MapaDeTiposPorComunidades = Map<Key, ConjuntoDeValores>;
-
-const Legend = () => {
+const LegendIcons = () => {
     return (
         <div style={{
             position: 'absolute',
@@ -81,7 +78,6 @@ const Legend = () => {
             boxShadow: '0 0 15px rgba(0, 0, 0, 0.2)',
             zIndex: 1000,
         }}>
-            <h4>Leyenda</h4>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                 <Image src={MalocasIcon.src} alt="Malocas Icon" width={24} height={24} style={{ marginRight: '5px' }} />
                 <span>Malocas</span>
@@ -96,6 +92,36 @@ const Legend = () => {
             </div>
         </div>
     );
+};
+
+const LegendColorGradient = ({ min, max }: { min: number; max: number }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        const legend = new L.Control({ position: 'bottomright' });
+        legend.onAdd = () => {
+            const div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = `
+                <h4>Total de Construcciones</br>para la educación</h4>
+                <div style="background: linear-gradient(to right, rgb(255, 255, 0), rgb(255, 0, 0)); width: 100px; height: 20px; border-radius: 5px;"></div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>${min}</span><span>${max}</span>
+                </div>
+                <div>
+                    <i style="background: rgb(255, 255, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Baja
+                    <br>
+                    <i style="background: rgb(255, 0, 0); width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px;"></i>Alta
+                </div>
+            `;
+            return div;
+        };
+        legend.addTo(map);
+        return () => {
+            map.removeControl(legend);
+        };
+    }, [map, min, max]);
+
+    return null;
 };
 
 const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
@@ -227,7 +253,8 @@ const Mapa: React.FC<MapaImp> = ({ datos, modo }) => {
                     </div>
                 </Popup>
             )}
-            <Legend />
+            <LegendIcons />
+            <LegendColorGradient min={minPopulation} max={maxPopulation} />
         </MapContainer>
     );
 };
@@ -259,7 +286,7 @@ const defineTiposDeInfraestructuraPorComunidades = (infraestructuraEnComunidades
     return tiposInfraestructuraPorComunidades;
 };
 
-const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], tiposInfraestructuraPorComunidades: MapaDeTiposPorComunidades, infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
+const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], tiposInfraestructuraPorComunidades: Map<string, Set<"Educativa" | "Salud" | "Malocas">> , infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
     comunidadesId.forEach((comunidadId: string) => {
         TIPOS.forEach((tipo) => {
             if (!tiposInfraestructuraPorComunidades.get(comunidadId)?.has(tipo as "Educativa" | "Salud" | "Malocas")) {

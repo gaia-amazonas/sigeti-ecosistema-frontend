@@ -133,7 +133,8 @@ const educacionalTodasComunidadesEnTodosTerritoriosDatosIniciales: EducacionalCo
 const saludComunidadesEnTerritoriosDatosIniciales: SaludComunidadesEnTerritoriosDatosConsultados = {
   mujeresEnEdadFertil: null,
   comunidadesGeoJson: null,
-  territoriosGeoJson: null
+  territoriosGeoJson: null,
+  chagrasPorPersonaYFamilia: null
 }
 
 const Pestanhas: React.FC<PestanhasImp> = ({ datosParaConsultar, reiniciar, modo }) => {

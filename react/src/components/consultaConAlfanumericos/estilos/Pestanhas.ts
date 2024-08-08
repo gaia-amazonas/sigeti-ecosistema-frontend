@@ -24,6 +24,8 @@ export const ListaPestanhas = styled.div`
 
 export const EstiloPestanha = styled.button<{ $activo: boolean }>`
   background-color: ${({ $activo }) => ($activo ? '#228B22' : '#8B4513')};
+  font-size: 1rem;
+  font-family: 'Lora', serif;
   color: white;
   padding: 1rem;
   border: none;
