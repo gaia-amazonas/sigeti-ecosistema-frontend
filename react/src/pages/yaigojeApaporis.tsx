@@ -123,6 +123,7 @@ const YaigojeApaporis: React.FC = () => {
 };
 
 const Header = styled.header`
+  position: fixed;
   width: 100%;
   display: flex;
   justify-content: center;
