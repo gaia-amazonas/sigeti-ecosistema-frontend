@@ -183,6 +183,7 @@ const Home: React.FC = () => {
 };
 
 const HeaderContainer = styled.header`
+  position: fixed;
   width: 100%;
   display: flex;
   justify-content: space-between;

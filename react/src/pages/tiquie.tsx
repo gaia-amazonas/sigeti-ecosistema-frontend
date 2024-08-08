@@ -120,6 +120,7 @@ const Tiquie: React.FC = () => {
 };
 
 const Header = styled.header`
+  position: fixed;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -132,6 +133,7 @@ const Header = styled.header`
 
   .sigeti_logo {
     width: 200px;
+    filter: invert(100%);
   }
 `;
 

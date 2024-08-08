@@ -52,11 +52,6 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
                 )
             }
             <WrapperAnimadoParaHistorias>
-                <CajaTitulo>Infraestructura</CajaTitulo>
-                <MapaInfraestructura datos={datosEducacionales} modo={modo} />
-                <ContenedorContexto texto = 'Clique los círculos para ver con qué tipo de infraestructura cuenta' />
-            </WrapperAnimadoParaHistorias>
-            <WrapperAnimadoParaHistorias>
                 <CajaTitulo>Selecciona Tipo de Escolaridad</CajaTitulo>
                 <div className={estilos.toggleContainer}>
                     <button
@@ -82,6 +77,11 @@ const ComponenteEducacionalComunidadesEnTerritorios: React.FC<ComponenteEducacio
                         <SexoEdad datosPiramidalesSexoEdad={segmentarPorEdadYSexoParaGraficasPiramidales(datosEducacionales.escolaridad)} labelIzquierdo="Hombres" labelDerecho="Mujeres" />
                     </>
                 )}
+            </WrapperAnimadoParaHistorias>
+            <WrapperAnimadoParaHistorias>
+                <CajaTitulo>Infraestructura</CajaTitulo>
+                <MapaInfraestructura datos={datosEducacionales} modo={modo} />
+                <ContenedorContexto texto = 'Clique los círculos para ver con qué tipo de infraestructura cuenta' />
             </WrapperAnimadoParaHistorias>
             <QueEstoyViendo
                 comunidades={queEstoyViendo.comunidadesGeoJson}
