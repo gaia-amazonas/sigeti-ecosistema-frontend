@@ -111,6 +111,12 @@ const YaigojeApaporis: React.FC = () => {
           </Indicador>
         </div>
       </Indicadores>
+      <Acerca_comunidad>
+        <h2>Acerca de la Comunidad</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero veritatis, impedit, 
+          voluptatem expedita saepe omnis cupiditate recusandae quia unde tempora fugit facilis 
+          totam laboriosam, dicta fugiat consequatur est eos ut.</p>
+      </Acerca_comunidad>
       <Footer>
         <div className="creditos" style={{ display: 'flex', alignItems: 'center' }}>
           <p style={{ display: 'flex', alignItems: 'center', margin: 0 }}>
@@ -322,5 +328,26 @@ const AnimatedLink = styled(Link)`
     bottom: 5rem;
   }
 `;
+
+const Acerca_comunidad = styled.div`
+  background-color: #ffffff;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border: #98c182 solid 2px;
+  box-shadow: 5px 5px 9px #e5e1d8;
+  
+  h2 {
+    text-align: center;
+    color: #a5c992;
+  }
+
+  p {
+    padding: 1rem;
+  }
+`
+;
 
 export default YaigojeApaporis;
