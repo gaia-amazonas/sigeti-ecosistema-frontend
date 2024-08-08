@@ -37,8 +37,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
           <CajaTitulo>Mujeres En Edad Fértil</CajaTitulo>
           <MujeresEnEdadFertilMap
             mujeresEnEdadFertil={mujeresEnEdadFertil}
-            comunidadesGeoJson={comunidadesGeoJson}
-            territoriosGeoJson={territoriosGeoJson}
+            comunidadesGeoJson={comunidadesGeoJson!}
+            territoriosGeoJson={territoriosGeoJson!}
             zoomNivel={zoomNivel}
             establecerZoomNivel={establecerZoomNivel}
           />
@@ -48,8 +48,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ datos }) => {
         <CajaTitulo>Población y Número de Chagras</CajaTitulo>
         <ChagrasMap
           chagrasPorPersonaYFamilia={chagrasPorPersonaYFamilia}
-          comunidadesGeoJson={comunidadesGeoJson}
-          territoriosGeoJson={territoriosGeoJson}
+          comunidadesGeoJson={comunidadesGeoJson!}
+          territoriosGeoJson={territoriosGeoJson!}
           variableSeleccionada={variableSeleccionada}
           zoomNivel={zoomNivel}
           establecerZoomNivel={establecerZoomNivel}

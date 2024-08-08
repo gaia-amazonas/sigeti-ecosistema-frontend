@@ -286,7 +286,7 @@ const defineTiposDeInfraestructuraPorComunidades = (infraestructuraEnComunidades
     return tiposInfraestructuraPorComunidades;
 };
 
-const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], tiposInfraestructuraPorComunidades: MapaDeTiposPorComunidades, infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
+const defineInfraestructuraMinimaSinUnTipoPorComunidad = (comunidadesId: string[], tiposInfraestructuraPorComunidades: Map<string, Set<"Educativa" | "Salud" | "Malocas">> , infraestructuraEnComunidades: TipoInfraestructuraEnComunidad[]) => {
     comunidadesId.forEach((comunidadId: string) => {
         TIPOS.forEach((tipo) => {
             if (!tiposInfraestructuraPorComunidades.get(comunidadId)?.has(tipo as "Educativa" | "Salud" | "Malocas")) {

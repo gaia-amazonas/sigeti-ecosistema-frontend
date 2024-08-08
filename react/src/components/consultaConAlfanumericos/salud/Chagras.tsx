@@ -136,7 +136,6 @@ const ChagrasMap: React.FC<ChagrasMapProps> = ({
               const datosFeature = chagrasPorPersonaYFamilia?.rows.filter((d: { comunidadId: string; }) => d.comunidadId === id);
               const total = datosFeature?.reduce((sum: number, item: { [x: string]: number; }) => sum + item[variableSeleccionada], 0) || 1;
               const color = getColor(total, minTotal, maxTotal);
-              console.log(color, "aosñidfjañosdifj");
               const coordinates = getCoordinates(feature.geometry);
               const markerPosition = [coordinates[0][1], coordinates[0][0]];
               if (coordinates.length === 0) return null;
