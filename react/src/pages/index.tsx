@@ -161,7 +161,7 @@ const Home: React.FC = () => {
         <h2>Texto complementario del home</h2>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero veritatis, impedit, 
           voluptatem expedita saepe omnis cupiditate recusandae quia unde tempora fugit facilis 
-          totam laboriosam, dicta fugiat consequatur est eos ut.</p>
+          totam laboriosam, dicta fugiat consequatur est eos ut .</p>
       </Texto_complemento>
       <MapaSitio>
         <h2>Índice del SIGETI</h2>
