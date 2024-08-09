@@ -334,6 +334,7 @@ const Carousel = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
+  
 
   img {
     width: 100%;
