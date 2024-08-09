@@ -103,7 +103,7 @@ const Tiquie: React.FC = () => {
             <span className="valor">11</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor">1.359,44 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor">135.900 ha</span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
             <span className="valor">795</span><span className="etiqueta-valor">Habitantes</span>

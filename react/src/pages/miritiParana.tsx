@@ -100,7 +100,7 @@ const Miriti: React.FC = () => {
             <span className="valor">13</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor">12.367,03 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor">1.236.700 ha</span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
             <span className="valor">1083</span><span className="etiqueta-valor">Habitantes</span>

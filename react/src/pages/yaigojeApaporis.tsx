@@ -104,7 +104,7 @@ const YaigojeApaporis: React.FC = () => {
             <span className="valor">22</span><span className="etiqueta-valor">comunidades en el territorio</span>
           </Indicador>
           <Indicador>
-            <span className="valor">12.269,65 km<sup>2</sup></span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
+            <span className="valor"> 1.226.900 ha</span><span className="etiqueta-valor">Área total de las Entidades Territoriales</span>
           </Indicador>
           <Indicador>
             <span className="valor">1985</span><span className="etiqueta-valor">Habitantes</span>
