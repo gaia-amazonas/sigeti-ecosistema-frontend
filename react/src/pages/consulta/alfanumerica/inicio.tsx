@@ -1,9 +1,10 @@
 // src/pages/consulta/alfanumerica/inicio.tsx
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import BotonReiniciar from 'components/BotonReiniciar';
 import Seleccion from 'components/seleccionAlfanumerica/Seleccion';
-import EstiloGlobal, { Titulo } from 'estilos_paginas/global';
+import EstiloGlobal, { Titulo, HeaderContainer, Spacer,  } from 'estilos_paginas/global';
 
 interface DatosParaConsultar {
   territoriosId: string[];
@@ -38,9 +39,20 @@ const Alfanumerica: React.FC = () => {
   return (
     <>
       <EstiloGlobal />
+      <HeaderContainer>
+        <Spacer />
+        <Image
+          className="sigeti_logo"
+          src="/logos/sigeti_logo_negro.png"
+          alt="Logotipo del sistema SIGETI"
+          width={200}
+          height={50}
+        />
+        <Spacer />
+      </HeaderContainer>
       <div style={{ position: 'relative' }}>
         <BotonReiniciar onClick={reiniciarEstado} />
-        <Titulo>Seleccionando...</Titulo>
+        <Titulo>Seleccionando</Titulo>
         <Seleccion 
           alFinalizar={direccionaSeleccionFinalizadaAPestanhas} 
           reiniciar={reiniciarEstado} 
